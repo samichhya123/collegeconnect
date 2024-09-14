@@ -1,0 +1,126 @@
+.aboutus-container {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #f9f9f9, #ffffff);
+  color: #2c3e50;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin: 50px auto;
+  transition: all 0.3s ease;
+}
+
+.about-section,
+.mission-section,
+.team-section,
+.contact-section {
+  margin-bottom: 50px;
+}
+
+.about-section h1,
+.mission-section h1,
+.team-section h1,
+.contact-section h1,
+.about-section h2,
+.mission-section h2,
+.team-section h2,
+.contact-section h2 {
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  color: #97b8d9;
+  margin-bottom: 20px;
+  font-size: 2.8em;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.about-section p,
+.mission-section p,
+.team-section p,
+.contact-section p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  text-align: center;
+  color: #555;
+  margin: 0 auto;
+  max-width: 850px;
+  line-height: 1.8;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 30px;
+  padding: 0 20px;
+}
+
+.team-member {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+}
+
+.team-member h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8em;
+  margin-bottom: 15px;
+  color: #2980b9;
+}
+
+.team-member p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  color: #7f8c8d;
+  line-height: 1.6;
+}
+
+.contact-section a {
+  color: #2980b9;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contact-section a:hover {
+  color: #1abc9c;
+}
+
+@media (max-width: 768px) {
+  h1, h2 {
+    font-size: 2.2em;
+  }
+
+  .about-section p,
+  .mission-section p,
+  .team-section p,
+  .contact-section p {
+    font-size: 17px;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutus-container {
+    padding: 80px 15px;
+  }
+
+  h1, h2 {
+    font-size: 1.8em;
+  }
+
+  .team-member {
+    padding: 20px;
+  }
+
+  .team-member h3 {
+    font-size: 1.5em;
+  }
+}

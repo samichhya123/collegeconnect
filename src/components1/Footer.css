@@ -1,0 +1,125 @@
+footer {
+  width: 100%;
+  background: linear-gradient(to right, #f8f4f0, #b6c2c9);
+  padding: 10px 0; 
+  border-top-left-radius: 100px;
+  font-size: 15px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1); }
+
+.row {
+  width: 85%;
+  margin: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  width: 90px; 
+  border-radius: 10%;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.col h3 {
+  margin-bottom: 15px;
+  position: relative;
+  font-size: 20px;
+  color: #333;
+  text-transform: uppercase;
+}
+
+.col p {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 50px;
+  width: 100%;
+  
+}
+
+form input {
+  font-size: 14px;
+  background: transparent;
+  color: #383131;
+  border: 0;
+  outline: none;
+  width: 70%;
+  padding: 10px; 
+}
+
+form button {
+  background-color: #333;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  margin-left: 10px;
+  transition: background-color 0.3s;
+}
+
+form button .fa-arrow-right {
+  color: #fff;
+}
+
+form button:hover {
+  background-color: #555; 
+}
+
+.email {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  font-size: 12px;
+}
+
+.phone {
+  margin-top: 10px;
+}
+
+hr {
+  width: 90%;
+  border: 0;
+  border-bottom: 1px solid #ccc;
+  margin: 20px auto;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 20px;
+  color: #555;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .col {
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  form {
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+}

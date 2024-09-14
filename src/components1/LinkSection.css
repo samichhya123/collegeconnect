@@ -1,0 +1,31 @@
+.link-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+.link-section ul {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  flex-direction: row;
+  justify-items: auto;
+ 
+}
+.link-section li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.link-section ul li a {
+  text-decoration: none;
+  color: #383131;
+  transition: color 0.3s ease;
+  font-weight: lighter;
+}
+
+.link-section ul li a:hover {
+  color: #b19d9d;
+}

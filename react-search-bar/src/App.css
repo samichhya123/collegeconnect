@@ -1,0 +1,28 @@
+.linkedin-banner {
+  width: 100%;
+  height: 396px;
+  background: url('your-background-image.jpg') no-repeat center center;
+  background-size: cover;
+  position: relative;
+  color: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-content {
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent background for text readability */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.banner-content h1 {
+  font-size: 36px;
+  margin: 0;
+}
+
+.banner-content p {
+  font-size: 18px;
+  margin: 10px 0 0;
+}
