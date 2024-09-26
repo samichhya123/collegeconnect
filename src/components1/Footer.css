@@ -37,9 +37,10 @@ footer {
   text-transform: uppercase;
 }
 
-.col p {
+.contact-col,.logo-col p {
   margin-bottom: 10px;
   font-size: 14px;
+  color:#555;
 }
 
 form {

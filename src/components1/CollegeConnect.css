@@ -88,12 +88,12 @@
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
-.card-content {
+.college-card-content {
   text-align: center;
   margin-top: 10px;
 }
 
-.card-content p {
+.college-card-content p {
   font-size: 1.15em;
   line-height: 1.8;
   color: #555;

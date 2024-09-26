@@ -17,7 +17,6 @@ const College = () => {
             Valley.
           </p>
         </div>
-
         <div className="description">
           <hr />
           <h1 className="text-center">Choose Your Dream College</h1>
@@ -34,7 +33,7 @@ const College = () => {
             <div className="overlay">
               <h2>Reliable Platform</h2>
             </div>
-            <div className="card-content">
+            <div className="college-card-content">
               <p>
                 College Connect is a reliable platform for students searching
                 for bachelor colleges by providing a comprehensive and
@@ -54,7 +53,7 @@ const College = () => {
             <div className="overlay">
               <h2>Scholarship Opportunities</h2>
             </div>
-            <div className="card-content">
+            <div className="college-card-content">
               <p>
                 By choosing College Connect, scholarship opportunities are
                 provided for students searching for bachelor colleges by
@@ -74,7 +73,7 @@ const College = () => {
             <div className="overlay">
               <h2>Direct College Entrance Examination</h2>
             </div>
-            <div className="card-content">
+            <div className="college-card-content">
               <p>
                 College Connect enhances its functionality by integrating a
                 dedicated section for college entrance examinations. This
