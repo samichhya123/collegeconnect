@@ -19,10 +19,8 @@ const PrimeCollege = () => {
       </header>
 
       <div className="section">
-        <h2 className="college-name">Prime College</h2>
-        <br />
-        <img src={logo} alt="College Logo" />
-        <br />
+      <img src={logo} alt="College Logo" />  <h2 className="college-name">Prime College</h2>
+       
       </div>
 
       <div className="container">

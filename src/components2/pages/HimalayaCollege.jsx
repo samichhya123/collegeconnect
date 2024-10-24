@@ -14,9 +14,8 @@ const HimalayaCollege = () => {
                 </div>
             </header>
             <div className="section">
-                <h2 className="college-name">Himalaya College Of Engineering</h2>
-                <br />
-                <img src={logo} alt="College Logo" style={{ maxWidth: '200px' }} /><br />
+            <img src={logo} alt="College Logo" style={{ maxWidth: '200px' }} />  <h2 className="college-name">Himalaya College Of Engineering</h2>
+               
             </div>
 
             <div className="container">

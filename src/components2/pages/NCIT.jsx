@@ -15,10 +15,8 @@ const NCIT = () => {
       </header>
 
       <div className="section">
-        <h2 className="college-name">Nepal College of Information Technology</h2>
-        <br />
-        <img src={logo} alt="College Logo" />
-        <br />
+      <img src={logo} alt="College Logo" /> <h2 className="college-name">Nepal College of Information Technology</h2>
+        
       </div>
 
       <div className="container">

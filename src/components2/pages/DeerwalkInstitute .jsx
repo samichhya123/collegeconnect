@@ -24,14 +24,12 @@ const DeerwalkInstitute = () => {
       </header>
 
       <div className="section">
-        <h2 className="college-name">Deerwalk Institute of Technology</h2>
-        <br />
-        <img
+      <img
           src={logo}
           alt="College Logo"
           style={{ maxWidth: "200px" }}
-        />
-        <br />
+        />  <h2 className="college-name">Deerwalk Institute of Technology</h2>
+        
       </div>
 
       <div className="container">

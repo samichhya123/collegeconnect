@@ -162,7 +162,6 @@ const Courses = () => {
             </div>
           ))}
         </div>
-        <Slider />
       </div>
       <Footer />
     </div>

@@ -15,10 +15,8 @@ const PadmaKanya = () => {
       </header>
 
       <div className="section">
-        <h2 className="college-name">Padma Kanya Multiple Campus (PKMC)</h2>
-        <br />
-        <img src={logo} alt="College Logo" style={{ maxHeight: '150px' }} />
-        <br />
+      <img src={logo} alt="College Logo" style={{ maxHeight: '150px' }} /> <h2 className="college-name">Padma Kanya Multiple Campus (PKMC)</h2>
+       
       </div>
 
       <div className="container">

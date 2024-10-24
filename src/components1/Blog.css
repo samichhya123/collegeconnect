@@ -4,20 +4,9 @@
   box-sizing: border-box;
 }
 
-
-.header-blog {
-  background-color: #76658d;
-  color: white;
-  padding: 10px 0; /* Reduced padding to fit content naturally */
-  text-align: center;
-}
-h1 {
-  font-size: 2.5rem;
-}
-
 .blog-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Adjusted to always have 3 columns */
   gap: 20px;
   padding: 20px;
 }
@@ -83,88 +72,31 @@ h1 {
   cursor: not-allowed;
 }
 
-
-.search-container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.search-container input {
-  padding: 10px;
-  width: 300px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
-  outline: none;
-}
-
-.search-container button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #76658d;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 0 4px 4px 0;
-}
-
-.search-container button:hover {
-  background-color: #5a4a6f;
-}
-
 .blog-detail {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 20px;
-  z-index: 1000;
-  overflow: auto;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .blog-detail-content {
-  max-width: 800px;
   background-color: white;
-  color: #333;
   padding: 20px;
   border-radius: 8px;
+  position: relative;
+  width: 80%;
+  max-width: 600px;
 }
 
 .blog-detail-content img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.blog-detail-content h2 {
   margin-bottom: 10px;
-  font-size: 2rem;
-}
-
-.blog-detail-content p {
-  font-size: 1.2rem;
-  line-height: 1.6;
-}
-
-.blog-detail button {
-  background-color: #76658d;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1rem;
-  margin-bottom: 20px;
-}
-
-.blog-detail button:hover {
-  background-color: #5a4a6f;
 }

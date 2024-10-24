@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
-const Navbar = () => {
+const Navbar = ({ showSearch = true, showAuthButtons = true }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -32,9 +32,13 @@ const Navbar = () => {
               <img src={logo} alt="logo" className="main-logo" />
             </a>
           </div>
-          <div className="search-responsive">
-            <Search />
-          </div>
+
+          {showSearch && (
+            <div className="search-responsive">
+              <Search />
+            </div>
+          )}
+
           <div className={`nav-links-container ${isMenuOpen ? "active" : ""}`}>
             <ul>
               <li>
@@ -64,23 +68,29 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-          <div className="search-desktop">
-            <Search />
-          </div>
+
+          {showSearch && (
+            <div className="search-desktop">
+              <Search />
+            </div>
+          )}
         </div>
-        <div className="user-menu">
-          <div className="user-button">
-            <button onClick={Register} className="register-btn">
-              Register
-            </button>
-            <button onClick={Login} className="login-btn">
-              Login
-            </button>
+
+        {showAuthButtons && (
+          <div className="user-menu">
+            <div className="user-button">
+              <button onClick={Register} className="register-btn">
+                Register
+              </button>
+              <button onClick={Login} className="login-btn">
+                Login
+              </button>
+            </div>
+            <div className="menu-bar" onClick={toggleMenu}>
+              <FontAwesomeIcon icon={faBars} />
+            </div>
           </div>
-          <div className="menu-bar" onClick={toggleMenu}>
-            <FontAwesomeIcon icon={faBars} />
-          </div>
-        </div>
+        )}
       </nav>
     </div>
   );

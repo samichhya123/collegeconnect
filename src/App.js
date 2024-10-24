@@ -2,10 +2,10 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
-import CollegeConnect from "./components1/CollegeConnect";
+import CollegeConnect from "./components1/collegeConnect";
 import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
-import Blog from "./components1/Blog";
+import Blog from "./components1/blogData";
 import Login from "./components3/Login";
 import Register from "./components3/register";
 import Colleges from "./components2/Colleges";
@@ -13,8 +13,8 @@ import CollegeContainer from "./components2/react/bhaktapurwith3conatiner";
 import Lalitpur from "./components2/pages/Lalitpur";
 import Kathmandu from "./components2/pages/Kathmandu";
 import Bhaktapur from "./components2/pages/Bhaktapur";
-import EntranceExamForm from "./components3/EntranceExamForm";
-import AdminSignIn from "./components3/AminSignIn";
+import EntranceExamForm from "./components3/entranceExamForm";
+import AdminSignIn from "./components3/adminSignIn";
 import {
   KistCollege,
   Islington,

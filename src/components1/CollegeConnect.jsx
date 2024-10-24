@@ -1,6 +1,6 @@
 import React from "react";
-import "./CollegeConnect.css";
-import CollegeSlider from "./CollegeSlider";
+import "./collegeConnect.css";
+import CollegeSlider from "./collegeSlider";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
@@ -88,7 +88,6 @@ const College = () => {
             </div>
           </div>
         </div>
-        
       </div>
       <Footer />
     </div>

@@ -18,14 +18,12 @@ const StXaviers = () => {
         </div>
       </header>
       <div className="section">
-        <h2 className="college-name">St. Xavier's College</h2>
-        <br />
-        <img
+      <img
           src={logo}
           alt="College Logo"
           style={{ maxHeight: "150px" }}
-        />
-        <br />
+        />  <h2 className="college-name">St. Xavier's College</h2>
+        
       </div>
 
       <div className="container">

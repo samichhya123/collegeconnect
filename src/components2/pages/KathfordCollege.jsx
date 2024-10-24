@@ -1,5 +1,5 @@
-import React from 'react';
-import './college.css';
+import React from "react";
+import "./college.css";
 import kathford from "../lalitpur/images/6f6b2eb8ea71eb29f591ce3fd704b326-490.jpg";
 import kathford1 from "../lalitpur/college image/kathford.jpg";
 import logo from "../lalitpur/images/logo kath.jpg";
@@ -9,99 +9,113 @@ const KathfordCollege = () => {
     <div>
       <header>
         <div className="img-area">
-          <img
-            src={kathford}
-            alt="Background Image"
-          />
-          <img
-            src={kathford1}
-            className="img-front"
-            alt="Front Image"
-          />
+          <img src={kathford} alt="Background Image" />
+          <img src={kathford1} className="img-front" alt="Front Image" />
         </div>
       </header>
-
-      <div className="section">
-        <h2 className="college-name">
-          Kathford International College Of Engineering And Management
-        </h2>
-        <br />
-        <img src={logo} alt="College Logo" />
-        <br />
-      </div>
-
-      <div className="container">
-        <h2 className="section-title">About Us</h2>
-        <p>
-          Kathford International College of Engineering and Management is a
-          top-ranked institution dedicated to inspiring teaching, providing an
-          excellent student experience, and fostering strong employability.
-          <br />
-          Founded in 2003 and located in the heart of Kathmandu, Kathford offers
-          students access to outstanding faculty and exceptional resources. It
-          is one of the few colleges affiliated with Tribhuvan University that
-          offers diverse programs in Engineering and Management. Kathford
-          provides three Bachelor-level Engineering programs: BE Civil, BE
-          Electronics, Communication & Information, and BE Computer, along with
-          two IT programs: BSc. CSIT and BCA, and two Management programs: BBA
-          and BBM.
-          <br />
-          With a vibrant community of over 1,000 students, Kathford has been
-          producing highly competitive graduates and scholars since its
-          inception. The college was founded with a vision to become a leading
-          educational hub that offers transformative learning experiences,
-          stimulates curiosity, and helps students turn their aspirations into
-          lasting success, social impact, and continuous learning. It combines
-          student-centered pedagogy with hands-on laboratory, field, project,
-          and research work.
-          <br />
-          Kathford's strong alumni network, comprising market leaders,
-          entrepreneurs, and scholars, is one of the reasons why it is the best
-          place to pursue a bachelor’s degree. The college encourages students
-          to reach their full potential by providing abundant resources and
-          engaging them in various events and activities, allowing them to
-          experience genuine personal and professional growth. Kathford stands
-          out as a premier college for engineering, management, and IT.
-        </p>
-      </div>
-
-      <div className="offered-container">
-        <h2 className="section-title">Offered Programs and Admission Criteria</h2>
-        <div className="offered">
-          <span>1. BE Computer/Civil/Electronics, Communication & Information:</span>
+      <div className="college-container">
+        <div className="section">
+          <img src={logo} alt="College Logo" />
+          <h2 className="college-name">
+            Kathford International College Of Engineering And Management
+          </h2>
+        </div>
+        <div className="container">
+          <h2 className="section-title">About Us</h2>
+          <p>
+            Kathford International College of Engineering and Management is a
+            top-ranked institution dedicated to inspiring teaching, providing an
+            excellent student experience, and fostering strong employability.
+            Founded in 2003 and located in the heart of Kathmandu, Kathford
+            offers students access to outstanding faculty and exceptional
+            resources. It is one of the few colleges affiliated with Tribhuvan
+            University that offers diverse programs in Engineering and
+            Management. Kathford provides three Bachelor-level Engineering
+            programs: BE Civil, BE Electronics, Communication & Information, and
+            BE Computer, along with two IT programs: BSc. CSIT and BCA, and two
+            Management programs: BBA and BBM.
+            <br />
+            <br />
+            With a vibrant community of over 1,000 students, Kathford has been
+            producing highly competitive graduates and scholars since its
+            inception. The college was founded with a vision to become a leading
+            educational hub that offers transformative learning experiences,
+            stimulates curiosity, and helps students turn their aspirations into
+            lasting success, social impact, and continuous learning. It combines
+            student-centered pedagogy with hands-on laboratory, field, project,
+            and research work.
+            <br />
+            <br />
+            Kathford's strong alumni network, comprising market leaders,
+            entrepreneurs, and scholars, is one of the reasons why it is the
+            best place to pursue a bachelor’s degree. The college encourages
+            students to reach their full potential by providing abundant
+            resources and engaging them in various events and activities,
+            allowing them to experience genuine personal and professional
+            growth. Kathford stands out as a premier college for engineering,
+            management, and IT.
+          </p>
+        </div>
+        <div className="side-container">
           <ul>
-            <li>Minimum ‘C’ in all subjects in PCL/+2 with Physics or Biology with Extra Maths</li>
-            <li>PASSED in IOE Entrance Exam</li>
-          </ul>
-
-          <span>2. B.Sc CSIT</span>
-          <ul>
-            <li>Minimum ‘C’ grade in all subjects in PCL/+2 in Science (Physics or Biology)</li>
-            <li>PASSED in TU IOST Entrance Exam</li>
-          </ul>
-
-          <span>3. BCA</span>
-          <ul>
-            <li>Minimum ‘C’ grade in all subjects in PCL/+2</li>
-            <li>PASSED in BCA Entrance Test</li>
-          </ul>
-
-          <span>4. BBA and BBM</span>
-          <ul>
-            <li>Minimum ‘C’ grade in all subjects in PCL/+2</li>
-            <li>PASSED in CMAT Test</li>
+            <li>
+              <button type="button">Admission</button>
+            </li>
+            <li>
+              <button type="button">Past Entrance Questions</button>
+            </li>
+            <li>
+              <button type="button">Scholarship Enquiry</button>
+            </li>
+            <li>
+              <button type="button">Entrance Exam</button>
+            </li>
+            <li>
+              <button type="button">Result publication</button>
+            </li>
           </ul>
         </div>
-      </div>
+        <div className="offered-container">
+          <h2 className="section-title">
+            Offered Programs and Admission Criteria
+          </h2>
+          <div className="offered">
+            <span>
+              1. BE Computer/Civil/Electronics, Communication & Information:
+            </span>
+            <ul>
+              <li>
+                Minimum ‘C’ in all subjects in PCL/+2 with Physics or Biology
+                with Extra Maths
+              </li>
+              <li>PASSED in IOE Entrance Exam</li>
+            </ul>
+            <span>2. B.Sc CSIT</span>
+            <ul>
+              <li>
+                Minimum ‘C’ grade in all subjects in PCL/+2 in Science (Physics
+                or Biology)
+              </li>
+              <li>PASSED in TU IOST Entrance Exam</li>
+            </ul>
+            <span>3. BCA</span>
+            <ul>
+              <li>Minimum ‘C’ grade in all subjects in PCL/+2</li>
+              <li>PASSED in BCA Entrance Test</li>
+            </ul>
 
+            <span>4. BBA and BBM</span>
+            <ul>
+              <li>Minimum ‘C’ grade in all subjects in PCL/+2</li>
+              <li>PASSED in CMAT Test</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <div className="principal">
         <div className="card">
           <h3 className="card-title">Message From Principal</h3>
-          <img
-            src={kathford2}
-            alt="Kathford"
-            className="card-image"
-          />
+          <img src={kathford2} alt="Kathford" className="card-image" />
           <div className="card-content">
             <p>
               Kathford is not only a place to learn but also to grow and thrive.
