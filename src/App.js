@@ -60,6 +60,7 @@ import {
   Vedas,
   Virinchi,
 } from "./collegeLinks";
+import AdmitCard from "./components3/AdmitCard";
 function App() {
   return (
     <div className="app">
@@ -72,6 +73,7 @@ function App() {
           <Route path="/About Us" element={<AboutUs />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/EntranceExamForm" element={<EntranceExamForm />} />
+          <Route path="/admitcard" element={<AdmitCard/>} />
           <Route path="/AdminSignIn" element={<AdminSignIn />} />
           <Route path="/-/ISMTCollege" element={<ISMTCollege />} />
           <Route path="/-/Kathford" element={<KathfordCollege />} />

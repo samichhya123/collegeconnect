@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseConfig"; // Import the initialized auth from your config file
 import {
@@ -6,13 +6,14 @@ import {
   sendEmailVerification,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithCredential,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faUser, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import "./register.css";
 
 const Register = () => {
-  // State for form data and errors
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -22,11 +23,12 @@ const Register = () => {
 
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
-  
-  // Initialize navigation
   const navigate = useNavigate();
 
-  // Validation function
+  useEffect(() => {
+    loadFacebookSDK();
+  }, []);
+
   const validate = () => {
     let tempErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -53,13 +55,11 @@ const Register = () => {
     return Object.keys(tempErrors).length === 0;
   };
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServerError("");
@@ -76,28 +76,65 @@ const Register = () => {
         console.log("Verification email sent.");
 
         navigate("/login");
-
       } catch (error) {
         setServerError(error.message);
         console.error("Error creating user:", error);
       }
     }
   };
-  const handleGoogleSignIn = () => {
+
+  const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log("Google Sign-In Successful", result.user);
-      })
-      .catch((error) => {
-        console.error("Google Sign-In Error", error);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log("Google Sign-In Successful", result.user);
+      navigate("/EntranceExamForm");
+    } catch (error) {
+      console.error("Google Sign-In Error", error);
+    }
+  };
+
+  const handleFacebookSignIn = () => {
+    window.FB.login((response) => {
+      if (response.authResponse) {
+        const accessToken = response.authResponse.accessToken;
+        const credential = FacebookAuthProvider.credential(accessToken);
+
+        signInWithCredential(auth, credential)
+          .then((result) => {
+            console.log("Facebook Sign-In Successful", result.user);
+            navigate("/EntranceExamForm");
+          })
+          .catch((error) => {
+            console.error("Facebook Sign-In Error", error);
+          });
+      } else {
+        console.error("User cancelled login or did not fully authorize.");
+      }
+    }, { scope: 'email' });
+  };
+
+  const loadFacebookSDK = () => {
+    if (window.FB) return;
+    window.fbAsyncInit = function() {
+      window.FB.init({
+        appId: '843057597605768',
+        xfbml: true,
+        version: 'v20.0',
       });
+      window.FB.AppEvents.logPageView();
+    };
+
+    const script = document.createElement('script');
+    script.src = 'https://connect.facebook.net/en_US/sdk.js';
+    script.async = true;
+    document.body.appendChild(script);
   };
 
   return (
     <div className="wrapper-register">
       <div className="form-wrapper-container">
-        <form action="" className="register-form" onSubmit={handleSubmit}>
+        <form className="register-form" onSubmit={handleSubmit}>
           <h2>Register</h2>
           <div className="input-group">
             <FontAwesomeIcon icon={faUser} className="input-icon" />
@@ -111,9 +148,7 @@ const Register = () => {
               aria-label="Enter your username"
             />
             <label htmlFor="username">Username</label>
-            {errors.username && (
-              <p className="error-message">{errors.username}</p>
-            )}
+            {errors.username && <p className="error-message">{errors.username}</p>}
           </div>
           <div className="input-group">
             <FontAwesomeIcon icon={faEnvelope} className="input-icon" />
@@ -141,9 +176,7 @@ const Register = () => {
               aria-label="Enter your password"
             />
             <label htmlFor="password">Password</label>
-            {errors.password && (
-              <p className="error-message">{errors.password}</p>
-            )}
+            {errors.password && <p className="error-message">{errors.password}</p>}
           </div>
           <div className="input-group">
             <FontAwesomeIcon icon={faLock} className="input-icon" />
@@ -157,9 +190,7 @@ const Register = () => {
               aria-label="Confirm your password"
             />
             <label htmlFor="confirmPassword">Confirm Password</label>
-            {errors.confirmPassword && (
-              <p className="error-message">{errors.confirmPassword}</p>
-            )}
+            {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
           </div>
           <button type="submit" className="register-btn1">
             Register
@@ -169,9 +200,7 @@ const Register = () => {
           <div className="signIn-link">
             <p>
               Already have an account?{" "}
-              <Link to="/Login" className="signInBtn-link">
-                Login
-              </Link>
+              <Link to="/Login" className="signInBtn-link">Login</Link>
             </p>
           </div>
           <p>Or</p>
@@ -181,21 +210,15 @@ const Register = () => {
               onClick={handleGoogleSignIn}
               className="google-signin-btn"
             >
-              <img
-                src="https://img.icons8.com/color/google-logo"
-                alt="Google"
-              />{" "}
+              <img src="https://img.icons8.com/color/google-logo" alt="Google" />{" "}
               Sign in with Google
             </button>
             <button
               type="button"
-              onClick={handleGoogleSignIn}
+              onClick={handleFacebookSignIn}
               className="google-signin-btn"
             >
-              <img
-                src="https://img.icons8.com/color/facebook"
-                alt="Facebook"
-              />{" "}
+              <img src="https://img.icons8.com/color/facebook" alt="Facebook" />{" "}
               Sign in with Facebook
             </button>
           </div>
