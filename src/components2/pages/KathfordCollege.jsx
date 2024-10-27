@@ -56,25 +56,7 @@ const KathfordCollege = () => {
             management, and IT.
           </p>
         </div>
-        <div className="side-container">
-          <ul>
-            <li>
-              <button type="button">Admission</button>
-            </li>
-            <li>
-              <button type="button">Past Entrance Questions</button>
-            </li>
-            <li>
-              <button type="button">Scholarship Enquiry</button>
-            </li>
-            <li>
-              <button type="button">Entrance Exam</button>
-            </li>
-            <li>
-              <button type="button">Result publication</button>
-            </li>
-          </ul>
-        </div>
+      
         <div className="offered-container">
           <h2 className="section-title">
             Offered Programs and Admission Criteria

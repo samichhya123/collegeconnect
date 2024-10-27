@@ -7,6 +7,7 @@ import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
 import Blog from "./components1/blogData";
 import Login from "./components3/Login";
+import Dashboard from './template/Dashboard';
 import Register from "./components3/register";
 import Colleges from "./components2/Colleges";
 import CollegeContainer from "./components2/react/bhaktapurwith3conatiner";
@@ -135,6 +136,7 @@ function App() {
             }
           />
           <Route path="/register" element={<Register />} />
+          <Route path="/user/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
       <useEffect />
