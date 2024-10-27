@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PrivateRoute from "./PrivateRoute";
+import PrivateRoute from "./services/PrivateRoute";
 import CollegeConnect from "./components1/collegeConnect";
 import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
@@ -73,7 +73,7 @@ function App() {
           <Route path="/About Us" element={<AboutUs />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/EntranceExamForm" element={<EntranceExamForm />} />
-          <Route path="/admitcard" element={<AdmitCard/>} />
+          <Route path="/admitcard" element={<AdmitCard />} />
           <Route path="/AdminSignIn" element={<AdminSignIn />} />
           <Route path="/-/ISMTCollege" element={<ISMTCollege />} />
           <Route path="/-/Kathford" element={<KathfordCollege />} />

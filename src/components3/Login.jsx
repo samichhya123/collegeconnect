@@ -1,115 +1,69 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+import React, { useState } from 'react';
+import axios from 'axios';
 import "./Login.css";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
-import { auth } from "../firebaseConfig";
-import { useNavigate } from "react-router-dom";
-
-const db = getFirestore();
 
 const Login = () => {
-  const [emailOrUsername, setEmailOrUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const isEmail = (input) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(input);
-  };
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setError(''); // Reset error state
 
-    setLoading(true);
-    let email = emailOrUsername;
+        try {
+            const response = await axios.post('http://localhost:5000/login', {
+                email,
+                password,
+            });
 
-    try {
-      if (!isEmail(emailOrUsername)) {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("username", "==", emailOrUsername));
-        const querySnapshot = await getDocs(q);
+            // Assuming response.data contains user data and token
+            console.log(response.data);
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
 
-        if (querySnapshot.empty) {
-          throw new Error("No user found with this username.");
+            alert('Login successful');
+            // Optionally, redirect or update the UI here
+        } catch (err) {
+            // Handle error response
+            const errorMsg = err.response ? err.response.data.msg : 'Login failed. Please try again.';
+            setError(errorMsg);
+            console.error(errorMsg);
         }
-        email = querySnapshot.docs[0].data().email;
-      }
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      console.log("User signed in:", user);
+    };
 
-      navigate("/EntranceExamForm");
-    } catch (error) {
-      console.error("Error signing in:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="wrapper">
-      <div className="form-wrapper-container">
-        <form className="login-form" onSubmit={handleLogin}>
-          <h2>Login</h2>
-          <div className="input-group">
-            <FontAwesomeIcon icon={faUser} className="input-icon" />
-            <input
-              type="text"
-              name="username"
-              required
-              value={emailOrUsername}
-              onChange={(e) => setEmailOrUsername(e.target.value)}
-              placeholder=""
-              aria-label="Enter your username or email"
-            />
-            <label htmlFor="username">Username/Email</label>
-          </div>
-          <div className="input-group">
-            <FontAwesomeIcon icon={faLock} className="input-icon" />
-            <input
-              type="password"
-              name="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder=""
-              aria-label="Enter your password"
-            />
-            <label htmlFor="password">Password</label>
-          </div>
-          <div className="remember">
-            <label htmlFor="remember">
-              <input type="checkbox" id="remember" />
-              Remember Me!
-            </label>
-          </div>
-          <button type="submit" className="login-btn1" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
-          <div className="signUp-link">
-            <p>
-              Don't have an account?{" "}
-              <a href="/register" className="signUpBtn-link">
-                Create one
-              </a>
-            </p>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+    return (
+        <div className="wrapper">
+            <div className="form-wrapper-container">
+                <h2>Login</h2>
+                <form onSubmit={handleLogin} className="login-form">
+                    <div className="input-group">
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="input-group">
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="login-btn1">Login</button>
+                </form>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                <div className="signUp-link">
+                    <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default Login;

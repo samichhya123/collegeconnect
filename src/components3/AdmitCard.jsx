@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import html2canvas from 'html2canvas';
-import emailjs from 'emailjs-com';
+
 import './admit.css';
 
 const EntranceExamForm = () => {
@@ -33,11 +32,7 @@ const EntranceExamForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleDownloadAndSend();
-    setSubmitted(true); // Set submitted to true
-  };
+ 
 
   const resetForm = () => {
     setFormData({
@@ -63,34 +58,17 @@ const EntranceExamForm = () => {
       image: base64Image,
     };
 
-    emailjs.send('service_fhtobh5', 'template_ea2ljo1', templateParams, 'WVlHSu_PkBXjkN3w_')
-      .then((response) => {
-        console.log('Email sent successfully!', response);
-        alert('Email sent successfully!');
-      })
-      .catch((error) => {
-        console.error('Error sending email:', error);
-      });
+   
   };
 
-  const handleDownloadAndSend = () => {
-    setTimeout(() => {
-      const admitCardElement = document.getElementById('admitCard');
-      if (admitCardElement) {
-        html2canvas(admitCardElement).then((canvas) => {
-          const base64Image = canvas.toDataURL('image/png');
-          sendEmail(base64Image);
-        });
-      }
-    }, 3000);
-  };
+  
 
   return (
     <div className="Admission-section">
       {!submitted ? (
         <div className="left-right">
           <div className="left">
-            <form className="form-container" onSubmit={handleSubmit}>
+            <form className="form-container" >
               <h2>Entrance Exam Form</h2>
 
               {/* Upload Your Picture Section */}
