@@ -1,0 +1,148 @@
+.background-container {
+  background: linear-gradient(to right, #f7fafcda, #bdcedc);
+  margin-bottom: 20px;
+  font-family: "Arial", sans-serif;
+}
+.main-container {
+  padding-top: 10px;
+}
+.frame {
+  background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjQ0NC1uaW5nLTA1ZS1ncmFkdWF0aW9uYmdfMi5qcGc.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 20px auto;
+  max-width: 80%;
+  box-shadow: 0 10px 20px rgba(126, 125, 125, 0.2);
+  border-radius: 15px;
+  padding: 50px 30px;
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  margin-bottom: 40px;
+}
+
+.frame h1 {
+  font-size: 42px;
+  color: #2c3e50;
+  font-weight: bold;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+}
+
+.frame p {
+  font-size: 20px;
+  color: #34495e;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.description hr {
+  margin-bottom: 50px;
+}
+
+.description h1 {
+  color: #2c3e50;
+  font-family: "Gill Sans", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 34px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.divider {
+  margin: 30px 0;
+  border: 0;
+  border-top: 2px solid #ccc;
+}
+
+.college-description {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0;
+  gap: 20px;
+}
+
+.content-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 30%;
+  margin-left: 10px;
+  margin-right: 10px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  background-color: rgb(232, 235, 241);
+}
+
+.overlay h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  text-align: center;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+.college-card-content {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.college-card-content p {
+  font-size: 1.15em;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+  .college-description {
+    flex-direction: column;
+    padding: 10px;
+    margin: 0;
+  }
+
+  .content-card {
+    width: 95%;
+    padding: 30px;
+  }
+
+  .frame {
+    padding: 40px 20px;
+  }
+
+  .frame h1 {
+    font-size: 36px;
+  }
+
+  .frame p {
+    font-size: 18px;
+  }
+
+  .description h1 {
+    font-size: 28px;
+  }
+  .view-more {
+    padding: 20px;
+    justify-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .frame h1 {
+    font-size: 30px;
+  }
+
+  .frame p {
+    font-size: 16px;
+  }
+
+  .description h1 {
+    font-size: 24px;
+  }
+}

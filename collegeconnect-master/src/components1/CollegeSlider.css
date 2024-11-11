@@ -1,0 +1,97 @@
+.college-slider {
+  display: flex;
+  overflow: hidden;
+  width: 85%;
+  scroll-behavior: smooth;
+  height: 70%;
+}
+.slider-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background: rgba(207, 208, 212, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  justify-items: space-between;
+  margin:15px;
+}
+
+.college-card {
+  width: 100%;
+  min-height: 80%;
+  margin: 0 15px;
+  text-align: center;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 18px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f2efef;
+  transition: transform 0.01s, box-shadow 0.01s;
+  justify-content: center;
+}
+
+.college-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to right, #c4cfd5da, #bdcedc);
+  cursor: pointer;
+  color: #6c6e77;
+}
+
+.college-card img {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  height: 160px;
+}
+
+.view-more {
+  position: relative;
+  bottom: 5px;
+  padding:20px;
+  left:20px;
+  transform: translateX(-20%);
+}
+
+.view-more button {
+  padding: 8px 10px;
+  color: beige;
+  background: linear-gradient(to right, #727c85, #696f75); 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.view-more button:hover {
+  background-color: #4d7095;
+  color: rgb(228, 212, 212);
+}
+
+@media (max-width: 768px) {
+  .college-slider {
+    width:80%;
+  }
+
+  .college-card {
+    min-width: 300px;
+    padding: 15px;
+    justify-content: center;
+  }
+  .view-more{
+    padding: 20px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .college-card {
+    min-width: 150px;
+    padding: 10px;
+  }
+}
