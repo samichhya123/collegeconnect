@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const AdminSignIn = () => {
   return (
@@ -7,32 +7,39 @@ const AdminSignIn = () => {
         <div className="w-full max-w-4xl bg-[#a7e8dc] flex flex-col md:flex-row items-center mx-auto rounded-lg overflow-hidden">
           {/* Left content section */}
           <div className="flex justify-center items-center w-full md:w-1/2 h-full p-4">
-            <img 
-              src="https://i.pinimg.com/564x/d1/54/66/d154660a6ae3104de2b0a314667a5ab6.jpg" 
-              className="w-auto h-auto max-w-full max-h-full rounded-lg" 
-              alt="login" 
+            <img
+              src="https://i.pinimg.com/564x/d1/54/66/d154660a6ae3104de2b0a314667a5ab6.jpg"
+              className="w-auto h-auto max-w-full max-h-full rounded-lg"
+              alt="login"
             />
           </div>
           {/* Right content section */}
           <div className="w-full md:w-1/2 p-8 bg-[#a7e8dc] rounded-lg">
-            <h2 className="text-3xl font-bold text-[#2C3E50] text-center">Admin LogIn</h2>
-            <form className="space-y-6 mt-8">
+            <h2 className="text-3xl font-bold text-[#2C3E50] text-center">
+              Admin Login Portal
+            </h2>
+            <form className="space-y-6 mt-8 flex flex-col">
               <div>
-                <label className="block text-[#2C3E50] font-medium mb-2">Username*</label>
+                <label className="block text-[#2C3E50] font-medium mb-2">
+                  Username*
+                </label>
                 <input
                   type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"
+                  className="w-[400px] p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"
                   placeholder="Enter your username"
                 />
               </div>
               <div>
-                <label className="block text-[#2C3E50] font-medium mb-2">Password*</label>
+                <label className="block text-[#2C3E50] font-medium mb-2">
+                  Password*
+                </label>
                 <input
                   type="password"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"
+                  className="w-[400px] p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"
                   placeholder="Enter your password"
                 />
               </div>
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <input
@@ -45,7 +52,10 @@ const AdminSignIn = () => {
                   </label>
                 </div>
                 <div>
-                  <a href="#" className="text-[#E67E22] hover:underline text-sm">
+                  <a
+                    href="#"
+                    className="text-[#E67E22] hover:underline text-sm"
+                  >
                     Forgot Password?
                   </a>
                 </div>
@@ -63,7 +73,7 @@ const AdminSignIn = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default AdminSignIn
+export default AdminSignIn;

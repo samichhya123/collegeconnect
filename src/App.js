@@ -136,7 +136,7 @@ function App() {
             }
           />
           <Route path="/register" element={<Register />} />
-          <Route path="/user/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
       <useEffect />

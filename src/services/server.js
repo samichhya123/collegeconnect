@@ -1,46 +1,52 @@
 const express = require("express");
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+require("dotenv").config(); // For environment variables
 
 const app = express();
-const port = 5000; // or any port you are using
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// MySQL connection
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root", // Your MySQL username
-  password: "", // Your MySQL password
-  database: "collegeconnect", // The name of your MySQL database
+// MySQL connection setup
+const db = mysql.createPool({
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "collegeconnect",
 });
 
-// Connect to MySQL
-db.connect((err) => {
-  if (err) {
+// Test the DB connection
+db.getConnection()
+  .then((connection) => {
+    console.log("Connected to the MySQL database.");
+    connection.release();
+  })
+  .catch((err) => {
     console.error("Error connecting to MySQL:", err);
-    return;
-  }
-  console.log("Connected to the MySQL database.");
-});
+  });
 
 // Registration route
 app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
 
+  // Validate input
   if (!username || !email || !password) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
 
-  const checkUserSql = "SELECT * FROM users WHERE email = ?";
-  db.query(checkUserSql, [email], (err, results) => {
-    if (err) throw err;
+  try {
+    // Check if user exists
+    const [existingUser] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
 
-    if (results.length > 0) {
+    if (existingUser.length > 0) {
       return res.status(400).json({ msg: "User already exists" });
     }
 
@@ -49,24 +55,18 @@ app.post("/register", async (req, res) => {
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     // Insert the new user into the database
-    const sql =
-      'INSERT INTO users (username, email, password, role, created_at) VALUES (?, ?, ?, "user", NOW())';
-    db.query(sql, [username, email, hashedPassword], (err, result) => {
-      if (err) throw err;
+    await db.query(
+      "INSERT INTO users (username, email, password, role, created_at) VALUES (?, ?, ?, 'user', NOW())",
+      [username, email, hashedPassword]
+    );
 
-      res.json({ msg: "User registered successfully" });
-    });
-  });
+    res.json({ msg: "User registered successfully" });
+  } catch (err) {
+    console.error("Registration error:", err);
+    res.status(500).json({ msg: "Server error, please try again later" });
+  }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
-// Existing code above...
-app.get("/", (req, res) => {
-  res.send("Welcome to the College Connect API");
-});
 // Login route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -75,16 +75,16 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
 
-  // Check if the user exists
-  const checkUserSql = "SELECT * FROM users WHERE email = ?";
-  db.query(checkUserSql, [email], (err, results) => {
-    if (err) throw err;
+  try {
+    // Check if user exists
+    const [results] = await db.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
 
     if (results.length === 0) {
       return res.status(400).json({ msg: "User not found" });
     }
 
-    // Compare the password with the hashed password in the database
     const user = results[0];
     const isMatch = bcrypt.compareSync(password, user.password);
 
@@ -92,7 +92,7 @@ app.post("/login", async (req, res) => {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
-    // If the login is successful, return user details (excluding the password)
+    // If login is successful, return user details (excluding password)
     res.json({
       msg: "Login successful",
       user: {
@@ -102,7 +102,15 @@ app.post("/login", async (req, res) => {
         role: user.role,
       },
     });
-  });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ msg: "Server error, please try again later" });
+  }
+});
+
+// Welcome route
+app.get("/", (req, res) => {
+  res.send("Welcome to the College Connect API");
 });
 
 // Start the server
@@ -110,6 +118,7 @@ const server = app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
 
+// Error handling for address in use
 server.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
     console.log(`Port ${port} is already in use. Trying another port...`);

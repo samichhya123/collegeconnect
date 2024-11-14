@@ -7,6 +7,7 @@ body {
 }
 
 .sidebar {
+  position:fixed;
   width: 280px;
   height: 100vh;
   background-color: #eee;
@@ -57,13 +58,13 @@ body {
 }
 
 .sidebar-item:hover {
-  background-color: #c4998b;
+  background-color: #d6b1a4;
   transform: translateX(8px);
   color: #0d0d11;
 }
 
 .sidebar-item.active {
-  background-color: #ffd700;
+  background-color: #d6b1a4;
   color: #1c1b2b;
   font-weight: 500;
 }
@@ -96,4 +97,19 @@ body {
 }
 .text {
   font-size: 16px;
+}
+
+.dashboard-content {
+  background-color: #f9f9f9; /* Optional: Add some background styling */
+  padding: 20px;             /* Optional: Add padding */
+ margin-left: 18%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+ /* margin: 0; */
+  display: flex;
+  justify-content: center;
+}
+.dashboard-container{
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
 }
