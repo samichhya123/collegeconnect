@@ -4,9 +4,36 @@ import kathford from "../lalitpur/images/6f6b2eb8ea71eb29f591ce3fd704b326-490.jp
 import kathford1 from "../lalitpur/college image/kathford.jpg";
 import logo from "../lalitpur/images/logo kath.jpg";
 import kathford2 from "../lalitpur/principal images/kathford.png";
+import SignInLoginPopup from "../../template/signInPopup"; // Make sure the path is correct
+import Login from "../../components3/Login"; // Import the Login component
+import SignUp from "../../components3/register"; // Import the SignUp component
+import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 const KathfordCollege = () => {
   return (
     <div>
+      <div className="navbar-college">
+        <a href="/Colleges" className="back-link">
+          <MdKeyboardDoubleArrowLeft />
+          <span>Back</span>
+        </a>
+        {/* Add Popup buttons */}
+        <div className="popup-buttons">
+          <SignInLoginPopup triggerText="Login">
+            <Login /> {/* Render the login form in the popup */}
+          </SignInLoginPopup>
+          <SignInLoginPopup triggerText="Register">
+            <SignUp /> {/* Render the sign-up form in the popup */}
+          </SignInLoginPopup>
+        </div>
+      </div>
+
+      <div className="section">
+        <img src={logo} alt="College Logo" />
+        <h2 className="college-name">
+          Kathford International College Of Engineering And Management
+        </h2>
+      </div>
+
       <header>
         <div className="img-area">
           <img src={kathford} alt="Background Image" />
@@ -14,12 +41,6 @@ const KathfordCollege = () => {
         </div>
       </header>
       <div className="college-container">
-        <div className="section">
-          <img src={logo} alt="College Logo" />
-          <h2 className="college-name">
-            Kathford International College Of Engineering And Management
-          </h2>
-        </div>
         <div className="container">
           <h2 className="section-title">About Us</h2>
           <p>
@@ -56,25 +77,7 @@ const KathfordCollege = () => {
             management, and IT.
           </p>
         </div>
-        <div className="side-container">
-          <ul>
-            <li>
-              <button type="button">Admission</button>
-            </li>
-            <li>
-              <button type="button">Past Entrance Questions</button>
-            </li>
-            <li>
-              <button type="button">Scholarship Enquiry</button>
-            </li>
-            <li>
-              <button type="button">Entrance Exam</button>
-            </li>
-            <li>
-              <button type="button">Result publication</button>
-            </li>
-          </ul>
-        </div>
+
         <div className="offered-container">
           <h2 className="section-title">
             Offered Programs and Admission Criteria

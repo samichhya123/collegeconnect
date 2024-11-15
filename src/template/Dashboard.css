@@ -1,22 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background-color: #f4f6f8; 
+  font-family: "Roboto", sans-serif;
+  background-color: #f4f6f8;
 }
 
 .sidebar {
-  margin: 20px;
+  position:fixed;
   width: 280px;
-  height: 95vh;
-  background-color: #1c1b2b; 
-  color: #ffffff;
+  height: 100vh;
+  background-color: #eee;
   display: flex;
   flex-direction: column;
   padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3); 
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar-logo {
@@ -24,16 +22,16 @@ body {
   padding: 20px 0;
   font-size: 26px;
   font-weight: 700;
-  color: #ffd700;
   letter-spacing: 1px;
 }
 
 .sidebar-logo .logo-image {
-  width: 120px;
-  height: auto; 
+  width: 150px;
+  height: auto;
   border-radius: 12px;
+  margin-left: 20px;
   margin-bottom: 10px;
-  box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3); 
+  box-shadow: 0 4px 10px rgba(39, 38, 36, 0.3);
 }
 
 .sidebar-menu {
@@ -45,6 +43,7 @@ body {
 .sidebar-item {
   padding: 14px 18px;
   cursor: pointer;
+  color: #000;
   display: flex;
   align-items: center;
   transition: background-color 0.3s ease, transform 0.2s;
@@ -55,16 +54,17 @@ body {
 .sidebar-item i {
   margin-right: 12px;
   font-size: 20px;
-  color: #ffd700; 
+  color: #ff8c00;
 }
 
 .sidebar-item:hover {
-  background-color: #2d2947; 
+  background-color: #d6b1a4;
   transform: translateX(8px);
+  color: #0d0d11;
 }
 
 .sidebar-item.active {
-  background-color: #ffd700;
+  background-color: #d6b1a4;
   color: #1c1b2b;
   font-weight: 500;
 }
@@ -75,13 +75,13 @@ body {
   text-align: center;
   cursor: pointer;
   border-radius: 10px;
-  background-color: #e94560; 
+  background-color: #e98145;
   color: #ffffff;
   transition: background-color 0.3s ease, transform 0.2s;
 }
 
 .sidebar-logout:hover {
-  background-color: #d53650;
+  background-color: #fc916a;
   transform: translateY(-3px);
 }
 
@@ -94,5 +94,22 @@ body {
   display: inline-block;
   width: 24px;
   text-align: center;
-  color: #ffd700;
+}
+.text {
+  font-size: 16px;
+}
+
+.dashboard-content {
+  background-color: #f9f9f9; /* Optional: Add some background styling */
+  padding: 20px;             /* Optional: Add padding */
+ margin-left: 18%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+ /* margin: 0; */
+  display: flex;
+  justify-content: center;
+}
+.dashboard-container{
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
 }

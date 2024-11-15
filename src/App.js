@@ -7,6 +7,7 @@ import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
 import Blog from "./components1/blogData";
 import Login from "./components3/Login";
+import Dashboard from './template/Dashboard';
 import Register from "./components3/register";
 import Colleges from "./components2/Colleges";
 import CollegeContainer from "./components2/react/bhaktapurwith3conatiner";
@@ -28,7 +29,7 @@ import {
   Seabird,
   Swastik,
   ISMTCollege,
-  KathfordCollege,
+  KathfordCollege, // Ensure this import is correct
   AcademiaCollege,
   AcmeEngineeringCollege,
   Amrit,
@@ -61,11 +62,13 @@ import {
   Virinchi,
 } from "./collegeLinks";
 import AdmitCard from "./components3/AdmitCard";
+
 function App() {
   return (
     <div className="app">
       <Router>
         <Routes>
+          {/* Main Pages */}
           <Route path="/" element={<CollegeConnect />} />
           <Route path="/Colleges" element={<Colleges />} />
           <Route path="/Courses" element={<Courses />} />
@@ -75,6 +78,8 @@ function App() {
           <Route path="/EntranceExamForm" element={<EntranceExamForm />} />
           <Route path="/admitcard" element={<AdmitCard />} />
           <Route path="/AdminSignIn" element={<AdminSignIn />} />
+
+          {/* College Routes */}
           <Route path="/-/ISMTCollege" element={<ISMTCollege />} />
           <Route path="/-/Kathford" element={<KathfordCollege />} />
           <Route path="/-/Academia" element={<AcademiaCollege />} />
@@ -110,10 +115,7 @@ function App() {
           <Route path="/-/prime" element={<PrimeCollege />} />
           <Route path="/-/islington" element={<Islington />} />
           <Route path="/-/kist" element={<KistCollege />} />
-          <Route
-            path="/-/BhaktapurMulitpleCampus"
-            element={<BhaktapurMultipleCampus />}
-          />
+          <Route path="/-/BhaktapurMulitpleCampus" element={<BhaktapurMultipleCampus />} />
           <Route path="/-/chanakya" element={<Chankaya />} />
           <Route path="/-/kct" element={<KathmanduCollegeOfTechnology />} />
           <Route path="/-/nec" element={<NepalEngineeringCollege />} />
@@ -121,24 +123,20 @@ function App() {
           <Route path="/-/khwopa" element={<Khowpa />} />
           <Route path="/-/swastik" element={<Swastik />} />
           <Route path="/-/seabird" element={<Seabird />} />
+
+          {/* Other Routes */}
           <Route path="/CollegeContainer" element={<CollegeContainer />} />
           <Route path="/lalitpur" element={<Lalitpur />} />
           <Route path="/bhaktapur" element={<Bhaktapur />} />
           <Route path="/kathmandu" element={<Kathmandu />} />
 
-          <Route
-            path="/home"
-            element={
-              <PrivateRoute>
-                <Colleges />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/home" element={<PrivateRoute><Colleges /></PrivateRoute>} />
           <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
-      <useEffect />
     </div>
   );
 }
+
 export default App;

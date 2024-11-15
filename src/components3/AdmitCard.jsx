@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 import './admit.css';
 
 const EntranceExamForm = () => {
@@ -201,9 +202,7 @@ const EntranceExamForm = () => {
                   <option value="9:00 - 10:00 AM">9:00 - 10:00 AM</option>
                   <option value="10:00 - 11:00 AM">10:00 - 11:00 AM</option>
                   <option value="11:00 - 12:00 PM">11:00 - 12:00 PM</option>
-                  <option value="12:00 - 1:00 PM">12:00 - 1:00 PM</option>
-                  <option value="1:00 - 2:00 PM<">1:00 - 2:00 PM</option>
-                  <option value="2:00 - 3:00 PM">2:00 - 3:00 PM</option>
+    
                 </select>
               </div>
 
@@ -223,9 +222,7 @@ const EntranceExamForm = () => {
             </form>
           </div>
 
-          <div className="right">
-            <img src="image/college.png" alt="College Connect" />
-          </div>
+          
         </div>
       ) : (
         <div className="admit-card" id='admitCard'>

@@ -39,6 +39,7 @@ export default function Search() {
     { colleges: "GoldenGate International College", path: "/-/goldengate" },
     { colleges: "Deerwalk Institute of Technology", path: "/-/deerwalk" },
     { colleges: "Herald College", path: "/-/herald" },
+    { colleges: "Samriddhi College", path: "/-/samriddhi" },
   ];
 
   const navigate = useNavigate();
