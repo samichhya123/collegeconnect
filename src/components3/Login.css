@@ -7,6 +7,15 @@
   padding: 20px;
 }
 
+.form-wrapper-container h2 {
+  font-size: 32px; 
+  font-weight: bold; 
+  font-family: 'Poppins', sans-serif; 
+  color: #8e44ad; 
+
+}
+
+
 
 .form-wrapper-container {
   background-color: #ffffff;
@@ -124,34 +133,34 @@
   text-decoration: underline;
 }
 
-/* Admin Login Button */
+
 .admin-login-btn {
-  width: 100%; /* Full width */
-  margin-top: 15px; /* Add spacing */
-  padding: 12px; /* Reduced padding for a smaller button */
-  background: linear-gradient(90deg, #8e44ad, #3498db); /* Gradient background */
-  color: white; /* White text */
-  font-size: 18px; /* Slightly smaller font size */
-  font-weight: bold; /* Bold text for prominence */
-  font-family: 'Poppins', sans-serif; /* Stylish font */
-  border: none; /* Remove border */
-  border-radius: 8px; /* Slightly less rounded corners */
-  cursor: pointer; /* Pointer cursor */
-  transition: all 0.3s ease; /* Smooth hover and focus transitions */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Softer shadow for balance */
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px; 
+  background: linear-gradient(90deg, #8e44ad, #3498db); 
+  color: white; 
+  font-size: 18px; 
+  font-weight: bold; 
+  font-family: 'Poppins', sans-serif; 
+  border: none; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  transition: all 0.3s ease; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Hover Effect for Admin Button */
+
 .admin-login-btn:hover {
-  background: linear-gradient(90deg, #3498db, #8e44ad); /* Reverse gradient */
-  transform: scale(1.03); /* Slight zoom on hover */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  background: linear-gradient(90deg, #3498db, #8e44ad);
+  transform: scale(1.03);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); 
 }
 
-/* Focus Effect for Admin Button */
+
 .admin-login-btn:focus {
-  outline: none; /* Remove default focus outline */
-  box-shadow: 0 0 8px rgba(142, 68, 173, 0.8); /* Glowing border effect */
+  outline: none;
+  box-shadow: 0 0 8px rgba(142, 68, 173, 0.8); 
 }
 
 
