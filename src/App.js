@@ -14,7 +14,7 @@ import CollegeContainer from "./components2/react/bhaktapurwith3conatiner";
 import Lalitpur from "./components2/pages/Lalitpur";
 import Kathmandu from "./components2/pages/Kathmandu";
 import Bhaktapur from "./components2/pages/Bhaktapur";
-import EntranceExamForm from "./components3/entranceExamForm";
+
 import AdminSignIn from "./components3/adminSignIn";
 import {
   KistCollege,
@@ -63,6 +63,8 @@ import {
 } from "./collegeLinks";
 import AdmitCard from "./components3/AdmitCard";
 import PaymentPage from "./template/payment/PaymentPage";
+import EntranceResults from "./template/entranceresult/EntranceResult";
+import EntranceRegister from "./template/entranceRegister/EntranceRegister";
 
 function App() {
   return (
@@ -76,7 +78,6 @@ function App() {
           <Route path="/Blogs" element={<Blog />} />
           <Route path="/About Us" element={<AboutUs />} />
           <Route path="/Login" element={<Login />} />
-          <Route path="/EntranceExamForm" element={<EntranceExamForm />} />
           <Route path="/admitcard" element={<AdmitCard />} />
           <Route path="/AdminSignIn" element={<AdminSignIn />} />
 
@@ -145,6 +146,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/registration" element={<EntranceRegister />} />
+          <Route path="/result" element={<EntranceResults />} />
         </Routes>
       </Router>
     </div>

@@ -21,7 +21,7 @@ const SideBar = () => {
     } else if (location.pathname.includes("result")) {
       setActiveMenu("result");
     }
-  }, [location]); // Re-run this effect whenever the location changes
+  }, [location]); 
 
   return (
     <div className="sidebar">
@@ -37,24 +37,23 @@ const SideBar = () => {
           </Link>
         </li>
         <li
-          className={`sidebar-item text ${activeMenu === "payment" ? "active" : ""}`}
-        >
-          <Link to="/payment">
-            <i className="fas fa-credit-card menu-icon"></i> Payment For Entrance
-          </Link>
-        </li>
-        <li
           className={`sidebar-item text ${activeMenu === "registration" ? "active" : ""}`}
         >
           <Link to="/registration">
-            <i className="fas fa-clipboard-check menu-icon"></i> Registration
+            <i className="fas fa-clipboard-check menu-icon"></i> Entrance Registration
           </Link>
         </li>
         <li
+          className={`sidebar-item text ${activeMenu === "payment" ? "active" : ""}`}
+        >
+          <Link to="/payment">
+            <i className="fas fa-credit-card menu-icon"></i>Entrance Payment
+          </Link>
+        </li>    <li
           className={`sidebar-item text ${activeMenu === "entrance" ? "active" : ""}`}
         >
           <Link to="/entrance">
-            <i className="fas fa-book-open menu-icon"></i> Entrance Exam
+            <i className="fas fa-book-open menu-icon"></i> Practice Test
           </Link>
         </li>
         <li
@@ -64,6 +63,8 @@ const SideBar = () => {
             <i className="fas fa-file-alt menu-icon"></i> Entrance Result
           </Link>
         </li>
+        
+       
       </ul>
       <div className="sidebar-logout">
         <i className="fas fa-sign-out-alt"></i>

@@ -127,3 +127,35 @@ server.on("error", (err) => {
     });
   }
 });
+// Fetch all entrance results
+app.get("/api/entrance-results", async (req, res) => {
+  try {
+    const [results] = await db.query("SELECT id, name, score, status FROM entrance_results");
+    res.json(results);
+  } catch (err) {
+    console.error("Error fetching entrance results:", err);
+    res.status(500).json({ msg: "Error fetching results. Please try again later." });
+  }
+});
+// Register a candidate for entrance exam
+app.post("/api/entrance-register", async (req, res) => {
+  const { name, score, status } = req.body;
+
+  // Validate input
+  if (!name || score === undefined || !status) {
+    return res.status(400).json({ msg: "Please provide all required fields." });
+  }
+
+  try {
+    await db.query("INSERT INTO entrance_results (name, score, status) VALUES (?, ?, ?)", [
+      name,
+      score,
+      status,
+    ]);
+
+    res.json({ msg: "Candidate registered successfully!" });
+  } catch (err) {
+    console.error("Error registering candidate:", err);
+    res.status(500).json({ msg: "Error registering candidate. Please try again later." });
+  }
+});

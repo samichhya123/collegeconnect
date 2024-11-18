@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 
-import './admit.css';
+// import './admit.css';
 
 const EntranceExamForm = () => {
   const [formData, setFormData] = useState({
