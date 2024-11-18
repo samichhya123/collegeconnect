@@ -68,7 +68,7 @@ const Login = () => {
           </p>
           <button
             className="admin-login-btn"
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate("/AdminSignIn")}
           >
             Sign in as Admin
           </button>

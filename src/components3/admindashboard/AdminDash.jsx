@@ -51,7 +51,7 @@ const AdminDashboard = () => {
    
       <div className="sidebar-logout-admin">
         <i className="fas fa-sign-out-alt"></i>
-        Logout
+        <Link to="/">Logout</Link>
       </div>
     </div>
   );

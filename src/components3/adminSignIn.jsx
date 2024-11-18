@@ -1,6 +1,7 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom"; 
 const AdminSignIn = () => {
+  const navigate = useNavigate(); 
   return (
     <>
       <div className="w-full min-h-screen bg-[#E8F8F5] flex items-center justify-center p-4">
@@ -63,7 +64,7 @@ const AdminSignIn = () => {
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-[#2C3E50] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"
+                  className="w-full bg-[#2C3E50] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"onClick={() => navigate("/admin")}
                 >
                   Login to my account
                 </button>
