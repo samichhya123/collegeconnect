@@ -133,6 +133,7 @@ function App() {
           <Route path="/home" element={<PrivateRoute><Colleges /></PrivateRoute>} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+         
         </Routes>
       </Router>
     </div>
