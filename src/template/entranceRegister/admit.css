@@ -3,13 +3,18 @@
   flex-direction: column;
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
-
+.form-container h2{
+  font-weight: 400;
+}
 .Admission-section {
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  margin-left:100px;
+  margin-left:150px;
+  height: auto;
+  min-height: auto;
 }
 
 .left-right {
@@ -18,6 +23,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  gap:30px;
 }
 
 /* .left,
@@ -34,7 +40,10 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   justify-content: center;
   position: relative;
-  margin-left: 320px;
+  margin-left: 200px;
+  width: 50%;
+  border-radius: 5px;
+  margin-bottom: 50%;;
 }
 
 .left h2 {
@@ -48,6 +57,7 @@
 .form-floating {
   position: relative;
   margin-bottom: 15px;
+  width: 100%;
 }
 
 /* Hide the default file input */
@@ -128,17 +138,65 @@
   background-color: #218838;
 }
 
-/* .right {
-  justify-content: center;
-  align-items: center;
-  background-color: #ececec;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-} */
+.right {
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-bottom: 90%;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  text-align: center;
+}
 
+.right h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
 
+.right ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.right ul li {
+  margin: 10px 0;
+  padding: 8px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for each list item */
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.right ul li:hover {
+  background-color: #eef1f5; /* Highlight background on hover */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.right ul li:before {
+  content: "✔️"; /* Check mark icon before each item */
+  margin-right: 10px;
+  color: #4CAF50; /* Green color for the check mark */
+}
+
+@media (max-width: 768px) {
+  .right {
+    margin: 20px;
+    padding: 15px;
+  }
+
+  .right h2 {
+    font-size: 20px;
+  }
+
+  .right ul li {
+    font-size: 14px;
+    margin: 8px 0;
+  }
+}
 
 @media (max-width: 1024px) {
   .left-right {

@@ -25,6 +25,7 @@
     "jwt-decode": "^4.0.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.11.3",
+    "node-nlp": "^4.27.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-firebase-hooks": "^5.1.1",

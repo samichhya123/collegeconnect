@@ -1,0 +1,230 @@
+{
+  "settings": {
+    "languages": [
+      "en"
+    ],
+    "tag": "nlp",
+    "threshold": 0.5,
+    "autoLoad": true,
+    "autoSave": true,
+    "modelFileName": "model.nlp",
+    "executeActionsBeforeAnswers": false,
+    "calculateSentiment": true
+  },
+  "nluManager": {
+    "settings": {
+      "tag": "nlu-manager"
+    },
+    "locales": [
+      "en"
+    ],
+    "languageNames": {},
+    "domainManagers": {
+      "en": {
+        "settings": {
+          "locale": "en",
+          "trainByDomain": false,
+          "tag": "domain-manager-en",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "useStemDict": true
+        },
+        "stemDict": {
+          "%course%,%location%,i,in,studi,to,want": {
+            "intent": "find.college",
+            "domain": "default"
+          },
+          "%course%,%location%,cours,for,in,look": {
+            "intent": "find.college",
+            "domain": "default"
+          }
+        },
+        "intentDict": {
+          "find.college": "default"
+        },
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "I want to study %course% in %location%",
+            "intent": "find.college"
+          },
+          {
+            "domain": "default",
+            "utterance": "Looking for %course% courses in %location%",
+            "intent": "find.college"
+          }
+        ],
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "locale": "en",
+              "tag": "nlu-en",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
+            },
+            "features": {
+              "i": 1,
+              "want": 1,
+              "to": 1,
+              "studi": 1,
+              "%course%": 1,
+              "in": 1,
+              "%location%": 1,
+              "look": 1,
+              "for": 1,
+              "cours": 1
+            },
+            "intents": {
+              "find.college": 1
+            },
+            "intentFeatures": {
+              "find.college": {
+                "i": 1,
+                "want": 1,
+                "to": 1,
+                "studi": 1,
+                "%course%": 1,
+                "in": 1,
+                "%location%": 1,
+                "look": 1,
+                "for": 1,
+                "cours": 1
+              }
+            },
+            "featuresToIntent": {
+              "i": [
+                "find.college"
+              ],
+              "want": [
+                "find.college"
+              ],
+              "to": [
+                "find.college"
+              ],
+              "studi": [
+                "find.college"
+              ],
+              "%course%": [
+                "find.college"
+              ],
+              "in": [
+                "find.college"
+              ],
+              "%location%": [
+                "find.college"
+              ],
+              "look": [
+                "find.college"
+              ],
+              "for": [
+                "find.college"
+              ],
+              "cours": [
+                "find.college"
+              ]
+            },
+            "neuralNetwork": {
+              "settings": {
+                "locale": "en",
+                "tag": "nlu-en",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true,
+                "log": true
+              },
+              "features": [
+                "i",
+                "want",
+                "to",
+                "studi",
+                "%course%",
+                "in",
+                "%location%",
+                "look",
+                "for",
+                "cours"
+              ],
+              "intents": [
+                "find.college"
+              ],
+              "perceptrons": [
+                [
+                  1.160787582397461,
+                  1.160787582397461,
+                  1.160787582397461,
+                  1.160787582397461,
+                  2.713244915008545,
+                  2.713244915008545,
+                  2.713244915008545,
+                  1.5711270570755005,
+                  1.5711270570755005,
+                  1.5711270570755005,
+                  1.3522097057663554
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "intentDomains": {},
+    "extraSentences": [
+      [
+        "en",
+        "I want to study %course% in %location%"
+      ],
+      [
+        "en",
+        "Looking for %course% courses in %location%"
+      ]
+    ]
+  },
+  "ner": {
+    "settings": {
+      "tag": "ner",
+      "entityPreffix": "%",
+      "entitySuffix": "%"
+    },
+    "rules": {}
+  },
+  "nlgManager": {
+    "settings": {
+      "tag": "nlg-manager"
+    },
+    "responses": {}
+  },
+  "actionManager": {
+    "settings": {
+      "tag": "action-manager"
+    },
+    "actions": {}
+  },
+  "slotManager": {
+    "find.college": {
+      "course": {
+        "intent": "find.college",
+        "entity": "course",
+        "mandatory": false,
+        "locales": {}
+      },
+      "location": {
+        "intent": "find.college",
+        "entity": "location",
+        "mandatory": false,
+        "locales": {}
+      }
+    }
+  }
+}

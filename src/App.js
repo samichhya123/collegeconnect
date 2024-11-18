@@ -65,7 +65,8 @@ import AdmitCard from "./components3/AdmitCard";
 import PaymentPage from "./template/payment/PaymentPage";
 import EntranceResults from "./template/entranceresult/EntranceResult";
 import EntranceRegister from "./template/entranceRegister/EntranceRegister";
-
+import BcaCourse from "./components1/coursesinfo/BcaCourse";
+import CollegeSearch from "./template/collegeSearch";
 function App() {
   return (
     <div className="app">
@@ -128,7 +129,8 @@ function App() {
           <Route path="/-/khwopa" element={<Khowpa />} />
           <Route path="/-/swastik" element={<Swastik />} />
           <Route path="/-/seabird" element={<Seabird />} />
-
+            {/*Courses */}
+            <Route path="/bca" element={<BcaCourse/>}/>
           {/* Other Routes */}
           <Route path="/CollegeContainer" element={<CollegeContainer />} />
           <Route path="/lalitpur" element={<Lalitpur />} />
@@ -148,6 +150,7 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/registration" element={<EntranceRegister />} />
           <Route path="/result" element={<EntranceResults />} />
+          <Route path="/college-search" element={<CollegeSearch />} />
         </Routes>
       </Router>
     </div>

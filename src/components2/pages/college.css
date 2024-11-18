@@ -222,8 +222,12 @@ h3 {
   display: flex;
   align-items: center; /* Center the text and icon vertically */
   text-decoration: none;
-  font-size: 16px;
-  color: #333;
+  font-size: 20px;
+  color: #050505;
+  border:#fff;
+  background-color: #979ea5;
+  padding: 5px;;
+  border-radius: 5px;
 }
 
 .back-link svg {
@@ -236,7 +240,7 @@ h3 {
 }
 
 .popup-buttons button {
-  background-color: #007bff;
+  background-color: #2ecc71;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -250,7 +254,7 @@ h3 {
 }
 .open-popup-btn {
   padding: 8px 16px;
-  background-color: #007bff;
+  background-color: #6effb1;
   color: white;
   border: none;
   border-radius: 5px;

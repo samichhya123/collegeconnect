@@ -48,14 +48,14 @@ const EntranceRegister = () => {
 
   return (
     <div>
-      <SideBar/>
+      <SideBar />
       <div className="Admission-section">
         {!submitted ? (
           <div className="left-right">
             <div className="left">
               <form className="form-container">
                 <h2>Entrance Register Form</h2>
-              
+
                 {/* Upload Your Picture Section */}
                 <div className="form-floating user-image-profile">
                   <input
@@ -209,15 +209,19 @@ const EntranceRegister = () => {
             </div>
             <div className="right">
               <h2>Documents Required</h2>
-          <ul>
-            <li>SLC Mark-Sheet</li>
-<li>SLC- Character Certificate</li>
-<li>10+2 Transcript</li>
-<li>10+2 Character Certificate </li>
-<li>Optional: 10+2 Provisional Certificate</li>
+              <ul>
+                <li>SLC Mark-Sheet</li>
+                <li>SLC- Character Certificate</li>
+                <li>10+2 Transcript</li>
+                <li>10+2 Character Certificate </li>
+                <li>
+                  <i>Optional: 10+2 Provisional Certificate</i>
+                </li>
 
-<li>10+2 Migration Certificate</li>
-          </ul>
+                <li>
+                  <i>Optional:10+2 Migration Certificate</i>
+                </li>
+              </ul>
             </div>
           </div>
         ) : (
