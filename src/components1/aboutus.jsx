@@ -59,7 +59,7 @@ const AboutUs = () => {
           </p>
         </section>
 
-        <section className="team-section">
+        {/* <section className="team-section">
           <h2>Meet the Team</h2>
           <div className="team-grid">
             <div className="team-member">
@@ -111,7 +111,7 @@ const AboutUs = () => {
               </p>
             </div>
           </div>
-        </section>
+        </section> */}
         <section className="contact-section">
           <h2>Contact Us</h2>
           <p>

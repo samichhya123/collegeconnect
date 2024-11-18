@@ -7,7 +7,7 @@ import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
 import Blog from "./components1/blogData";
 import Login from "./components3/Login";
-import Dashboard from './template/Dashboard';
+import Dashboard from "./template/Dashboard";
 import Register from "./components3/register";
 import Colleges from "./components2/Colleges";
 import CollegeContainer from "./components2/react/bhaktapurwith3conatiner";
@@ -62,6 +62,7 @@ import {
   Virinchi,
 } from "./collegeLinks";
 import AdmitCard from "./components3/AdmitCard";
+import PaymentPage from "./template/payment/PaymentPage";
 
 function App() {
   return (
@@ -115,7 +116,10 @@ function App() {
           <Route path="/-/prime" element={<PrimeCollege />} />
           <Route path="/-/islington" element={<Islington />} />
           <Route path="/-/kist" element={<KistCollege />} />
-          <Route path="/-/BhaktapurMulitpleCampus" element={<BhaktapurMultipleCampus />} />
+          <Route
+            path="/-/BhaktapurMulitpleCampus"
+            element={<BhaktapurMultipleCampus />}
+          />
           <Route path="/-/chanakya" element={<Chankaya />} />
           <Route path="/-/kct" element={<KathmanduCollegeOfTechnology />} />
           <Route path="/-/nec" element={<NepalEngineeringCollege />} />
@@ -130,9 +134,17 @@ function App() {
           <Route path="/bhaktapur" element={<Bhaktapur />} />
           <Route path="/kathmandu" element={<Kathmandu />} />
 
-          <Route path="/home" element={<PrivateRoute><Colleges /></PrivateRoute>} />
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Colleges />
+              </PrivateRoute>
+            }
+          />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/payment" element={<PaymentPage />} />
         </Routes>
       </Router>
     </div>

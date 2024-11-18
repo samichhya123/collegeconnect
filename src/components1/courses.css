@@ -70,6 +70,7 @@
   box-shadow: 0 6px 12px rgba(43, 37, 37, 0.15);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   text-align: center;
+  height: 200px;
 }
 
 .courses-card:hover {
@@ -117,8 +118,8 @@
   .courses-container {
     padding: 10px;
   }
-  .courses-slider{
-    width:10%;
+  .courses-slider {
+    width: 10%;
     height: fit-content;
   }
   .courses-card {

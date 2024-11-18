@@ -5,7 +5,6 @@ const DashboardPage = ({ title, message, userName }) => {
     <div className="page-content">
       <h2>{title}</h2>
       <p>{message}</p>
-      <p>Logged in as: {userName}</p>
     </div>
   );
 };
@@ -13,7 +12,6 @@ const DashboardPage = ({ title, message, userName }) => {
 DashboardPage.defaultProps = {
   title: "Default Dashboard Title",
   message: "Default message for the dashboard.",
-  userName: "Guest",
 };
 
 export default DashboardPage;

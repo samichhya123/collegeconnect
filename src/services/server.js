@@ -115,15 +115,15 @@ app.get("/", (req, res) => {
 
 // Start the server
 const server = app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log("Server running on http://localhost:${port}");
 });
 
 // Error handling for address in use
 server.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
-    console.log(`Port ${port} is already in use. Trying another port...`);
+    console.log("Port ${port} is already in use. Trying another port...");
     app.listen(5001, () => {
-      console.log(`Server running on http://localhost:5001`);
+      console.log("Server running on http://localhost:5001");
     });
   }
 });
