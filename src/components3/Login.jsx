@@ -66,6 +66,12 @@ const Login = () => {
           <p>
             Don't have an account? <a href="/register">Sign up here</a>
           </p>
+          <button
+            className="admin-login-btn"
+            onClick={() => navigate("/admin")}
+          >
+            Sign in as Admin
+          </button>
         </div>
       </div>
     </div>

@@ -67,6 +67,7 @@ import EntranceResults from "./template/entranceresult/EntranceResult";
 import EntranceRegister from "./template/entranceRegister/EntranceRegister";
 import BcaCourse from "./components1/coursesinfo/BcaCourse";
 import CollegeSearch from "./template/collegeSearch";
+import AdminDashboard from "./components3/admindashboard/AdminDash";
 function App() {
   return (
     <div className="app">
@@ -145,6 +146,7 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/payment" element={<PaymentPage />} />

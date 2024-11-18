@@ -6,7 +6,8 @@
   box-sizing: border-box;
 }
 .form-container h2{
-  font-weight: 400;
+  font-weight: bold;
+
 }
 .Admission-section {
   max-width: 100%;
@@ -53,53 +54,89 @@
   color: #333;
 }
 
-/* Style the file input container */
+
 .form-floating {
   position: relative;
   margin-bottom: 15px;
   width: 100%;
 }
 
-/* Hide the default file input */
 #photoUpload {
   display: none;
 }
 
-/* Custom file upload label styling */
-.custom-file-upload {
-  display: inline-block;
-  
-  height: 150px;
-  border: 2px dashed #cccccc;
-  border-radius: 10px;
-  text-align: center;
-  color: #666666;
-  cursor: pointer;
-  background-color: #f9f9f9;
-  font-size: 20px;
-  transition: background-color 0.3s ease;
-  position: relative;
-}
+
 .inside-form-container{
   display: flex;
   flex-direction: column;
   width: 100%;;
 }
-.custom-file-upload .upload-icon {
-  font-size: 50px;
-  color: #cccccc;
-  display: block;
-  margin-bottom: 10px;
-}
-/* .user-image-profile{
-  margin-left:50px;
-} */
-.custom-file-upload:hover {
-  background-color: #e6e6e6;
+
+.custom-file-upload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative; /* Ensure tooltip is positioned relative to this element */
+  background-color: #f9f9f9;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-#photoUpload:valid + .custom-file-upload .upload-icon {
-  content: "✓";
+.custom-file-upload:hover {
+  background-color: #f1f1f1;
+  border-color: #999;
+}
+
+.upload-icon {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.tooltip {
+
+  position: absolute;
+  top: 50%; 
+  left: 30%; 
+  transform: translateY(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%; /* Center arrow vertically */
+  left: -6px; /* Position arrow at the tooltip's left edge */
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #333; /* Right-facing arrow */
+}
+
+.custom-file-upload:hover .tooltip {
+  display: block; /* Show the tooltip on hover */
 }
 
 .form-floating label {
@@ -181,6 +218,48 @@
   margin-right: 10px;
   color: #4CAF50; /* Green color for the check mark */
 }
+.admit-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 2px solid #333;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  margin-left: 500px;
+  margin-top:20px;
+  background-color: #f9f9f9;
+  height: max-content;
+}
+
+.title-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
+.title-details h3 {
+  margin: 0 10px;
+  font-weight: 300;
+}
+.title-details h{
+  font-weight: bold;
+}
+.title-details img {
+  margin-left: 50px;
+  max-width: 100px;
+  border-radius: 5px;
+}
+
+.admit-card p {
+  text-align: left;
+  width: 100%;
+  margin: 10px 0;
+}
+
 
 @media (max-width: 768px) {
   .right {
@@ -265,12 +344,4 @@
   .right img {
     height: 25vh;
   }
-}
-.admit-card {
-  border: 2px solid #333;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  text-align: left;
-  margin-top: 20px;
 }

@@ -8,7 +8,7 @@ const EntranceRegister = () => {
     fullName: "",
     email: "",
     contact: "",
-    college: "Kathford",
+    college: "Kathford College",
     program: "BBS",
     registerDate: "",
     documents: null,
@@ -30,7 +30,27 @@ const EntranceRegister = () => {
       setFormData({ ...formData, [name]: value });
     }
   };
-
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent default form submission
+  
+    // Validate form fields
+    const isValid =
+      formData.photo &&
+      formData.fullName &&
+      formData.email &&
+      formData.contact &&
+      formData.college &&
+      formData.program &&
+      formData.registerDate &&
+      formData.documents;
+  
+    if (isValid) {
+      setSubmitted(true); // Set submitted state to true if all fields are filled
+    } else {
+      alert("Please fill in all required fields."); // Show an alert if validation fails
+    }
+  };
+  
   const resetForm = () => {
     setFormData({
       photo: null,
@@ -43,7 +63,7 @@ const EntranceRegister = () => {
       documents: null,
     });
     setPhotoPreview(null);
-    setSubmitted(false);
+    setSubmitted(false); // Reset to show the form again
   };
 
   return (
@@ -54,29 +74,32 @@ const EntranceRegister = () => {
           <div className="left-right">
             <div className="left">
               <form className="form-container">
-                <h2>Entrance Register Form</h2>
+                <h2>Entrance Registration Form</h2>
 
                 {/* Upload Your Picture Section */}
                 <div className="form-floating user-image-profile">
-                  <input
-                    type="file"
-                    id="photoUpload"
-                    name="photo"
-                    accept="image/*"
-                    required
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="photoUpload" className="custom-file-upload">
-                    <span className="upload-icon">⬆</span> Upload Your Picture
-                  </label>
-                  {photoPreview && (
-                    <img
-                      src={photoPreview}
-                      alt="Preview"
-                      style={{ width: "100px", marginTop: "10px" }}
-                    />
-                  )}
-                </div>
+  <input
+    type="file"
+    id="photoUpload"
+    name="photo"
+    accept="image/*"
+    required
+    onChange={handleChange}
+    style={{ display: "none" }} // Hide the input field
+  />
+  <label htmlFor="photoUpload" className="custom-file-upload">
+    {photoPreview ? (
+      <img
+        src={photoPreview}
+        alt="Uploaded Preview"
+        className="preview-image"
+      />
+    ) : (
+      <span className="upload-icon">⬆ Upload Your Picture</span>
+    )}
+   
+  </label>  <div className="tooltip">Use only passport size photo</div>
+</div>
 
                 <div className="form-floating important-label">
                   <label htmlFor="fullName">Full Name</label>
@@ -202,7 +225,7 @@ const EntranceRegister = () => {
                   />
                 </div>
 
-                <button type="submit" className="btn">
+                <button type="submit" className="btn" onClick={handleSubmit}>
                   Submit
                 </button>
               </form>
@@ -226,30 +249,34 @@ const EntranceRegister = () => {
           </div>
         ) : (
           <div className="admit-card" id="admitCard">
-            <h2>Registration Details</h2>
-            <img src={photoPreview} alt="Profile" style={{ width: "100px" }} />
-            <p>
-              <strong>Name:</strong> {formData.fullName}
-            </p>
-            <p>
-              <strong>Email:</strong> {formData.email}
-            </p>
-            <p>
-              <strong>Contact:</strong> {formData.contact}
-            </p>
-            <p>
-              <strong>College:</strong> {formData.college}
-            </p>
-            <p>
-              <strong>Program:</strong> {formData.program}
-            </p>
-            <p>
-              <strong>Register Date:</strong> {formData.registerDate}
-            </p>
-            <button onClick={resetForm} className="btn">
-              Reset
-            </button>
+          <div className="title-details">
+            <div>
+              <h3>{formData.college}</h3>
+              <h2>{formData.program} Entrance Examination</h2>
+              <h2>ADMIT CARD</h2>
+            </div>
+            <img src={photoPreview} alt="Profile" />
           </div>
+          <p>
+            <strong>Name:</strong> {formData.fullName}
+          </p>
+          <p>
+            <strong>Email:</strong> {formData.email}
+          </p>
+          <p>
+            <strong>Contact:</strong> {formData.contact}
+          </p>
+          <p>
+            <strong>College:</strong> {formData.college}
+          </p>
+          <p>
+            <strong>Program:</strong> {formData.program}
+          </p>
+          <p>
+            <strong>Register Date:</strong> {formData.registerDate}
+          </p>
+        </div>
+        
         )}
       </div>
     </div>

@@ -3,9 +3,9 @@ const mysql = require("mysql2/promise");
 const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-require("dotenv").config(); // For environment variables
+require("dotenv").config();
 
-const { processInput, matchRules } = require("./nlp-rules"); // Import NLP functions
+const { processInput, matchRules } = require("./nlp-rules");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -13,6 +13,12 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Logger Middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
 
 // MySQL connection setup
 const db = mysql.createPool({
@@ -23,21 +29,28 @@ const db = mysql.createPool({
 });
 
 // Test the DB connection
-db.getConnection()
-  .then((connection) => {
+(async () => {
+  try {
+    const connection = await db.getConnection();
     console.log("Connected to the MySQL database.");
     connection.release();
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error("Error connecting to MySQL:", err);
-  });
+    process.exit(1); // Exit process if DB connection fails
+  }
+})();
 
-// Registration route
+// Routes
+app.get("/", (req, res) => {
+  res.json({ msg: "Welcome to the College Connect API" });
+});
+
+// User Registration
 app.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, role = "user" } = req.body;
 
   if (!username || !email || !password) {
-    return res.status(400).json({ msg: "Please enter all fields" });
+    return res.status(400).json({ error: "All fields are required." });
   }
 
   try {
@@ -47,30 +60,29 @@ app.post("/register", async (req, res) => {
     );
 
     if (existingUser.length > 0) {
-      return res.status(400).json({ msg: "User already exists" });
+      return res.status(400).json({ error: "Email already in use." });
     }
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await db.query(
-      "INSERT INTO users (username, email, password, role, created_at) VALUES (?, ?, ?, 'user', NOW())",
-      [username, email, hashedPassword]
+      "INSERT INTO users (username, email, password, role, created_at) VALUES (?, ?, ?, ?, NOW())",
+      [username, email, hashedPassword, role]
     );
 
-    res.json({ msg: "User registered successfully" });
+    res.json({ msg: "User registered successfully!" });
   } catch (err) {
     console.error("Registration error:", err);
-    res.status(500).json({ msg: "Server error, please try again later" });
+    res.status(500).json({ error: "Server error, please try again later." });
   }
 });
 
-// Login route
+// User Login
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ msg: "Please enter all fields" });
+    return res.status(400).json({ error: "All fields are required." });
   }
 
   try {
@@ -79,18 +91,18 @@ app.post("/login", async (req, res) => {
     ]);
 
     if (results.length === 0) {
-      return res.status(400).json({ msg: "User not found" });
+      return res.status(400).json({ error: "User not found." });
     }
 
     const user = results[0];
-    const isMatch = bcrypt.compareSync(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ msg: "Invalid credentials" });
+      return res.status(400).json({ error: "Invalid credentials." });
     }
 
     res.json({
-      msg: "Login successful",
+      msg: "Login successful!",
       user: {
         id: user.id,
         username: user.username,
@@ -100,34 +112,31 @@ app.post("/login", async (req, res) => {
     });
   } catch (err) {
     console.error("Login error:", err);
-    res.status(500).json({ msg: "Server error, please try again later" });
+    res.status(500).json({ error: "Server error, please try again later." });
   }
 });
 
-// Welcome route
-app.get("/", (req, res) => {
-  res.send("Welcome to the College Connect API");
-});
-
-// Fetch all entrance results
+// Fetch Entrance Results
 app.get("/api/entrance-results", async (req, res) => {
   try {
     const [results] = await db.query(
       "SELECT id, name, score, status FROM entrance_results"
     );
-    res.json(results);
+    res.json({ msg: "Success", data: results });
   } catch (err) {
     console.error("Error fetching entrance results:", err);
-    res.status(500).json({ msg: "Error fetching results. Please try again later." });
+    res
+      .status(500)
+      .json({ error: "Error fetching results. Please try again later." });
   }
 });
 
-// Register a candidate for entrance exam
+// Register a Candidate
 app.post("/api/entrance-register", async (req, res) => {
   const { name, score, status } = req.body;
 
   if (!name || score === undefined || !status) {
-    return res.status(400).json({ msg: "Please provide all required fields." });
+    return res.status(400).json({ error: "All fields are required." });
   }
 
   try {
@@ -139,31 +148,35 @@ app.post("/api/entrance-register", async (req, res) => {
     res.json({ msg: "Candidate registered successfully!" });
   } catch (err) {
     console.error("Error registering candidate:", err);
-    res.status(500).json({ msg: "Error registering candidate. Please try again later." });
+    res.status(500).json({ error: "Error registering candidate. Try again." });
   }
 });
 
-// Recommendation route
+// Recommendation Route
 app.post("/recommend", async (req, res) => {
-  const userInput = req.body.input;
+  const { input: userInput } = req.body;
+
+  if (!userInput) {
+    return res.status(400).json({ error: "Input is required." });
+  }
 
   try {
-    const entities = await processInput(userInput); // Process user input using NLP
-    const rule = matchRules(entities); // Match rules based on entities
+    const entities = await processInput(userInput); // NLP processing
+    const rule = matchRules(entities); // Rule matching logic
 
     if (rule) {
       res.json({
-        message: "Based on your interest, we recommend:",
+        msg: "Recommendation successful.",
         recommendations: rule.recommendations,
       });
     } else {
-      res.json({
-        message: "No matching colleges found. Please refine your search.",
-      });
+      res.json({ msg: "No recommendations found. Please refine your input." });
     }
   } catch (err) {
     console.error("Error in recommendation route:", err);
-    res.status(500).json({ msg: "Error processing recommendation. Please try again later." });
+    res
+      .status(500)
+      .json({ error: "Error processing recommendation. Try again later." });
   }
 });
 
@@ -176,8 +189,8 @@ const server = app.listen(port, () => {
 server.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
     console.log(`Port ${port} is already in use. Trying another port...`);
-    app.listen(5001, () => {
-      console.log("Server running on http://localhost:5001");
+    app.listen(port + 1, () => {
+      console.log(`Server running on http://localhost:${port + 1}`);
     });
   }
 });
