@@ -68,6 +68,8 @@ import EntranceRegister from "./template/entranceRegister/EntranceRegister";
 import BcaCourse from "./components1/coursesinfo/BcaCourse";
 import CollegeSearch from "./template/collegeSearch";
 import AdminDashboard from "./components3/admindashboard/AdminDash";
+import NearbyCollegesForm from "./algorithm/nearbyCollegesForm";
+import CollegeMap from "./algorithm/collegeMap";
 function App() {
   return (
     <div className="app">
@@ -153,6 +155,8 @@ function App() {
           <Route path="/registration" element={<EntranceRegister />} />
           <Route path="/result" element={<EntranceResults />} />
           <Route path="/college-search" element={<CollegeSearch />} />
+          <Route path="/nearby-colleges" element={<NearbyCollegesForm />} />
+          <Route path="/collegemap" element={<CollegeMap />} />
         </Routes>
       </Router>
     </div>

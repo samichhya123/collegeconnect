@@ -67,13 +67,18 @@ const Navbar = ({ showSearch = true, showAuthButtons = true }) => {
                 </a>
               </li>
             </ul>
-          </div>
-
-          {showSearch && (
+            {showSearch && (
             <div className="search-desktop">
               <Search />
             </div>
           )}
+          </div>
+{/* 
+          {showSearch && (
+            <div className="search-desktop">
+              <Search />
+            </div>
+          )} */}
         </div>
 
         {showAuthButtons && (

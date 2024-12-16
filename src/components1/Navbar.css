@@ -68,7 +68,7 @@
   border-radius: 8px;
   
   padding: 8px 15px; 
-  transition: background-color 0.3s ease, color 0.3s ease; 
+  /* transition: background-color 0.3s ease, color 0.3s ease;  */
 }
 .user-menu {
   display: flex;
@@ -129,7 +129,7 @@
 
   .nav-links-container ul {
     flex-direction: column;
-    position: absolute;
+    /* position: absolute; */
     top: 100%;
     left: 0;
     background-color: #b0bed4;

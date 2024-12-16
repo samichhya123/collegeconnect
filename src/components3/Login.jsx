@@ -23,7 +23,7 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       alert("Login successful");
-      navigate("/dashboard");
+      navigate("/registration");
     } catch (err) {
       // Handle error response
       const errorMsg = err.response
@@ -68,7 +68,7 @@ const Login = () => {
           </p>
           <button
             className="admin-login-btn"
-            onClick={() => navigate("/AdminSignIn")}
+            onClick={() => navigate("/Admin")}
           >
             Sign in as Admin
           </button>

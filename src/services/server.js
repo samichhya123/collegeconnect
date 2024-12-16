@@ -40,9 +40,68 @@ const db = mysql.createPool({
   }
 })();
 
+// Haversine formula to calculate distance between two coordinates
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of Earth in kilometers
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c; // Distance in kilometers
+  return distance;
+}
+
 // Routes
 app.get("/", (req, res) => {
   res.json({ msg: "Welcome to the College Connect API" });
+});
+app.get("/api/nearby-colleges", async (req, res) => {
+  const { latitude, longitude, radius = 5 } = req.query;
+
+  if (!latitude || !longitude || !radius) {
+    return res
+      .status(400)
+      .json({ error: "Latitude, longitude, and radius are required." });
+  }
+
+  try {
+    // Query to fetch all colleges
+    const [colleges] = await db.query(
+      "SELECT id, name, latitude, longitude, address FROM colleges"
+    );
+
+    // Calculate distances and filter colleges within the radius
+    const nearbyColleges = colleges.filter((college) => {
+      const distance = haversine(
+        parseFloat(latitude),
+        parseFloat(longitude),
+        parseFloat(college.latitude),
+        parseFloat(college.longitude)
+      );
+      return distance <= parseFloat(radius);
+    });
+
+    // Attach distance information and send the result
+    const result = nearbyColleges.map((college) => {
+      const distance = haversine(
+        parseFloat(latitude),
+        parseFloat(longitude),
+        parseFloat(college.latitude),
+        parseFloat(college.longitude)
+      );
+      return { ...college, distance };
+    });
+
+    res.json({ msg: "Success", data: results });
+  } catch (err) {
+    console.error("Error fetching nearby colleges:", err);
+    res.status(500).json({ error: "Server error. Please try again later." });
+  }
 });
 
 // User Registration
@@ -193,4 +252,31 @@ server.on("error", (err) => {
       console.log(`Server running on http://localhost:${port + 1}`);
     });
   }
+});
+app.post("/create-payment", (req, res) => {
+  // Extract data from the request body
+  const { fullName, email, contact, paymentMethod } = req.body;
+
+  // Simulate a payment process based on the payment method
+  if (!fullName || !email || !contact || !paymentMethod) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  // You can later integrate eSewa or Khalti API here
+  if (paymentMethod === "esewa" || paymentMethod === "khalti") {
+    // Simulate a successful payment response
+    return res.status(200).json({
+      message: "Payment successful",
+      paymentDetails: {
+        fullName,
+        email,
+        contact,
+        paymentMethod,
+        amount: "Nrs: 100", // Simulating the payment amount
+      },
+    });
+  }
+
+  // If the payment method is not recognized
+  return res.status(400).json({ message: "Invalid payment method" });
 });

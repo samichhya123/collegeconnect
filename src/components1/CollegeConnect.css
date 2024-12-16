@@ -1,6 +1,6 @@
 .background-container {
   background: linear-gradient(to right, #f7fafcda, #bdcedc);
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   font-family: "Arial", sans-serif;
 }
 .main-container {
@@ -154,7 +154,7 @@
   overflow: hidden;
   border-radius: 12px; /* Reduce border-radius for smaller size */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Softer shadow for smaller banner */
-  height: 30vh; /* Adjust height dynamically based on content */
+  height: 50vh; /* Adjust height dynamically based on content */
   margin: 20px auto;
 }
 
@@ -162,4 +162,3 @@
   transform: scale(1.03); /* Subtle hover zoom effect */
   opacity: 0.95; /* Slightly enhance transparency */
 }
-

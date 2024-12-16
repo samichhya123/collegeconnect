@@ -82,6 +82,7 @@ const Courses = () => {
   return (
     <div>
       <Navbar />
+      <div className="course-footer">
       <div className="courses-container">
         <div className="courses-slider">
           <div className="slider">
@@ -164,6 +165,8 @@ const Courses = () => {
         </div>
       </div>
       <Footer />
+      </div>
+
     </div>
   );
 };

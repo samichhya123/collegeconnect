@@ -21,7 +21,16 @@ const SideBar = () => {
     } else if (location.pathname.includes("result")) {
       setActiveMenu("result");
     }
-  }, [location]); 
+  }, [location]);
+
+  const handleLogout = () => {
+    // Display a confirmation popup before logging out
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      // If user confirms, proceed to logout
+      window.location.href = "/"; // Redirect to homepage or login page
+    }
+  };
 
   return (
     <div className="sidebar">
@@ -29,46 +38,59 @@ const SideBar = () => {
         <img src={logo} alt="My Logo" className="logo-image" />
       </div>
       <ul className="sidebar-menu">
-        <li
-          className={`sidebar-item text ${activeMenu === "dashboard" ? "active" : ""}`}
+        {/* <li
+          className={`sidebar-item text ${
+            activeMenu === "dashboard" ? "active" : ""
+          }`}
         >
           <Link to="/dashboard">
             <i className="fas fa-chart-bar menu-icon"></i> Dashboard
           </Link>
-        </li>
+        </li> */}
         <li
-          className={`sidebar-item text ${activeMenu === "registration" ? "active" : ""}`}
+          className={`sidebar-item text ${
+            activeMenu === "registration" ? "active" : ""
+          }`}
         >
           <Link to="/registration">
-            <i className="fas fa-clipboard-check menu-icon"></i> Entrance Registration
+            <i className="fas fa-clipboard-check menu-icon"></i> Entrance
+            Registration
           </Link>
         </li>
         <li
-          className={`sidebar-item text ${activeMenu === "payment" ? "active" : ""}`}
+          className={`sidebar-item text ${
+            activeMenu === "payment" ? "active" : ""
+          }`}
         >
           <Link to="/payment">
-            <i className="fas fa-credit-card menu-icon"></i>Entrance Payment
-          </Link>
-        </li>    <li
-          className={`sidebar-item text ${activeMenu === "entrance" ? "active" : ""}`}
-        >
-          <Link to="/entrance">
-            <i className="fas fa-book-open menu-icon"></i> Practice Test
+            <i className="fas fa-credit-card menu-icon"></i> Entrance Payment
           </Link>
         </li>
         <li
-          className={`sidebar-item text ${activeMenu === "result" ? "active" : ""}`}
+          className={`sidebar-item text ${
+            activeMenu === "result" ? "active" : ""
+          }`}
         >
           <Link to="/result">
             <i className="fas fa-file-alt menu-icon"></i> Entrance Result
           </Link>
         </li>
+        <li
+          className={`sidebar-item text ${
+            activeMenu === "entrance" ? "active" : ""
+          }`}
+        >
+          <Link to="/entrance">
+            <i className="fas fa-book-open menu-icon"></i> Practice Test
+          </Link>
+        </li>
         
-       
       </ul>
       <div className="sidebar-logout">
         <i className="fas fa-sign-out-alt"></i>
-        <a href="/">Logout</a>
+        <a href="#" onClick={handleLogout}>
+          Logout
+        </a>
       </div>
     </div>
   );

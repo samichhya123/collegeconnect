@@ -43,7 +43,9 @@ const EntranceResults = () => {
                     <td>{index + 1}</td>
                     <td>{result.name}</td>
                     <td>{result.score}</td>
-                    <td className={result.status === "Passed" ? "pass" : "fail"}>
+                    <td
+                      className={result.status === "Passed" ? "pass" : "fail"}
+                    >
                       {result.status}
                     </td>
                   </tr>

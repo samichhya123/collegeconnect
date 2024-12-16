@@ -16,7 +16,7 @@ const KathfordCollege = () => {
           <MdKeyboardDoubleArrowLeft />
           <span>Back</span>
         </a>
-        {/* Add Popup buttons */}
+       <p>Sign In to apply for entrance exam | Sign In to perform tests for entrance exam</p>
         <div className="popup-buttons">
           <SignInLoginPopup triggerText="Login">
             <Login /> {/* Render the login form in the popup */}
