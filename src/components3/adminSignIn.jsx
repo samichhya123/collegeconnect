@@ -6,7 +6,6 @@ const AdminSignIn = () => {
     <>
       <div className="w-full min-h-screen bg-[#E8F8F5] flex items-center justify-center p-4">
         <div className="w-full max-w-4xl bg-[#a7e8dc] flex flex-col md:flex-row items-center mx-auto rounded-lg overflow-hidden">
-          {/* Left content section */}
           <div className="flex justify-center items-center w-full md:w-1/2 h-full p-4">
             <img
               src="https://i.pinimg.com/564x/d1/54/66/d154660a6ae3104de2b0a314667a5ab6.jpg"
@@ -14,7 +13,6 @@ const AdminSignIn = () => {
               alt="login"
             />
           </div>
-          {/* Right content section */}
           <div className="w-full md:w-1/2 p-8 bg-[#a7e8dc] rounded-lg">
             <h2 className="text-3xl font-bold text-[#2C3E50] text-center">
               Admin Login Portal
