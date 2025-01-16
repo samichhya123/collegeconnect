@@ -136,6 +136,47 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
+// Register API
+app.post("/register", async (req, res) => {
+  try {
+    const { email, username, password } = req.body;
+
+    // Validate required fields
+    if (!email || !username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email, username, and password are required" });
+    }
+
+    // Check if the user already exists by email or username
+    const [
+      existingUser,
+    ] = await db.query("SELECT * FROM users WHERE email = ? OR username = ?", [
+      email,
+      username,
+    ]);
+
+    if (existingUser.length > 0) {
+      return res
+        .status(409)
+        .json({ message: "Email or username already in use" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert the new user into the database
+    await db.query(
+      "INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
+      [email, username, hashedPassword]
+    );
+
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error("Error in /register:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 // Add College API
 app.post("/api/add-college", upload.single("image"), async (req, res) => {
@@ -184,20 +225,20 @@ app.post("/login", async (req, res) => {
 
 // Add Course API
 app.post("/api/add-course", async (req, res) => {
+  const { course_name, university, duration_years } = req.body;
+
+  // Check if all required fields are present
+  if (!course_name || !university || !duration_years) {
+    return res
+      .status(400)
+      .json({ message: "Course name, university, and duration are required" });
+  }
+
   try {
-    const { course_name, university, duration_years } = req.body;
-
-    if (!course_name || !university || !duration_years) {
-      return res.status(400).json({
-        message: "Course name, university, and duration are required",
-      });
-    }
-
     await db.query(
       "INSERT INTO admin_courses (course_name, university, duration_years) VALUES (?, ?, ?)",
       [course_name, university, duration_years]
     );
-
     res.status(200).json({ message: "Course added successfully!" });
   } catch (error) {
     console.error("Error adding course:", error.message);
@@ -271,9 +312,13 @@ app.post("/recommend", async (req, res) => {
     return res.status(400).json({ error: "Input is required." });
   }
 
+
   try {
     const entities = await processInput(userInput); // NLP processing
     const rule = matchRules(entities); // Rule matching logic
+=======
+  const query = "SELECT id, name, latitude, longitude FROM admin_colleges";
+
 
     if (rule) {
       res.json({
@@ -289,6 +334,31 @@ app.post("/recommend", async (req, res) => {
       .status(500)
       .json({ error: "Error processing recommendation. Try again later." });
   }
+
+    const collegesWithDistance = results.map((college) => {
+      const distance = calculateDistance(
+        userLatitude,
+        userLongitude,
+        college.latitude,
+        college.longitude
+      );
+      return {
+        id: college.id,
+        name: college.name,
+        latitude: college.latitude,
+        longitude: college.longitude,
+        distance: distance.toFixed(2),
+      };
+    });
+    collegesWithDistance.sort((a, b) => a.distance - b.distance);
+
+    res.status(200).send(collegesWithDistance);
+  });
+});
+// Default 404 Handler
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+
 });
 
 // Start the server

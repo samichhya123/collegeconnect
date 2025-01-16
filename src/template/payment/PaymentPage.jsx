@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./PaymentPage.css";
 import SideBar from "../../components3/SideBar";
-import esewa from "../../images/esewa.webp";
+
 import khalti from "../../images/khalti.webp";
 import axios from "axios";
 
@@ -131,16 +131,7 @@ const PaymentPage = () => {
           <div className="form-group payment-options">
             <label>Payment Method</label>
             <div className="payment-methods">
-              <label>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="esewa"
-                  onChange={(e) => handleInputChange(e, "paymentMethod")}
-                  checked={formData.paymentMethod === "esewa"}
-                />
-                <img src={esewa} alt="eSewa Logo" className="payment-logo" />
-              </label>
+           
               <label>
                 <input
                   type="radio"
