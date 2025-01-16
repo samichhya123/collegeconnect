@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./collegeSlider.css";
+import "./CollegeSlider.css";
 import kathford from "../images/kathford.jpg";
 import prime from "../images/prime.jpg";
 import padmakanya from "../images/padmakanya.jpg";

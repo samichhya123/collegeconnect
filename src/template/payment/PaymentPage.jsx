@@ -44,23 +44,25 @@ const PaymentPage = () => {
       fullName: formData.fullName,
       email: formData.email,
       contact: formData.contact,
-      amount: "100", // Assuming Nrs:100 for the example
+      amount: "10000", // Assuming Nrs:100 for the example
       paymentMethod: formData.paymentMethod,
     };
 
     try {
       // Send payment details to the backend to initiate payment
       const response = await axios.post(
-        "http://localhost:50001/create-payment", // Ensure backend API is running on this port
+        "http://localhost:5000/api/khalti", // Ensure backend API is running on this port
         paymentDetails
       );
+      const paymentUrl = await response.data.data.payment_url;
+      window.location.href = paymentUrl;
 
-      if (response.data.success) {
-        // If payment creation is successful, redirect to eSewa or Khalti payment gateway
-        window.location.href = response.data.redirectUrl; // Redirect to the payment page
-      } else {
-        setError("Payment creation failed. Please try again.");
-      }
+      // if (response.data.success) {
+      //   // If payment creation is successful, redirect to eSewa or Khalti payment gateway
+      //   window.location.href = response.data.redirectUrl; // Redirect to the payment page
+      // } else {
+      //   setError("Payment creation failed. Please try again.");
+      // }
     } catch (error) {
       console.error("Error during payment processing:", error);
       setError(
