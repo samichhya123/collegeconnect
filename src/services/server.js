@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql2/promise");
 const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
+const axios = require("axios");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -279,4 +280,49 @@ app.post("/create-payment", (req, res) => {
 
   // If the payment method is not recognized
   return res.status(400).json({ message: "Invalid payment method" });
+});
+
+// Khalti Payment Gateway
+app.post("/api/khalti", async (req, res) => {
+  try {
+    const headers = {
+      Authorization: `Key a20555db9286437bbd7cf857ab9489d8`,
+      "Content-Type": "application/json",
+    };
+    const { fullName, amount } = req.body;
+    const formData = {
+      return_url: "http://localhost:5000/Colleges",
+      website_url: "http://localhost:5000",
+      amount: amount,
+      purchase_order_id: 1,
+      purchase_order_name: fullName,
+      customer_info: {
+        name: "collegeConnect_Customer",
+      },
+    };
+    const response = await axios.post(
+      "https://a.khalti.com/api/v2/epayment/initiate/",
+      formData,
+      {
+        headers,
+      }
+    );
+    console.log(response.data);
+    if (response.data) {
+      res.json({
+        message: "khalti success",
+        payment_method: "khalti",
+        data: response.data,
+      });
+    } else {
+      res.json({
+        message: "khalti unsuccess",
+        payment_method: "khalti",
+        data: "",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(err);
+  }
 });

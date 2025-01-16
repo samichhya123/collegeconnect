@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; 
-import "./collegeConnect.css";
-import CollegeSlider from "./collegeSlider";
+import "./CollegeConnect.css";
+import CollegeSlider from "./CollegeSlider";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
