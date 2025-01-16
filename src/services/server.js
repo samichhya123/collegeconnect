@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql2/promise");
 const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
+const axios = require("axios");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
@@ -60,6 +61,47 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+// Register API
+app.post("/register", async (req, res) => {
+  try {
+    const { email, username, password } = req.body;
+
+    // Validate required fields
+    if (!email || !username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email, username, and password are required" });
+    }
+
+    // Check if the user already exists by email or username
+    const [
+      existingUser,
+    ] = await db.query("SELECT * FROM users WHERE email = ? OR username = ?", [
+      email,
+      username,
+    ]);
+
+    if (existingUser.length > 0) {
+      return res
+        .status(409)
+        .json({ message: "Email or username already in use" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert the new user into the database
+    await db.query(
+      "INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
+      [email, username, hashedPassword]
+    );
+
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error("Error in /register:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 // Login API
 app.post("/login", async (req, res) => {
@@ -153,20 +195,20 @@ app.get("/api/courses", async (req, res) => {
 
 // Add Course API
 app.post("/api/add-course", async (req, res) => {
+  const { course_name, university, duration_years } = req.body;
+
+  // Check if all required fields are present
+  if (!course_name || !university || !duration_years) {
+    return res
+      .status(400)
+      .json({ message: "Course name, university, and duration are required" });
+  }
+
   try {
-    const { course_name, university, duration_years } = req.body;
-
-    if (!course_name || !university || !duration_years) {
-      return res.status(400).json({
-        message: "Course name, university, and duration are required",
-      });
-    }
-
     await db.query(
       "INSERT INTO admin_courses (course_name, university, duration_years) VALUES (?, ?, ?)",
       [course_name, university, duration_years]
     );
-
     res.status(200).json({ message: "Course added successfully!" });
   } catch (error) {
     console.error("Error adding course:", error.message);
@@ -232,8 +274,6 @@ app.post("/api/collegedistance", (req, res) => {
   if (!userLatitude || !userLongitude) {
     return res.status(400).send({ error: "User location is required" });
   }
-
-  // Query to Fetch Colleges
   const query = "SELECT id, name, latitude, longitude FROM admin_colleges";
 
   db.query(query, (err, results) => {
@@ -241,8 +281,6 @@ app.post("/api/collegedistance", (req, res) => {
       console.error("Database query error:", err);
       return res.status(500).send({ error: "Database query failed" });
     }
-
-    // Calculate Distance for Each College
     const collegesWithDistance = results.map((college) => {
       const distance = calculateDistance(
         userLatitude,
@@ -255,11 +293,9 @@ app.post("/api/collegedistance", (req, res) => {
         name: college.name,
         latitude: college.latitude,
         longitude: college.longitude,
-        distance: distance.toFixed(2), // Round to 2 decimal places
+        distance: distance.toFixed(2),
       };
     });
-
-    // Sort Colleges by Distance
     collegesWithDistance.sort((a, b) => a.distance - b.distance);
 
     res.status(200).send(collegesWithDistance);
@@ -282,5 +318,77 @@ server.on("error", (err) => {
     app.listen(port + 1, () => {
       console.log(`Server running on http://localhost:${port + 1}`);
     });
+  }
+});
+app.post("/create-payment", (req, res) => {
+  // Extract data from the request body
+  const { fullName, email, contact, paymentMethod } = req.body;
+
+  // Simulate a payment process based on the payment method
+  if (!fullName || !email || !contact || !paymentMethod) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  // You can later integrate eSewa or Khalti API here
+  if (paymentMethod === "esewa" || paymentMethod === "khalti") {
+    // Simulate a successful payment response
+    return res.status(200).json({
+      message: "Payment successful",
+      paymentDetails: {
+        fullName,
+        email,
+        contact,
+        paymentMethod,
+        amount: "Nrs: 100", // Simulating the payment amount
+      },
+    });
+  }
+
+  // If the payment method is not recognized
+  return res.status(400).json({ message: "Invalid payment method" });
+});
+
+// Khalti Payment Gateway
+app.post("/api/khalti", async (req, res) => {
+  try {
+    const headers = {
+      Authorization: `Key a20555db9286437bbd7cf857ab9489d8`,
+      "Content-Type": "application/json",
+    };
+    const { fullName, amount } = req.body;
+    const formData = {
+      return_url: "http://localhost:5000/Colleges",
+      website_url: "http://localhost:5000",
+      amount: amount,
+      purchase_order_id: 1,
+      purchase_order_name: fullName,
+      customer_info: {
+        name: "collegeConnect_Customer",
+      },
+    };
+    const response = await axios.post(
+      "https://a.khalti.com/api/v2/epayment/initiate/",
+      formData,
+      {
+        headers,
+      }
+    );
+    console.log(response.data);
+    if (response.data) {
+      res.json({
+        message: "khalti success",
+        payment_method: "khalti",
+        data: response.data,
+      });
+    } else {
+      res.json({
+        message: "khalti unsuccess",
+        payment_method: "khalti",
+        data: "",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(err);
   }
 });
