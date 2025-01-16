@@ -54,7 +54,9 @@ header {
   background-color: #fff;
   padding: 30px;
   border-radius: 10px;
-  margin: 40px 40px;
+  display: flex;
+  flex-direction: column;
+  margin: 40px 116px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   text-align: justify;}
@@ -97,7 +99,7 @@ h3 {
   background-color: #fff;
   padding: 30px;
   border-radius: 10px;
-  margin: 40px 40px;
+  margin: 40px 118px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 100%;
   text-align: justify;

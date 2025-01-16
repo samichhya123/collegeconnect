@@ -10,12 +10,11 @@
 
 }
 .Admission-section {
-  max-width: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   margin-left:150px;
-  height: auto;
-  min-height: auto;
+ 
 }
 
 .left-right {
@@ -23,7 +22,7 @@
   margin-top: 30px;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   gap:30px;
 }
 

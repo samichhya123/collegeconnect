@@ -23,7 +23,7 @@ function Footer() {
           <div className="col contact-col">
             <h3>Contact Us</h3>
             <p className="email-id">www.collegeconnect.edu.np</p>
-            <p className="phone">9841304576</p>
+            {/* <p className="phone">9841304576</p> */}
           </div>
           <div className="col links-col">
             <h3>Links</h3>

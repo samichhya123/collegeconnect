@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./admit.css";
-import SideBar from "../SideBar";
+import SideBar from "../../components3/SideBar";
 
 const EntranceRegister = () => {
   const [formData, setFormData] = useState({
@@ -96,7 +96,7 @@ const EntranceRegister = () => {
   };
 
   return (
-    <div>
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
       <SideBar />
       <div className="Admission-section">
         <div className="left-right">

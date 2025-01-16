@@ -1,6 +1,5 @@
 import React from "react";
 import "./college.css";
-import british from "../college image/british1.jpg";
 import british1 from "../college image/british2.jpg";
 import logo from "../logo/british.png";
 import british2 from "../principal immage/british.png";
@@ -9,22 +8,14 @@ const BritishCollege = () => {
     <div>
       <header>
         <div className="img-area">
-          <img src={british} alt="Background Image" />
-          <img
-            src={british1}
-            className="img-front"
-            alt="Front Image"
-          />
+       
+          <img src={british1} className="img-front" alt="Front Image" />
         </div>
       </header>
 
       <div className="section">
-      <img
-          src={logo}
-          alt="College Logo"
-          style={{ maxWidth: "200px" }}
-        />  <h2 className="college-name">The British College</h2>
-        
+        <img src={logo} alt="College Logo" style={{ maxWidth: "200px" }} />{" "}
+        <h2 className="college-name">The British College</h2>
       </div>
 
       <div className="container">

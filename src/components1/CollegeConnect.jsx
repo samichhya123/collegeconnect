@@ -37,14 +37,14 @@ const College = () => {
             Enjoy our facilities and explore multiple colleges within the Valley.
           </p>
         </div>
-
+{/* 
          <div className="banner" onClick={handleBannerClick}>
           <img
             src={bannerImages[currentImageIndex].src}
             alt={`Banner ${currentImageIndex + 1}`}
             className="banner-image"
           />
-        </div>
+        </div> */}
 
         <div className="description">
           <hr />

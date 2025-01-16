@@ -1,6 +1,6 @@
 import React from "react";
 import "./college.css";
-import kathford from "../lalitpur/images/6f6b2eb8ea71eb29f591ce3fd704b326-490.jpg";
+// import kathford from "../lalitpur/images/6f6b2eb8ea71eb29f591ce3fd704b326-490.jpg";
 import kathford1 from "../lalitpur/college image/kathford.jpg";
 import logo from "../lalitpur/images/logo kath.jpg";
 import kathford2 from "../lalitpur/principal images/kathford.png";
@@ -11,7 +11,7 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 const KathfordCollege = () => {
   return (
     <div>
-      <div className="navbar-college">
+      {/* <div className="navbar-college">
         <a href="/Colleges" className="back-link">
           <MdKeyboardDoubleArrowLeft />
           <span>Back</span>
@@ -19,13 +19,13 @@ const KathfordCollege = () => {
        <p>Sign In to apply for entrance exam | Sign In to perform tests for entrance exam</p>
         <div className="popup-buttons">
           <SignInLoginPopup triggerText="Login">
-            <Login /> {/* Render the login form in the popup */}
+            <Login />
           </SignInLoginPopup>
           <SignInLoginPopup triggerText="Register">
-            <SignUp /> {/* Render the sign-up form in the popup */}
+            <SignUp /> 
           </SignInLoginPopup>
         </div>
-      </div>
+      </div> */}
 
       <div className="section">
         <img src={logo} alt="College Logo" />
@@ -36,7 +36,7 @@ const KathfordCollege = () => {
 
       <header>
         <div className="img-area">
-          <img src={kathford} alt="Background Image" />
+          {/* <img src={kathford} alt="Background Image" /> */}
           <img src={kathford1} className="img-front" alt="Front Image" />
         </div>
       </header>

@@ -4,248 +4,279 @@ const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
-
-const { processInput, matchRules } = require("./nlp-rules");
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Import routes
+const collegeAdminRoutes = require("./routes/collegeAdminRoutes");
+const collegeRoutes = require("./routes/collegeRoutes");
+const courseAdminRoutes = require("./routes/courseAdminRoutes");
+const courseRoutes = require("./routes/courseRoutes");
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public"))); // Ensure 'public' directory exists
 
-// Logger Middleware
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
-
-// MySQL connection setup
-const db = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "collegeconnect",
-});
-
-// Test the DB connection
-(async () => {
+// Database Connection
+let db;
+const connectToDatabase = async () => {
   try {
-    const connection = await db.getConnection();
-    console.log("Connected to the MySQL database.");
-    connection.release();
+    db = await mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+    });
+    console.log("Successfully connected to the MySQL database.");
   } catch (err) {
-    console.error("Error connecting to MySQL:", err);
-    process.exit(1); // Exit process if DB connection fails
+    console.error("Error connecting to the MySQL database:", err.message);
+    process.exit(1);
   }
-})();
+};
+connectToDatabase();
 
-// Haversine formula to calculate distance between two coordinates
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radius of Earth in kilometers
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in kilometers
-  return distance;
-}
-
-// Routes
+// Root Route
 app.get("/", (req, res) => {
-  res.json({ msg: "Welcome to the College Connect API" });
-});
-app.get("/api/nearby-colleges", async (req, res) => {
-  const { latitude, longitude, radius = 5 } = req.query;
-
-  if (!latitude || !longitude || !radius) {
-    return res
-      .status(400)
-      .json({ error: "Latitude, longitude, and radius are required." });
-  }
-
-  try {
-    // Query to fetch all colleges
-    const [colleges] = await db.query(
-      "SELECT id, name, latitude, longitude, address FROM colleges"
-    );
-
-    // Calculate distances and filter colleges within the radius
-    const nearbyColleges = colleges.filter((college) => {
-      const distance = haversine(
-        parseFloat(latitude),
-        parseFloat(longitude),
-        parseFloat(college.latitude),
-        parseFloat(college.longitude)
-      );
-      return distance <= parseFloat(radius);
-    });
-
-    // Attach distance information and send the result
-    const result = nearbyColleges.map((college) => {
-      const distance = haversine(
-        parseFloat(latitude),
-        parseFloat(longitude),
-        parseFloat(college.latitude),
-        parseFloat(college.longitude)
-      );
-      return { ...college, distance };
-    });
-
-    res.json({ msg: "Success", data: results });
-  } catch (err) {
-    console.error("Error fetching nearby colleges:", err);
-    res.status(500).json({ error: "Server error. Please try again later." });
-  }
+  res.send("Welcome to the API server!");
 });
 
-// User Registration
-app.post("/register", async (req, res) => {
-  const { username, email, password, role = "user" } = req.body;
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "public/images")); // Ensure 'public/images' directory exists
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, `${uniqueSuffix}-${file.originalname}`);
+  },
+});
 
-  if (!username || !email || !password) {
-    return res.status(400).json({ error: "All fields are required." });
-  }
+const upload = multer({ storage });
 
+// Login API
+app.post("/login", async (req, res) => {
   try {
-    const [existingUser] = await db.query(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    );
+    const { email, password } = req.body;
 
-    if (existingUser.length > 0) {
-      return res.status(400).json({ error: "Email already in use." });
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await db.query(
-      "INSERT INTO users (username, email, password, role, created_at) VALUES (?, ?, ?, ?, NOW())",
-      [username, email, hashedPassword, role]
-    );
-
-    res.json({ msg: "User registered successfully!" });
-  } catch (err) {
-    console.error("Registration error:", err);
-    res.status(500).json({ error: "Server error, please try again later." });
-  }
-});
-
-// User Login
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: "All fields are required." });
-  }
-
-  try {
-    const [results] = await db.query("SELECT * FROM users WHERE email = ?", [
+    const [users] = await db.query("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
+    const user = users[0];
 
-    if (results.length === 0) {
-      return res.status(400).json({ error: "User not found." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const user = results[0];
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ error: "Invalid credentials." });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.json({
-      msg: "Login successful!",
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET || "secretkey",
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      token,
+      user: { id: user.id, email: user.email, role: user.role },
     });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ error: "Server error, please try again later." });
+  } catch (error) {
+    console.error("Error in /login:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-// Fetch Entrance Results
-app.get("/api/entrance-results", async (req, res) => {
+// Get Colleges API
+app.get("/api/colleges", async (req, res) => {
   try {
-    const [results] = await db.query(
-      "SELECT id, name, score, status FROM entrance_results"
+    const [colleges] = await db.query(
+      "SELECT id, name, address, image_url FROM admin_colleges"
     );
-    res.json({ msg: "Success", data: results });
-  } catch (err) {
-    console.error("Error fetching entrance results:", err);
-    res
-      .status(500)
-      .json({ error: "Error fetching results. Please try again later." });
+    res.json(colleges);
+  } catch (error) {
+    console.error("Database error:", error.message);
+    res.status(500).send("Error fetching colleges");
   }
 });
 
-// Register a Candidate
-app.post("/api/entrance-register", async (req, res) => {
-  const { name, score, status } = req.body;
-
-  if (!name || score === undefined || !status) {
-    return res.status(400).json({ error: "All fields are required." });
-  }
-
+// Add College API
+app.post("/api/add-college", upload.single("image"), async (req, res) => {
   try {
-    await db.query(
-      "INSERT INTO entrance_results (name, score, status) VALUES (?, ?, ?)",
-      [name, score, status]
-    );
+    const { name, address, valley, latitude, longitude } = req.body;
+    const image_url = req.file ? `/images/${req.file.filename}` : null;
 
-    res.json({ msg: "Candidate registered successfully!" });
-  } catch (err) {
-    console.error("Error registering candidate:", err);
-    res.status(500).json({ error: "Error registering candidate. Try again." });
-  }
-});
-
-// Recommendation Route
-app.post("/recommend", async (req, res) => {
-  const { input: userInput } = req.body;
-
-  if (!userInput) {
-    return res.status(400).json({ error: "Input is required." });
-  }
-
-  try {
-    const entities = await processInput(userInput); // NLP processing
-    const rule = matchRules(entities); // Rule matching logic
-
-    if (rule) {
-      res.json({
-        msg: "Recommendation successful.",
-        recommendations: rule.recommendations,
-      });
-    } else {
-      res.json({ msg: "No recommendations found. Please refine your input." });
+    if (!name || !address || !valley) {
+      return res
+        .status(400)
+        .json({ message: "Name, address, and valley are required" });
     }
-  } catch (err) {
-    console.error("Error in recommendation route:", err);
-    res
-      .status(500)
-      .json({ error: "Error processing recommendation. Try again later." });
+
+    await db.query(
+      "INSERT INTO admin_colleges (name, address, valley, latitude, longitude, image_url) VALUES (?, ?, ?, ?, ?, ?)",
+      [name, address, valley, latitude, longitude, image_url]
+    );
+
+    res.status(200).json({ message: "College added successfully!" });
+  } catch (error) {
+    console.error("Error adding college:", error.message);
+    res.status(500).json({ message: "Error adding college" });
+  }
+});
+// Get Courses API
+app.get("/api/courses", async (req, res) => {
+  try {
+    const [courses] = await db.query(
+      "SELECT id, course_name, university, duration_years FROM admin_courses"
+    );
+    res.json(courses);
+  } catch (error) {
+    console.error("Database error:", error.message);
+    res.status(500).send("Error fetching courses");
   }
 });
 
-// Start the server
+// Add Course API
+app.post("/api/add-course", async (req, res) => {
+  try {
+    const { course_name, university, duration_years } = req.body;
+
+    if (!course_name || !university || !duration_years) {
+      return res.status(400).json({
+        message: "Course name, university, and duration are required",
+      });
+    }
+
+    await db.query(
+      "INSERT INTO admin_courses (course_name, university, duration_years) VALUES (?, ?, ?)",
+      [course_name, university, duration_years]
+    );
+
+    res.status(200).json({ message: "Course added successfully!" });
+  } catch (error) {
+    console.error("Error adding course:", error.message);
+    res.status(500).json({ message: "Error adding course" });
+  }
+});
+
+// Additional APIs
+app.get("/api/users/count", async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT COUNT(*) AS count FROM users");
+    res.json({ count: rows[0].count });
+  } catch (err) {
+    console.error("Error fetching user count:", err.message);
+    res.status(500).json({ message: "Error fetching user count" });
+  }
+});
+
+app.get("/api/colleges/count", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT COUNT(*) AS count FROM admin_colleges"
+    );
+    res.json({ count: rows[0].count });
+  } catch (err) {
+    console.error("Error fetching college count:", err.message);
+    res.status(500).json({ message: "Error fetching college count" });
+  }
+});
+app.get("/api/courses/count", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT COUNT(*) AS count FROM admin_coursess"
+    );
+    res.json({ count: rows[0].count });
+  } catch (err) {
+    console.error("Error fetching course count:", err.message);
+    res.status(500).json({ message: "Error fetching course count" });
+  }
+});
+
+app.get("/api/valley-frequency", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT valley, COUNT(*) AS frequency FROM admin_colleges GROUP BY valley`
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("Error fetching valley frequency:", err.message);
+    res.status(500).json({ message: "Error fetching valley frequency" });
+  }
+});
+
+// Import and use additional routes
+app.use("/api/admin", collegeAdminRoutes);
+app.use("/api/colleges", collegeRoutes);
+app.use("/api/admin", courseAdminRoutes);
+app.use("/api/course", courseRoutes);
+// API Route to Fetch Distances
+app.post("/api/collegedistance", (req, res) => {
+  const { userLatitude, userLongitude } = req.body;
+
+  if (!userLatitude || !userLongitude) {
+    return res.status(400).send({ error: "User location is required" });
+  }
+
+  // Query to Fetch Colleges
+  const query = "SELECT id, name, latitude, longitude FROM admin_colleges";
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).send({ error: "Database query failed" });
+    }
+
+    // Calculate Distance for Each College
+    const collegesWithDistance = results.map((college) => {
+      const distance = calculateDistance(
+        userLatitude,
+        userLongitude,
+        college.latitude,
+        college.longitude
+      );
+      return {
+        id: college.id,
+        name: college.name,
+        latitude: college.latitude,
+        longitude: college.longitude,
+        distance: distance.toFixed(2), // Round to 2 decimal places
+      };
+    });
+
+    // Sort Colleges by Distance
+    collegesWithDistance.sort((a, b) => a.distance - b.distance);
+
+    res.status(200).send(collegesWithDistance);
+  });
+});
+// Default 404 Handler
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// Start the Server
 const server = app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
 
-// Error handling for address in use
+// Handle "Port in Use" Error
 server.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
     console.log(`Port ${port} is already in use. Trying another port...`);
