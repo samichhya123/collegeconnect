@@ -31,6 +31,7 @@ const CollegeSearch = () => {
         latitude: location.latitude,
         longitude: location.longitude,
       });
+      console.log("Nearby colleges:", response.data);
       setColleges(response.data);
     } catch (error) {
       console.error("Error fetching colleges:", error);
@@ -55,6 +56,8 @@ const CollegeSearch = () => {
       }}
     >
       <SideBar />
+      <div style={mainContentStyle}>
+
       <div
         style={{
           display: "flex",
@@ -92,6 +95,9 @@ const CollegeSearch = () => {
               <button
                 type="button"
                 onClick={fetchNearbyColleges}
+                style={buttonStyle}
+              >
+                Search Nearby Colleges
                 style={{
                   padding: "10px 20px",
                   backgroundColor: "#007BFF",
