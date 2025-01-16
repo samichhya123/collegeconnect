@@ -9,8 +9,6 @@ const path = require("path");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-// const { processInput, matchRules } = require("./nlp-rules");
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -25,89 +23,46 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public"))); // Ensure 'public' directory exists
 
-// Logger Middleware
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
-
-// MySQL connection setup
-const db = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "collegeconnect",
-});
-
-// Test the DB connection
-(async () => {
+// Database Connection
+let db;
+const connectToDatabase = async () => {
   try {
-    const connection = await db.getConnection();
-    console.log("Connected to the MySQL database.");
-    connection.release();
+    db = await mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+    });
+    console.log("Successfully connected to the MySQL database.");
   } catch (err) {
-    console.error("Error connecting to MySQL:", err);
-    process.exit(1); // Exit process if DB connection fails
+    console.error("Error connecting to the MySQL database:", err.message);
+    process.exit(1);
   }
-})();
+};
+connectToDatabase();
 
-// Haversine formula to calculate distance between two coordinates
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radius of Earth in kilometers
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in kilometers
-  return distance * 1000;
-}
-app.post("/api/collegedistance", async (req, res) => {
-  const { userLatitude, userLongitude } = req.body;
-  console.log(req.body);
-  if (!userLatitude || !userLongitude) {
-    return res.status(400).send({ error: "User location is required" });
-  }
-  const query = "SELECT id, name, latitude, longitude FROM admin_colleges";
-  try {
-    const results = await db.query(query);
-
-    const collegeResult = [];
-    let resultss = results[0];
-    for (let i = 0; i < resultss.length; i++) {
-      const distance = haversine(
-        userLatitude,
-        userLongitude,
-        resultss[i].latitude,
-        resultss[i].longitude
-      );
-      collegeResult.push({ collegeInfo: resultss[i], distance: distance });
-    }
-    collegeResult.sort((a, b) => a.distance - b.distance);
-    console.log(collegeResult);
-    res.status(200).send(collegeResult);
-  } catch (err) {
-    console.error("Database query error:", err);
-    return res.status(500).send({ error: "Database query failed" });
-  }
-});
-// Routes
+// Root Route
 app.get("/", (req, res) => {
-  res.json({ msg: "Welcome to the College Connect API" });
+  res.send("Welcome to the API server!");
 });
 
-// User Registration
-app.post("/register", async (req, res) => {
-  const { username, email, password, role = "user" } = req.body;
-
-  if (!username || !email || !password) {
-    return res.status(400).json({ error: "All fields are required." });
-  }
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "public/images")); // Ensure 'public/images' directory exists
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, `${uniqueSuffix}-${file.originalname}`);
+  },
 });
+
+const upload = multer({ storage });
+
+// Login API
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -147,16 +102,19 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "public/images")); // Ensure 'public/images' directory exists
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `${uniqueSuffix}-${file.originalname}`);
-  },
+
+// Get Colleges API
+app.get("/api/colleges", async (req, res) => {
+  try {
+    const [colleges] = await db.query(
+      "SELECT id, name, address, image_url FROM admin_colleges"
+    );
+    res.json(colleges);
+  } catch (error) {
+    console.error("Database error:", error.message);
+    res.status(500).send("Error fetching colleges");
+  }
 });
-const upload = multer({ storage });
 
 // Add College API
 app.post("/api/add-college", upload.single("image"), async (req, res) => {
@@ -181,25 +139,16 @@ app.post("/api/add-college", upload.single("image"), async (req, res) => {
     res.status(500).json({ message: "Error adding college" });
   }
 });
-
-app.get("/api/colleges", async (req, res) => {
+// Get Courses API
+app.get("/api/courses", async (req, res) => {
   try {
-    const [colleges] = await db.query(
-      "SELECT id, name, address, image_url FROM admin_colleges"
+    const [courses] = await db.query(
+      "SELECT id, course_name, university, duration_years FROM admin_courses"
     );
-    res.json(colleges);
+    res.json(courses);
   } catch (error) {
     console.error("Database error:", error.message);
-    res.status(500).send("Error fetching colleges");
-  }
-});
-
-// User Login
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: "All fields are required." });
+    res.status(500).send("Error fetching courses");
   }
 });
 
@@ -259,6 +208,7 @@ app.get("/api/courses/count", async (req, res) => {
     res.status(500).json({ message: "Error fetching course count" });
   }
 });
+
 app.get("/api/valley-frequency", async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -271,70 +221,115 @@ app.get("/api/valley-frequency", async (req, res) => {
   }
 });
 
-// Fetch Entrance Results
-app.get("/api/entrance-results", async (req, res) => {
-  try {
-    const [results] = await db.query(
-      "SELECT id, name, score, status FROM entrance_results"
-    );
-    res.json({ msg: "Success", data: results });
-  } catch (err) {
-    console.error("Error fetching entrance results:", err);
-    res
-      .status(500)
-      .json({ error: "Error fetching results. Please try again later." });
-  }
-});
+// Import and use additional routes
+// app.use("/api/admin", collegeAdminRoutes);
+app.use("/api/colleges", collegeRoutes);
+app.use("/api/admin", courseAdminRoutes);
+app.use("/api/course", courseRoutes);
+// API Route to Fetch Distances
+app.post("/api/collegedistance", (req, res) => {
+  const { userLatitude, userLongitude } = req.body;
 
-// Register a Candidate
-app.post("/api/entrance-register", async (req, res) => {
-  const { name, score, status } = req.body;
-
-  if (!name || score === undefined || !status) {
-    return res.status(400).json({ error: "All fields are required." });
+  if (!userLatitude || !userLongitude) {
+    return res.status(400).send({ error: "User location is required" });
   }
 
-  try {
-    await db.query(
-      "INSERT INTO entrance_results (name, score, status) VALUES (?, ?, ?)",
-      [name, score, status]
-    );
+  // Query to Fetch Colleges
+  const query = "SELECT id, name, latitude, longitude FROM admin_colleges";
 
-    res.json({ msg: "Candidate registered successfully!" });
-  } catch (err) {
-    console.error("Error registering candidate:", err);
-    res.status(500).json({ error: "Error registering candidate. Try again." });
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).send({ error: "Database query failed" });
+    }
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+      let lat = ((lat1 - lat2) * Math.PI) / 180;
+      let lon = ((lon1 - lon2) * Math.PI) / 180;
+
+      let a =
+        Math.pow(Math.sin(lat / 2), 2) +
+        Math.cos((lat1 * Math.PI) / 180) *
+          Math.cos((lat2 * Math.PI) / 180) *
+          Math.pow(Math.sin(lon / 2), 2);
+
+      const r = 6371;
+
+      let d = 2 * r * Math.asin(Math.sqrt(a));
+      return d * 1000;
+    };
+
+    // Calculate Distance for Each College
+    const collegesWithDistance = results.map((college) => {
+      const distance = calculateDistance(
+        userLatitude,
+        userLongitude,
+        college.latitude,
+        college.longitude
+      );
+      return {
+        id: college.id,
+        name: college.name,
+        latitude: college.latitude,
+        longitude: college.longitude,
+        distance: distance.toFixed(2), // Round to 2 decimal places
+      };
+    });
+
+    // Sort Colleges by Distance
+    collegesWithDistance.sort((a, b) => a.distance - b.distance);
+
+    res.status(200).send(collegesWithDistance);
+  });
+});
+// Default 404 Handler
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// Start the Server
+
+app.post("/create-payment", (req, res) => {
+  // Extract data from the request body
+  const { fullName, email, contact, paymentMethod } = req.body;
+
+  // Simulate a payment process based on the payment method
+  if (!fullName || !email || !contact || !paymentMethod) {
+    return res.status(400).json({ message: "Missing required fields" });
   }
-});
 
-// Start the server
-const server = app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
-
-// Error handling for address in use
-server.on("error", (err) => {
-  if (err.code === "EADDRINUSE") {
-    console.log(`Port ${port} is already in use. Trying another port...`);
-    app.listen(port + 1, () => {
-      console.log(`Server running on http://localhost:${port + 1}`);
+  // You can later integrate eSewa or Khalti API here
+  if (paymentMethod === "esewa" || paymentMethod === "khalti") {
+    // Simulate a successful payment response
+    return res.status(200).json({
+      message: "Payment successful",
+      paymentDetails: {
+        fullName,
+        email,
+        contact,
+        paymentMethod,
+        amount: "Nrs: 100", // Simulating the payment amount
+      },
     });
   }
+
+  // If the payment method is not recognized
+  return res.status(400).json({ message: "Invalid payment method" });
 });
 
 // Khalti Payment Gateway
 app.post("/api/khalti", async (req, res) => {
   try {
+    console.log("khalti payment initiated");
     const headers = {
       Authorization: `Key a20555db9286437bbd7cf857ab9489d8`,
       "Content-Type": "application/json",
     };
     const { fullName, amount } = req.body;
     const formData = {
-      return_url: "http://localhost:5001",
-      website_url: "http://localhost:5001",
+      return_url: "http://localhost:5000/Colleges",
+      website_url: "http://localhost:5000",
       amount: amount,
-      purchase_order_id: 11,
+      purchase_order_id: 1,
       purchase_order_name: fullName,
       customer_info: {
         name: "collegeConnect_Customer",
@@ -364,5 +359,22 @@ app.post("/api/khalti", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.send(err);
+  }
+});
+
+app.post("/api/check", (req, res) => {
+  console.log("here");
+});
+
+const server = app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+// Handle "Port in Use" Error
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.log(`Port ${port} is already in use. Trying another port...`);
+    app.listen(port + 1, () => {
+      console.log(`Server running on http://localhost:${port + 1}`);
+    });
   }
 });
