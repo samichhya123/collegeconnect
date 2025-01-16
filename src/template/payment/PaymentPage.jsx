@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./PaymentPage.css";
-import SideBar from "../SideBar";
+import SideBar from "../../components3/SideBar";
 import esewa from "../../images/esewa.webp";
 import khalti from "../../images/khalti.webp";
 import axios from "axios";

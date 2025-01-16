@@ -8,7 +8,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Adjusted to always have 3 columns */
   gap: 20px;
-  padding: 20px;
+  padding-top: 120px;
 }
 
 .article {

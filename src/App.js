@@ -7,14 +7,13 @@ import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
 import Blog from "./components1/blogData";
 import Login from "./components3/Login";
-import Dashboard from "./template/Dashboard";
+import Dashboard from "./components3/admin/Dashboard";
 import Register from "./components3/register";
 import Colleges from "./components2/Colleges";
 import CollegeContainer from "./components2/react/bhaktapurwith3conatiner";
-import Lalitpur from "./components2/pages/Lalitpur";
-import Kathmandu from "./components2/pages/Kathmandu";
-import Bhaktapur from "./components2/pages/Bhaktapur";
 
+import Kathmandu from "./components2/pages/Kathmandu";
+import AdminColleges from "./components3/admin/adminCollege";
 import AdminSignIn from "./components3/adminSignIn";
 import {
   KistCollege,
@@ -67,9 +66,10 @@ import EntranceResults from "./template/entranceresult/EntranceResult";
 import EntranceRegister from "./template/entranceRegister/EntranceRegister";
 import BcaCourse from "./components1/coursesinfo/BcaCourse";
 import CollegeSearch from "./template/collegeSearch";
-import AdminDashboard from "./components3/admindashboard/AdminDash";
-import NearbyCollegesForm from "./algorithm/nearbyCollegesForm";
-import CollegeMap from "./algorithm/collegeMap";
+import AdminDashboard from "./components3/admin/AdminDash";
+import AdminCourseForm from "./components3/admin/adminCourses";
+import NearbyCollegesForm from "./template/algorithm/nearbyCollegesForm";
+
 function App() {
   return (
     <div className="app">
@@ -132,12 +132,11 @@ function App() {
           <Route path="/-/khwopa" element={<Khowpa />} />
           <Route path="/-/swastik" element={<Swastik />} />
           <Route path="/-/seabird" element={<Seabird />} />
-            {/*Courses */}
-            <Route path="/bca" element={<BcaCourse/>}/>
+          {/*Courses */}
+          <Route path="/bca" element={<BcaCourse />} />
           {/* Other Routes */}
           <Route path="/CollegeContainer" element={<CollegeContainer />} />
-          <Route path="/lalitpur" element={<Lalitpur />} />
-          <Route path="/bhaktapur" element={<Bhaktapur />} />
+
           <Route path="/kathmandu" element={<Kathmandu />} />
 
           <Route
@@ -149,6 +148,8 @@ function App() {
             }
           />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admincolleges" element={<AdminColleges />} />
+          <Route path="/admincourses" element={<AdminCourseForm />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/payment" element={<PaymentPage />} />
@@ -156,7 +157,6 @@ function App() {
           <Route path="/result" element={<EntranceResults />} />
           <Route path="/college-search" element={<CollegeSearch />} />
           <Route path="/nearby-colleges" element={<NearbyCollegesForm />} />
-          <Route path="/collegemap" element={<CollegeMap />} />
         </Routes>
       </Router>
     </div>

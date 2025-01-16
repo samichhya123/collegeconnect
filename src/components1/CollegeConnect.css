@@ -4,7 +4,7 @@
   font-family: "Arial", sans-serif;
 }
 .main-container {
-  padding-top: 10px;
+  padding-top: 140px;
 }
 .frame {
   background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjQ0NC1uaW5nLTA1ZS1ncmFkdWF0aW9uYmdfMi5qcGc.jpg");
@@ -75,7 +75,7 @@
 }
 
 .content-card:hover {
-  transform: translateY(-10px);
+
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   background-color: rgb(232, 235, 241);
 }
