@@ -34,6 +34,7 @@ const CollegeSearch = () => {
         userLatitude: location.latitude,
         userLongitude: location.longitude,
       });
+      console.log("Nearby colleges:", response.data);
       setColleges(response.data);
       setLoading(false);
     } catch (error) {
@@ -114,15 +115,23 @@ const CollegeSearch = () => {
     <div style={containerStyle}>
       <SideBar />
       <div style={mainContentStyle}>
-        <div style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}>
+        <div
+          style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}
+        >
           User Dashboard
         </div>
         <form style={formStyle}>
           {/* Show user's current location automatically */}
           {location.latitude && location.longitude ? (
             <div>
-              <p>Your Location: {location.latitude}, {location.longitude}</p>
-              <button type="button" onClick={fetchNearbyColleges} style={buttonStyle}>
+              <p>
+                Your Location: {location.latitude}, {location.longitude}
+              </p>
+              <button
+                type="button"
+                onClick={fetchNearbyColleges}
+                style={buttonStyle}
+              >
                 Search Nearby Colleges
               </button>
             </div>
