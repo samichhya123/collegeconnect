@@ -1,7 +1,7 @@
 import React from 'react';
 import './college.css';
 import ncit from "../lalitpur/college image/ncit.jpg";
-import ncit1 from "../lalitpur/images/ncit.jpg";
+// import ncit1 from "../lalitpur/images/ncit.jpg";
 import logo from "../lalitpur/logo/NCIT_logo-thumbnail-200x200-70.jpg";
 import ncit2 from "../lalitpur/principal images/ncit.png";
 const NCIT = () => {
@@ -10,7 +10,7 @@ const NCIT = () => {
       <header>
         <div className="img-area">
           <img src={ncit} alt="Background" />
-          <img src={ncit1} className="img-front" alt="Front" />
+          {/* <img src={ncit1} className="img-front" alt="Front" /> */}
         </div>
       </header>
 

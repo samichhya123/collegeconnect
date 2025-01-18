@@ -53,26 +53,10 @@ const colleges = [
     logo: herald,
     path: "/-/herald",
   },
+
+
   {
     id: 12,
-    name: "Ambition College",
-    logo: ambition,
-    path: "/-/ambition",
-  },
-  {
-    id: 13,
-    name: "United College",
-    logo: united,
-    path: "/-/united",
-  },
-  {
-    id: 14,
-    name: "KIST College",
-    logo: kist,
-    path: "/-/kist",
-  },
-  {
-    id: 15,
     name: "Orchid International College",
     logo: orchid,
     path: "/-/orchid",

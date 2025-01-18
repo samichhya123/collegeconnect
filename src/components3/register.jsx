@@ -56,42 +56,44 @@ const Register = () => {
         <div className="form-wrapper-container">
           <form className="register-form" onSubmit={handleRegister}>
             <h2>Register</h2>
-
             <div className="input-group">
-              <input
-                type="text"
-                id="username"
-                placeholder=" "
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-              <label htmlFor="username">Username</label>
-            </div>
+  <input
+    type="email"
+    id="email"
+    placeholder=" "
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    autoComplete="email" // Add this
+    required
+  />
+  <label htmlFor="email">Email</label>
+</div>
 
-            <div className="input-group">
-              <input
-                type="email"
-                id="email"
-                placeholder=" "
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <label htmlFor="email">Email</label>
-            </div>
+<div className="input-group">
+  <input
+    type="text"
+    id="username"
+    placeholder=" "
+    value={username}
+    onChange={(e) => setUsername(e.target.value)}
+    autoComplete="username" // Add this
+    required
+  />
+  <label htmlFor="username">Username</label>
+</div>
 
-            <div className="input-group">
-              <input
-                type="password"
-                id="password"
-                placeholder=" "
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <label htmlFor="password">Password</label>
-            </div>
+<div className="input-group">
+  <input
+    type="password"
+    id="password"
+    placeholder=" "
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    autoComplete="new-password" // Add this
+    required
+  />
+  <label htmlFor="password">Password</label>
+</div>
 
             <button type="submit" className="register-btn1">
               Register
@@ -103,7 +105,7 @@ const Register = () => {
 
           <div className="signInBtn-link">
             <p>
-              Already have an account? <a href="/login">Sign in here</a>
+              Already have an account? <a href="/login" className="register-here">Sign in here</a>
             </p>
           </div>
 

@@ -2,11 +2,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 30px;
+  padding: 10px 30px;
   background: linear-gradient(to right, #f1f5f9, #a1b9c4);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  position: relative;
+  position: fixed;
   border-bottom: 2px solid #c8c4c4;
+width: 100%;
+top: 0;
+left: 0;
+z-index: 1000; 
 }
 
 
@@ -68,7 +72,7 @@
   border-radius: 8px;
   
   padding: 8px 15px; 
-  transition: background-color 0.3s ease, color 0.3s ease; 
+  /* transition: background-color 0.3s ease, color 0.3s ease;  */
 }
 .user-menu {
   display: flex;
@@ -129,7 +133,7 @@
 
   .nav-links-container ul {
     flex-direction: column;
-    position: absolute;
+    /* position: absolute; */
     top: 100%;
     left: 0;
     background-color: #b0bed4;

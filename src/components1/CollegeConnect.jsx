@@ -7,25 +7,25 @@ import Navbar from "./Navbar";
 
 const College = () => {
   const navigate = useNavigate(); 
-  // const bannerImages = [
-  //   { src: "/images/banner1.jpg", path: "/-/Kathford" }, // Make sure the key is `path`
-  //   { src: "/images/banner2.jpg", path: "/page2" }, // Use `path` here as well
-  // ];
+  const bannerImages = [
+    { src: "/images/banner1.jpg", path: "/-/Kathford" }, // Make sure the key is `path`
+    { src: "/images/banner2.jpg", path: "/page2" }, // Use `path` here as well
+  ];
 
-  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
-  //   }, 3000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
+    }, 3000);
 
-  //   return () => clearInterval(interval);
-  // }, [bannerImages.length]);
+    return () => clearInterval(interval);
+  }, [bannerImages.length]);
 
-  // // Function to handle banner clicks
-  // const handleBannerClick = () => {
-  //   navigate(bannerImages[currentImageIndex].path); // Use `path` here instead of `link`
-  // };
+  // Function to handle banner clicks
+  const handleBannerClick = () => {
+    navigate(bannerImages[currentImageIndex].path); // Use `path` here instead of `link`
+  };
 
   return (
     <div className="background-container">
@@ -37,8 +37,8 @@ const College = () => {
             Enjoy our facilities and explore multiple colleges within the Valley.
           </p>
         </div>
-
-        {/* <div className="banner" onClick={handleBannerClick}>
+{/* 
+         <div className="banner" onClick={handleBannerClick}>
           <img
             src={bannerImages[currentImageIndex].src}
             alt={`Banner ${currentImageIndex + 1}`}

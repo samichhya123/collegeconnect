@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./EntranceResult.css";
-import SideBar from "../SideBar";
+import SideBar from "../../components3/SideBar";
 import axios from "axios";
 
 const EntranceResults = () => {
@@ -38,16 +38,30 @@ const EntranceResults = () => {
                 </tr>
               </thead>
               <tbody>
-                {results.map((result, index) => (
-                  <tr key={result.id}>
-                    <td>{index + 1}</td>
-                    <td>{result.name}</td>
-                    <td>{result.score}</td>
-                    <td className={result.status === "Passed" ? "pass" : "fail"}>
-                      {result.status}
+                {results.length > 0 ? (
+                  results.map((result, index) => (
+                    <tr key={result.id}>
+                      <td>{index + 1}</td>
+                      <td>{result.name}</td>
+                      <td>{result.score}</td>
+                      <td
+                        className={result.status === "Passed" ? "pass" : "fail"}
+                      >
+                        {result.status}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      style={{ textAlign: "center", color: "gray" }}
+                    >
+                      The result is in pending process or not available at the
+                      moment.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </section>

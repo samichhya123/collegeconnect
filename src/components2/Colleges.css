@@ -1,13 +1,10 @@
 .background-container {
   background: linear-gradient(to right, #f7fafcda, #bdcedc);
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   font-family: "Arial", sans-serif;
 }
 
 .colleges-container {
-  padding: 40px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-  gap: 0;
+  
+padding-top:100px;
 } 

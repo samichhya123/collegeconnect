@@ -1,34 +1,57 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error state
+    setError("");
 
     try {
       const response = await axios.post("http://localhost:5000/login", {
         email,
         password,
       });
-      console.log(response.data);
+
+      // Save token and user data to localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      alert("Login successful");
-      navigate("/dashboard");
+      // Success toast notification
+      toast.success("Login successful!", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        onClose: () => navigate("/nearby-colleges"), // Navigate to dashboard after toast closes
+      });
     } catch (err) {
-      // Handle error response
       const errorMsg = err.response
-        ? err.response.data.msg
+        ? err.response.data.message || "Login failed. Please try again."
         : "Login failed. Please try again.";
+
+      // Error toast notification
+      toast.error(errorMsg, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
       setError(errorMsg);
       console.error(errorMsg);
     }
@@ -36,8 +59,9 @@ const Login = () => {
 
   return (
     <div className="wrapper">
+      <ToastContainer />
       <div className="form-wrapper-container">
-        <h2>LOGIN </h2>
+        <h2>LOGIN</h2>
         <form onSubmit={handleLogin} className="login-form">
           <div className="input-group">
             <input
@@ -61,7 +85,7 @@ const Login = () => {
             Login
           </button>
         </form>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+
         <div className="signUp-link">
           <p>
             Don't have an account? <a href="/register">Sign up here</a>
