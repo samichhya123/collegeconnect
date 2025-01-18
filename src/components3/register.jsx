@@ -3,8 +3,8 @@ import axios from "axios";
 import "./register.css";
 
 const Register = () => {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -17,8 +17,8 @@ const Register = () => {
 
     try {
       const response = await axios.post("http://localhost:5000/register", {
-        username,
         email,
+        username,
         password,
       });
       setSuccess(response.data.msg); // Show success message
@@ -43,7 +43,7 @@ const Register = () => {
               placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
+              autoComplete="email" // Add this
               required
             />
             <label htmlFor="email">Email</label>
@@ -56,7 +56,7 @@ const Register = () => {
               placeholder=" "
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
+              autoComplete="username" // Add this
               required
             />
             <label htmlFor="username">Username</label>
@@ -69,7 +69,7 @@ const Register = () => {
               placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
+              autoComplete="new-password" // Add this
               required
             />
             <label htmlFor="password">Password</label>
@@ -85,7 +85,10 @@ const Register = () => {
 
         <div className="signInBtn-link">
           <p>
-            Already have an account? <a href="/login" className="register-here">Sign in here</a>
+            Already have an account?{" "}
+            <a href="/login" className="register-here">
+              Sign in here
+            </a>
           </p>
         </div>
       </div>

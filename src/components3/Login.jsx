@@ -11,6 +11,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Handle login response structure
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -21,27 +22,30 @@ const Login = () => {
         password,
       });
 
-      // Save token and user data to localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      // Check if response structure matches
+      const { token, user } = response.data;
+      if (token && user) {
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
 
-      // Success toast notification
-      toast.success("Login successful!", {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        onClose: () => navigate("/nearby-colleges"), 
-      });
+        toast.success("Login successful!", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          onClose: () => navigate("/nearby-colleges"),
+        });
+      } else {
+        throw new Error("Unexpected response structure");
+      }
     } catch (err) {
       const errorMsg = err.response
-        ? err.response.data.message || "Login failed. Please try again."
+        ? err.response.data.msg || "Login failed. Please try again."
         : "Login failed. Please try again.";
 
-      // Error toast notification
       toast.error(errorMsg, {
         position: "top-right",
         autoClose: 3000,

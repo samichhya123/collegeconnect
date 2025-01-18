@@ -60,7 +60,7 @@ const CollegeSearch = () => {
   }
 
   return (
-    <div className="college-form-container">
+    <div className={['college-search-page']}>
       <SideBar />
       <div className="college-form">
         <div className="dashboard-title">User Dashboard</div>
@@ -77,28 +77,24 @@ const CollegeSearch = () => {
             </div>
           ) : (
             <div>
-              <p>
-                Your Location: {location.latitude}, {location.longitude}
-              </p>
-              {/* <button
-                type="button"
-                onClick={fetchNearbyColleges}
-                className="location-button"
-              >
-                Search Nearby Colleges
-              </button> */}
+              <p className="location-info">
+    Your Location: {location.latitude}, {location.longitude}
+</p>
+
             </div>
           )}
         </form>
-  
+
         <h3>Nearby Colleges:</h3>
         <ul className="college-list">
-          {colleges.map((college, index) => (
-            <li key={index} className="college-list-item">
-              {college.collegeInfo.name} - {college.distance} m away
-            </li>
-          ))}
-        </ul>
+       {colleges.slice(0, 3).map((college, index) => (
+    <li key={index} className="college-list-item">
+      {college.collegeInfo.name} - {college.distance} km away
+    </li>
+  ))}
+</ul>
+
+        
       </div>
     </div>
   );
