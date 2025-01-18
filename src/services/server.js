@@ -198,7 +198,7 @@ const upload = multer({ storage });
 app.post("/api/add-college", upload.single("image"), async (req, res) => {
   try {
     const { name, address, valley, latitude, longitude } = req.body;
-    const image_url = req.file ? `/images/${req.file.filename}` : null;
+    const image_url = req.file ? `public/${req.file.filename}` : null;
 
     if (!name || !address || !valley) {
       return res
@@ -230,14 +230,6 @@ app.get("/api/colleges", async (req, res) => {
   }
 });
 
-// User Login
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: "All fields are required." });
-  }
-});
 
 // Add Course API
 app.post("/api/add-course", async (req, res) => {
@@ -414,7 +406,7 @@ app.post("/api/khalti", async (req, res) => {
     };
     const { fullName, amount } = req.body;
     const formData = {
-      return_url: "http://localhost:5001",
+      return_url: "http://localhost:5001/payment-status",
       website_url: "http://localhost:5001",
       amount: amount,
       purchase_order_id: 11,
@@ -447,5 +439,15 @@ app.post("/api/khalti", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.send(err);
+  }
+});
+app.get("/payment-status", async (req, res) => {
+  const { payment_status, purchase_order_id } = req.query;
+
+  // Validate the payment status from Khalti
+  if (payment_status === "Successful") {
+    res.send("<h1>Payment Successful!</h1>");
+  } else {
+    res.send("<h1>Payment Failed!</h1>");
   }
 });
