@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import "./admit.css";
+import axios from 'axios';
 import SideBar from "../../components3/SideBar";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const collegePrograms = {
   "Kathford College": [
     "B.Sc.CSIT",
@@ -56,20 +58,106 @@ const EntranceRegister = () => {
     contact: "",
     college: "",
     program: "",
-    registerDate: "",
-    documents: null,
+    documents: {},
   });
 
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [errors, setErrors] = useState({});
+  const validateForm = () => {
+    const newErrors = {};
 
+    // Validate Photo
+    if (!formData.photo) {
+      newErrors.photo = "Please upload a valid photo.";
+    }
+
+    // Validate Full Name
+    if (!formData.fullName || !/^[a-zA-Z ]+$/.test(formData.fullName)) {
+      newErrors.fullName =
+        "Please enter a valid full name (letters and spaces only).";
+    }
+
+    // Validate Email
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+
+    // Validate Contact Number (10-digit mobile number)
+    if (!formData.contact || !/^(98|97|96)\d{8}$/.test(formData.contact)) {
+      newErrors.contact = "Please enter a valid 10-digit mobile number.";
+    }
+
+    // Validate Documents
+    const requiredDocuments = ["SLC", "Character"];
+    const uploadedDocuments = requiredDocuments.filter(
+      (doc) => formData.documents[doc]
+    );
+
+    if (uploadedDocuments.length < 2) {
+      newErrors.documents =
+        "Please upload both required documents (SEE Mark-Sheet and SLC Transcript).";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    if (validateForm()) {
+      toast.info("Pay for the form first. Redirecting to the payment page...", {
+        autoClose: 3000,
+      });
+  
+      // Prepare the form data to send (including files)
+      const formDataToSend = new FormData();
+      formDataToSend.append('photo', formData.photo);
+      formDataToSend.append('fullName', formData.fullName);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('contact', formData.contact);
+      formDataToSend.append('college', formData.college);
+      formDataToSend.append('program', formData.program);
+      for (const [key, file] of Object.entries(formData.documents)) {
+        formDataToSend.append(key, file);
+      }
+  
+      try {
+        
+        const response = await axios.post('http://localhost:5000/api/entrance-exam', formDataToSend, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        if (response.status === 200) {
+          setTimeout(() => {
+            window.location.href = "/payment";
+          }, 3000);
+        }
+      } catch (error) {
+        toast.error("Error submitting the form, please try again.");
+      }
+    } else {
+      toast.error("Please fill in all required fields and upload the necessary documents.");
+    }
+  };
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files) {
       if (name === "photo") {
-        setFormData({ ...formData, [name]: files[0] });
-        setPhotoPreview(URL.createObjectURL(files[0])); // Preview the selected image
+        const file = files[0];
+        if (file && file.type.startsWith("image/")) {
+          setFormData({ ...formData, [name]: file });
+          setPhotoPreview(URL.createObjectURL(file));
+        } else {
+          setErrors({
+            ...errors,
+            photo: "Invalid file type. Please upload an image.",
+          });
+        }
       } else {
-        setFormData({ ...formData, [name]: files[0] });
+        const category = name.split("_")[1];
+        setFormData({
+          ...formData,
+          documents: { ...formData.documents, [category]: files[0] },
+        });
       }
     } else {
       setFormData({ ...formData, [name]: value });
@@ -83,27 +171,6 @@ const EntranceRegister = () => {
       college: selectedCollege,
       program: "", // Reset program when college changes
     });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const isValid =
-      formData.photo &&
-      formData.fullName &&
-      formData.email &&
-      formData.contact &&
-      formData.college &&
-      formData.program &&
-      formData.registerDate &&
-      formData.documents;
-
-    if (isValid) {
-      alert("Form submitted successfully!");
-      // Add your form submission logic here
-    } else {
-      alert("Please fill in all required fields.");
-    }
   };
 
   return (
@@ -122,7 +189,6 @@ const EntranceRegister = () => {
                   id="photoUpload"
                   name="photo"
                   accept="image/*"
-                  required
                   onChange={handleChange}
                   style={{ display: "none" }}
                 />
@@ -137,6 +203,9 @@ const EntranceRegister = () => {
                     <span className="upload-icon">⬆ Upload Your Picture</span>
                   )}
                 </label>
+                {errors.photo && (
+                  <div className="error-message">{errors.photo}</div>
+                )}
                 <div className="tooltip">Use only passport size photo</div>
               </div>
 
@@ -150,8 +219,10 @@ const EntranceRegister = () => {
                   placeholder="Enter Your Full Name"
                   value={formData.fullName}
                   onChange={handleChange}
-                  required
                 />
+                {errors.fullName && (
+                  <div className="error-message">{errors.fullName}</div>
+                )}
               </div>
 
               {/* Email */}
@@ -164,8 +235,10 @@ const EntranceRegister = () => {
                   placeholder="Enter Your Email Address"
                   value={formData.email}
                   onChange={handleChange}
-                  required
                 />
+                {errors.email && (
+                  <div className="error-message">{errors.email}</div>
+                )}
               </div>
 
               {/* Contact */}
@@ -178,8 +251,10 @@ const EntranceRegister = () => {
                   placeholder="Enter Your Contact Number"
                   value={formData.contact}
                   onChange={handleChange}
-                  required
                 />
+                {errors.contact && (
+                  <div className="error-message">{errors.contact}</div>
+                )}
               </div>
 
               {/* College */}
@@ -192,7 +267,7 @@ const EntranceRegister = () => {
                   onChange={handleCollegeChange}
                   required
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select College
                   </option>
                   {Object.keys(collegePrograms).map((college) => (
@@ -214,7 +289,7 @@ const EntranceRegister = () => {
                   required
                   disabled={!formData.college} // Disable until a college is selected
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select Course
                   </option>
                   {formData.college &&
@@ -226,49 +301,54 @@ const EntranceRegister = () => {
                 </select>
               </div>
 
-              {/* Register Date */}
-              <div className="form-floating">
-                <label htmlFor="registerDate">Register Date</label>
-                <input
-                  type="date"
-                  id="registerDate"
-                  name="registerDate"
-                  value={formData.registerDate}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
               {/* Documents */}
               <div className="form-floating">
-                <label htmlFor="documents">Upload Documents</label>
+                <label htmlFor="documents_SLC">Upload SEE Mark-Sheet </label>
                 <input
                   type="file"
-                  id="documents"
-                  name="documents"
+                  id="documents_SLC"
+                  name="documents_SLC"
                   accept=".pdf, .doc, .docx, .jpg, .png"
-                  required
                   onChange={handleChange}
                 />
               </div>
 
-              <button type="submit" className="btn">
+              <div className="form-floating">
+                <label htmlFor="documents_Character">
+                  Upload SLC Transcipt
+                </label>
+                <input
+                  type="file"
+                  id="documents_Character"
+                  name="documents_Character"
+                  accept=".pdf, .doc, .docx, .jpg, .png"
+                  onChange={handleChange}
+                />
+              </div>
+
+              {errors.documents && (
+                <div className="error-message">{errors.documents}</div>
+              )}
+
+              <button type="submit" className="btn btn-primary">
                 Submit
               </button>
+              <ToastContainer />
             </form>
           </div>
+
           <div className="right">
             <h2>Documents Required</h2>
             <ul>
-              <li>SLC Mark-Sheet</li>
-              <li>SLC- Character Certificate</li>
-              <li>10+2 Transcript</li>
-              <li>10+2 Character Certificate</li>
+              <li>SEE Mark-Sheet</li>
+              <li>SEE Character Certificate</li>
+              <li>SLC Transcript</li>
+              <li>SLC Character Certificate</li>
               <li>
-                <i>Optional: 10+2 Provisional Certificate</i>
+                <i>Optional: SLC Provisional Certificate</i>
               </li>
               <li>
-                <i>Optional: 10+2 Migration Certificate</i>
+                <i>Optional: SLC Migration Certificate</i>
               </li>
             </ul>
           </div>

@@ -99,54 +99,90 @@ app.post("/api/collegedistance", async (req, res) => {
 app.get("/", (req, res) => {
   res.json({ msg: "Welcome to the College Connect API" });
 });
-
-// User Registration
 app.post("/register", async (req, res) => {
   const { username, email, password, role = "user" } = req.body;
 
+  // Check if all required fields are provided
   if (!username || !email || !password) {
-    return res.status(400).json({ error: "All fields are required." });
+    return res.status(400).json({ msg: "All fields are required." });
   }
-});
-app.post("/login", async (req, res) => {
+
   try {
-    const { email, password } = req.body;
+    // Check if email already exists in the database
+    const [
+      existingUser,
+    ] = await db.execute(`SELECT * FROM users WHERE email = ?`, [email]);
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
+    if (existingUser.length > 0) {
+      return res.status(400).json({ msg: "Email already exists." });
     }
 
-    const [users] = await db.query("SELECT * FROM users WHERE email = ?", [
-      email,
-    ]);
-    const user = users[0];
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    const token = jwt.sign(
-      { id: user.id, role: user.role },
-      process.env.JWT_SECRET || "secretkey",
-      { expiresIn: "1h" }
+    // Insert the new user into the database using prepared statement
+    const [
+      result,
+    ] = await db.execute(
+      `INSERT INTO users (email, username, password, role) VALUES (?, ?, ?, ?)`,
+      [email, username, hashedPassword, role]
     );
 
-    res.status(200).json({
-      token,
-      user: { id: user.id, email: user.email, role: user.role },
-    });
-  } catch (error) {
-    console.error("Error in /login:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(201).json({ msg: "User registered successfully!" });
+  } catch (err) {
+    console.error("Error handling request:", err);
+    res.status(500).json({ msg: "Internal server error." });
   }
 });
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if both email and password are provided
+  if (!email || !password) {
+    return res.status(400).json({ msg: "Email and password are required." });
+  }
+
+  try {
+    // Use db.execute to query the database
+    const [results] = await db.execute("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+
+    // Check if user exists
+    if (results.length === 0) {
+      return res.status(401).json({ msg: "Unauthorized: User not found." });
+    }
+
+    const user = results[0];
+
+    // Compare the hashed password with the provided password
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ msg: "Unauthorized: Incorrect password." });
+    }
+
+    // Generate a token
+    const token = jwt.sign({ userId: user.id }, "your_jwt_secret", {
+      expiresIn: "1h",
+    });
+
+    // Successfully authenticated, send token and user info
+    res.status(200).json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        // other user details
+      },
+    });
+  } catch (err) {
+    console.error("Error handling request:", err);
+    res.status(500).json({ msg: "Internal server error." });
+  }
+});
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "public/images")); // Ensure 'public/images' directory exists
@@ -286,26 +322,73 @@ app.get("/api/entrance-results", async (req, res) => {
   }
 });
 
-// Register a Candidate
-app.post("/api/entrance-register", async (req, res) => {
-  const { name, score, status } = req.body;
+// API endpoint to handle form submission
+app.post(
+  "/api/entrance-exam",
+  upload.fields([
+    { name: "photo" },
+    { name: "documents_SLC" },
+    { name: "documents_Character" },
+  ]),
+  (req, res) => {
+    const { fullName, email, contact, college, program } = req.body;
+    const photo = req.files["photo"] ? req.files["photo"][0].path : null;
+    const documents = {
+      SLC: req.files["documents_SLC"]
+        ? req.files["documents_SLC"][0].path
+        : null,
+      Character: req.files["documents_Character"]
+        ? req.files["documents_Character"][0].path
+        : null,
+    };
 
-  if (!name || score === undefined || !status) {
-    return res.status(400).json({ error: "All fields are required." });
-  }
+    // Insert form data into the entrance_exam_form table
+    const query = `
+    INSERT INTO entrance_exam_form (full_name, email, contact_number, college_name, program_name, documents_uploaded)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
 
-  try {
-    await db.query(
-      "INSERT INTO entrance_results (name, score, status) VALUES (?, ?, ?)",
-      [name, score, status]
+    db.query(
+      query,
+      [
+        fullName,
+        email,
+        contact,
+        college,
+        program,
+        Object.keys(documents).length,
+      ],
+      (err, result) => {
+        if (err) {
+          console.error("Error inserting form data:", err);
+          return res.status(500).json({ message: "Error inserting form data" });
+        }
+
+        // Update the entrance_exam_form record with file paths for documents
+        const formId = result.insertId;
+        const updateQuery = `
+        UPDATE entrance_exam_form
+        SET photo = ?, documents_SLC = ?, documents_Character = ?
+        WHERE id = ?
+      `;
+
+        db.query(
+          updateQuery,
+          [photo, documents.SLC, documents.Character, formId],
+          (err) => {
+            if (err) {
+              console.error("Error updating form data with files:", err);
+              return res
+                .status(500)
+                .json({ message: "Error updating form data with files" });
+            }
+            res.status(200).json({ message: "Form submitted successfully" });
+          }
+        );
+      }
     );
-
-    res.json({ msg: "Candidate registered successfully!" });
-  } catch (err) {
-    console.error("Error registering candidate:", err);
-    res.status(500).json({ error: "Error registering candidate. Try again." });
   }
-});
+);
 
 // Start the server
 const server = app.listen(port, () => {
