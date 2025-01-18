@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-
 import "./register.css";
+
 const Register = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");

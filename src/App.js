@@ -1,11 +1,10 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PrivateRoute from "./services/PrivateRoute";
 import CollegeConnect from "./components1/CollegeConnect";
 import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
-import Blog from "./components1/blogData";
+import Blog from "./components1/Blogdata";
 import Login from "./components3/Login";
 import Dashboard from "./components3/admin/Dashboard";
 import Register from "./components3/register";
@@ -69,6 +68,7 @@ import BcaCourse from "./components1/coursesinfo/BcaCourse";
 import AdminDashboard from "./components3/admin/AdminDash";
 import AdminCourseForm from "./components3/admin/adminCourses";
 import NearbyCollegesForm from "./template/algorithm/nearbyCollegesForm";
+import EntranceExamList from "./components3/admin/adminEntrance";
 
 function App() {
   return (
@@ -139,17 +139,10 @@ function App() {
 
           <Route path="/kathmandu" element={<Kathmandu />} />
 
-          <Route
-            path="/home"
-            element={
-              <PrivateRoute>
-                <Colleges />
-              </PrivateRoute>
-            }
-          />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admincolleges" element={<AdminColleges />} />
           <Route path="/admincourses" element={<AdminCourseForm />} />
+          <Route path="/adminentrance" element={<EntranceExamList />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/payment" element={<PaymentPage />} />

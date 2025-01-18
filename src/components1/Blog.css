@@ -6,7 +6,7 @@
 
 .blog-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Adjusted to always have 3 columns */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   padding-top: 120px;
 }
@@ -17,6 +17,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .article img {
@@ -24,6 +25,7 @@
   height: auto;
   border-radius: 8px;
   margin-bottom: 10px;
+  /* padding: 30px; */
 }
 
 .article:hover {
@@ -92,6 +94,7 @@
   position: relative;
   width: 80%;
   max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .blog-detail-content img {
@@ -99,4 +102,96 @@
   height: auto;
   border-radius: 8px;
   margin-bottom: 10px;
+}
+
+.blog-detail-content p {
+  color: #6a1b9a;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.8;
+  text-align: justify;
+  background-color: #f3e5f5;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.blog-card[data-id="1"] {
+  border: 2px solid #6a1b9a;
+  background: linear-gradient(135deg, #f3e5f5, #ede7f6);
+  transform: scale(1.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-card[data-id="1"] img {
+  border: 3px solid #6a1b9a;
+  border-radius: 12px;
+}
+
+.blog-card[data-id="1"]:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 20px rgba(106, 27, 154, 0.3);
+}
+
+.blog-card[data-id="1"] .blog-card-title {
+  color: #6a1b9a;
+  font-size: 22px;
+  text-decoration: underline;
+}
+
+.blog-card[data-id="1"] .blog-card-description {
+  color: #4a148c;
+  font-weight: 500;
+}
+
+.blog-card[data-id="1"] button {
+  background-color: #8e24aa;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.blog-card[data-id="1"] button:hover {
+  background-color: #6a1b9a;
+  transform: translateY(-5px);
+}
+
+.blog-detail-content h2 {
+  font-size: 1.8rem;
+  color: #6a1b9a;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 15px;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  line-height: 1.4;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.blog-detail-content button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff4081;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.blog-detail-content button:hover {
+  background-color: #f50057;
+  transform: scale(1.1);
+}
+
+.blog-detail-content button:focus {
+  outline: none;
 }

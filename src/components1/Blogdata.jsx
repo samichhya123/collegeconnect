@@ -25,7 +25,7 @@ const Blogs = () => {
     {
       id: 1,
       title: "Choosing the Right College in Nepal",
-      content: "Navigating through the choices...",
+      content: "Navigating through the choices of colleges in Nepal can be both exciting and challenging. With an abundance of institutions offering a variety of programs across disciplines, students often find it overwhelming to identify the right fit. It is essential to evaluate factors such as accreditation, which ensures the institution meets recognized academic standards, and the expertise of the faculty, as their qualifications and teaching methods play a crucial role in shaping the learning experience.",
       imageSrc: image1,
     },
     {

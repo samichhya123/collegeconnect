@@ -2,19 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const PaymentStatus = () => {
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Loading...");
   const location = useLocation();
 
   useEffect(() => {
-    const query = new URLSearchParams(location.search);
-    const paymentStatus = query.get("payment_status");
 
-    if (paymentStatus === "Successful") {
-      setStatus("Payment Successful!");
-    } else {
+    const query = new URLSearchParams(location.search);
+    const paymentStatus = query.get("status"); 
+
+    if (paymentStatus === "Completed") {
+      setStatus("Payment Completed!");
+    } else if (paymentStatus === "Failed") {
       setStatus("Payment Failed!");
+    } else {
+      setStatus("Unknown Payment Status");
     }
-  }, [location.search]);
+  }, [location.search]); 
 
   return (
     <div>

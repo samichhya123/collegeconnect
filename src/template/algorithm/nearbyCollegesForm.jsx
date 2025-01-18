@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SideBar from "../../components3/SideBar";
+import "./new.css";
 
 const CollegeSearch = () => {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
@@ -18,12 +19,12 @@ const CollegeSearch = () => {
         (error) => {
           console.error("Error getting location:", error);
           alert("Unable to retrieve your location. Please enter it manually.");
-          setLoading(false); // Stop loading on error
+          setLoading(false); 
         }
       );
     } else {
       alert("Geolocation is not supported by this browser.");
-      setLoading(false); // Stop loading if geolocation is not supported
+      setLoading(false); 
     }
   };
 
@@ -43,7 +44,6 @@ const CollegeSearch = () => {
     }
   };
 
-  // UseEffect to get user location when the component mounts
   useEffect(() => {
     getUserLocation();
   }, []);
@@ -64,7 +64,6 @@ const CollegeSearch = () => {
       <div className="college-form">
         <div className="dashboard-title">User Dashboard</div>
         <form className="form">
-          {/* Show a confirmation button to get user's location */}
           {!location.latitude && !location.longitude ? (
             <div>
               <button
@@ -80,13 +79,6 @@ const CollegeSearch = () => {
               <p>
                 Your Location: {location.latitude}, {location.longitude}
               </p>
-              <button
-                type="button"
-                onClick={fetchNearbyColleges}
-                className="location-button"
-              >
-                Search Nearby Colleges
-              </button>
             </div>
           )}
         </form>
@@ -102,7 +94,6 @@ const CollegeSearch = () => {
       </div>
     </div>
   );
-  
 };
 
 export default CollegeSearch;

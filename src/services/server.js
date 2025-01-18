@@ -7,23 +7,18 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
 require("dotenv").config();
-
-// const { processInput, matchRules } = require("./nlp-rules");
+const KHALTI_SECRET_KEY = process.env.KHALTI_SECRET_KEY;
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Import routes
-const collegeAdminRoutes = require("./routes/collegeAdminRoutes");
-const collegeRoutes = require("./routes/collegeRoutes");
-const courseAdminRoutes = require("./routes/courseAdminRoutes");
-const courseRoutes = require("./routes/courseRoutes");
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // Ensure 'public' directory exists
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Logger Middleware
 app.use((req, res, next) => {
@@ -39,7 +34,6 @@ const db = mysql.createPool({
   database: process.env.DB_NAME || "collegeconnect",
 });
 
-// Test the DB connection
 (async () => {
   try {
     const connection = await db.getConnection();
@@ -47,10 +41,13 @@ const db = mysql.createPool({
     connection.release();
   } catch (err) {
     console.error("Error connecting to MySQL:", err);
-    process.exit(1); // Exit process if DB connection fails
+    process.exit(1);
   }
 })();
-
+const uploadsPath = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath);
+}
 // Haversine formula to calculate distance between two coordinates
 function haversine(lat1, lon1, lat2, lon2) {
   const R = 6371; // Radius of Earth in kilometers
@@ -102,13 +99,11 @@ app.get("/", (req, res) => {
 app.post("/register", async (req, res) => {
   const { username, email, password, role = "user" } = req.body;
 
-  // Check if all required fields are provided
   if (!username || !email || !password) {
     return res.status(400).json({ msg: "All fields are required." });
   }
 
   try {
-    // Check if email already exists in the database
     const [
       existingUser,
     ] = await db.execute(`SELECT * FROM users WHERE email = ?`, [email]);
@@ -116,11 +111,7 @@ app.post("/register", async (req, res) => {
     if (existingUser.length > 0) {
       return res.status(400).json({ msg: "Email already exists." });
     }
-
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insert the new user into the database using prepared statement
     const [
       result,
     ] = await db.execute(
@@ -138,43 +129,34 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  // Check if both email and password are provided
   if (!email || !password) {
     return res.status(400).json({ msg: "Email and password are required." });
   }
 
   try {
-    // Use db.execute to query the database
     const [results] = await db.execute("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
 
-    // Check if user exists
     if (results.length === 0) {
       return res.status(401).json({ msg: "Unauthorized: User not found." });
     }
-
     const user = results[0];
-
-    // Compare the hashed password with the provided password
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ msg: "Unauthorized: Incorrect password." });
     }
 
-    // Generate a token
     const token = jwt.sign({ userId: user.id }, "your_jwt_secret", {
       expiresIn: "1h",
     });
 
-    // Successfully authenticated, send token and user info
     res.status(200).json({
       token,
       user: {
         id: user.id,
         email: user.email,
-        // other user details
       },
     });
   } catch (err) {
@@ -182,20 +164,31 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ msg: "Internal server error." });
   }
 });
-
-const storage = multer.diskStorage({
+// Storage for multiple files
+const storageMultiple = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "public/images")); // Ensure 'public/images' directory exists
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `${uniqueSuffix}-${file.originalname}`);
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage });
+const uploadMultiple = multer({ storage: storageMultiple });
 
+// Static file serving for uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+const storageSingle = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const uploadSingle = multer({ storage: storageSingle });
 // Add College API
-app.post("/api/add-college", upload.single("image"), async (req, res) => {
+app.post("/api/add-college", uploadSingle.single("image"), async (req, res) => {
   try {
     const { name, address, valley, latitude, longitude } = req.body;
     const image_url = req.file ? `public/${req.file.filename}` : null;
@@ -208,16 +201,19 @@ app.post("/api/add-college", upload.single("image"), async (req, res) => {
 
     await db.query(
       "INSERT INTO admin_colleges (name, address, valley, latitude, longitude, image_url) VALUES (?, ?, ?, ?, ?, ?)",
-      [name, address, valley, latitude, longitude, image_url]
+      [name, address, valley, latitude || null, longitude || null, image_url]
     );
 
     res.status(200).json({ message: "College added successfully!" });
   } catch (error) {
     console.error("Error adding college:", error.message);
-    res.status(500).json({ message: "Error adding college" });
+    res
+      .status(500)
+      .json({ message: "Error adding college", error: error.message });
   }
 });
 
+// Get Colleges API
 app.get("/api/colleges", async (req, res) => {
   try {
     const [colleges] = await db.query(
@@ -229,7 +225,6 @@ app.get("/api/colleges", async (req, res) => {
     res.status(500).send("Error fetching colleges");
   }
 });
-
 
 // Add Course API
 app.post("/api/add-course", async (req, res) => {
@@ -254,7 +249,7 @@ app.post("/api/add-course", async (req, res) => {
   }
 });
 
-// Additional APIs
+// Get Statistics APIs
 app.get("/api/users/count", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT COUNT(*) AS count FROM users");
@@ -276,10 +271,11 @@ app.get("/api/colleges/count", async (req, res) => {
     res.status(500).json({ message: "Error fetching college count" });
   }
 });
+
 app.get("/api/courses/count", async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT COUNT(*) AS count FROM admin_coursess"
+      "SELECT COUNT(*) AS count FROM admin_courses"
     );
     res.json({ count: rows[0].count });
   } catch (err) {
@@ -287,10 +283,11 @@ app.get("/api/courses/count", async (req, res) => {
     res.status(500).json({ message: "Error fetching course count" });
   }
 });
+
 app.get("/api/valley-frequency", async (req, res) => {
   try {
     const [rows] = await db.query(
-      `SELECT valley, COUNT(*) AS frequency FROM admin_colleges GROUP BY valley`
+      "SELECT valley, COUNT(*) AS frequency FROM admin_colleges GROUP BY valley"
     );
     res.json(rows);
   } catch (err) {
@@ -299,112 +296,146 @@ app.get("/api/valley-frequency", async (req, res) => {
   }
 });
 
-// Fetch Entrance Results
-app.get("/api/entrance-results", async (req, res) => {
-  try {
-    const [results] = await db.query(
-      "SELECT id, name, score, status FROM entrance_results"
-    );
-    res.json({ msg: "Success", data: results });
-  } catch (err) {
-    console.error("Error fetching entrance results:", err);
-    res
-      .status(500)
-      .json({ error: "Error fetching results. Please try again later." });
-  }
-});
-
-// API endpoint to handle form submission
+// Entrance Exam API
 app.post(
-  "/api/entrance-exam",
-  upload.fields([
-    { name: "photo" },
-    { name: "documents_SLC" },
-    { name: "documents_Character" },
+  "/api/add-entrance-exam",
+  uploadMultiple.fields([
+    { name: "photo", maxCount: 1 },
+    { name: "documents_SLC", maxCount: 1 },
+    { name: "documents_Character", maxCount: 1 },
   ]),
-  (req, res) => {
-    const { fullName, email, contact, college, program } = req.body;
-    const photo = req.files["photo"] ? req.files["photo"][0].path : null;
-    const documents = {
-      SLC: req.files["documents_SLC"]
-        ? req.files["documents_SLC"][0].path
-        : null,
-      Character: req.files["documents_Character"]
-        ? req.files["documents_Character"][0].path
-        : null,
-    };
-
-    // Insert form data into the entrance_exam_form table
-    const query = `
-    INSERT INTO entrance_exam_form (full_name, email, contact_number, college_name, program_name, documents_uploaded)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
-
-    db.query(
-      query,
-      [
+  async (req, res) => {
+    try {
+      const {
         fullName,
         email,
         contact,
         college,
         program,
-        Object.keys(documents).length,
-      ],
-      (err, result) => {
-        if (err) {
-          console.error("Error inserting form data:", err);
-          return res.status(500).json({ message: "Error inserting form data" });
-        }
+        documentsUploaded,
+        paymentStatus,
+        admitCardStatus,
+        paymentDate,
+        applicationDate,
+      } = req.body;
 
-        // Update the entrance_exam_form record with file paths for documents
-        const formId = result.insertId;
-        const updateQuery = `
-        UPDATE entrance_exam_form
-        SET photo = ?, documents_SLC = ?, documents_Character = ?
-        WHERE id = ?
-      `;
+      const photo = req.files["photo"]
+        ? `uploads/${req.files["photo"][0].filename}`
+        : null;
+      const documents_SLC = req.files["documents_SLC"]
+        ? `uploads/${req.files["documents_SLC"][0].filename}`
+        : null;
+      const documents_Character = req.files["documents_Character"]
+        ? `uploads/${req.files["documents_Character"][0].filename}`
+        : null;
 
-        db.query(
-          updateQuery,
-          [photo, documents.SLC, documents.Character, formId],
-          (err) => {
-            if (err) {
-              console.error("Error updating form data with files:", err);
-              return res
-                .status(500)
-                .json({ message: "Error updating form data with files" });
-            }
-            res.status(200).json({ message: "Form submitted successfully" });
-          }
-        );
+      if (!fullName || !email || !contact || !college || !program) {
+        return res.status(400).json({
+          message:
+            "Full name, email, contact, college, and program are required",
+        });
       }
-    );
+
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        return res.status(400).json({ message: "Invalid email format" });
+      }
+
+      if (!/^\d{10}$/.test(contact)) {
+        return res.status(400).json({ message: "Invalid contact number" });
+      }
+
+      // Insert form data into the database
+      await db.query(
+        "INSERT INTO entrance_exam_form (profile_image_path, full_name, email, contact_number, college_name, program_name, documents_uploaded, payment_status, admit_card_status, payment_date, application_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+          photo,
+          fullName,
+          email,
+          contact,
+          college,
+          program,
+          documents_SLC ? `${documents_SLC}, ${documents_Character}` : null,
+          documentsUploaded || null,
+          paymentStatus || "Pending",
+          admitCardStatus || "Not Issued",
+          paymentDate || null,
+          applicationDate || new Date().toISOString(),
+        ]
+      );
+
+      res
+        .status(200)
+        .json({ message: "Entrance exam form submitted successfully" });
+    } catch (err) {
+      console.error("Error adding entrance exam form:", err);
+      res
+        .status(500)
+        .json({ message: "Error submitting form", error: err.message });
+    }
   }
 );
 
-// Start the server
-const server = app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+// Update Payment Status
+app.post("/api/update-payment-status", (req, res) => {
+  const { id, status } = req.body;
 
-// Error handling for address in use
-server.on("error", (err) => {
-  if (err.code === "EADDRINUSE") {
-    console.log(`Port ${port} is already in use. Trying another port...`);
-    app.listen(port + 1, () => {
-      console.log(`Server running on http://localhost:${port + 1}`);
-    });
+  if (!id || !status) {
+    return res.status(400).json({ error: "ID and status are required" });
   }
+
+  db.query(
+    "UPDATE entrance_exam_form SET payment_status = ?, payment_date = NOW() WHERE id = ?",
+    [status, id],
+    (err) => {
+      if (err) {
+        console.error("Error updating payment status:", err);
+        res.status(500).json({ error: "Failed to update payment status." });
+      } else {
+        res
+          .status(200)
+          .json({ message: "Payment status updated successfully." });
+      }
+    }
+  );
 });
 
-// Khalti Payment Gateway
+// Generate Admit Card
+app.post("/api/generate-admit-card", (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "ID is required" });
+  }
+
+  db.query(
+    "UPDATE entrance_exam_form SET admit_card_status = 'Generated' WHERE id = ?",
+    [id],
+    (err) => {
+      if (err) {
+        console.error("Error generating admit card:", err);
+        res.status(500).json({ error: "Failed to generate admit card." });
+      } else {
+        res.status(200).json({ message: "Admit card generated successfully." });
+      }
+    }
+  );
+});
+
+// Khalti Payment API
 app.post("/api/khalti", async (req, res) => {
   try {
     const headers = {
-      Authorization: `Key a20555db9286437bbd7cf857ab9489d8`,
+      Authorization: `Key ${KHALTI_SECRET_KEY}`,
       "Content-Type": "application/json",
     };
     const { fullName, amount } = req.body;
+
+    if (!fullName || !amount) {
+      return res
+        .status(400)
+        .json({ message: "Full name and amount are required" });
+    }
+
     const formData = {
       return_url: "http://localhost:5001/payment-status",
       website_url: "http://localhost:5001",
@@ -415,39 +446,41 @@ app.post("/api/khalti", async (req, res) => {
         name: "collegeConnect_Customer",
       },
     };
+
     const response = await axios.post(
       "https://a.khalti.com/api/v2/epayment/initiate/",
       formData,
-      {
-        headers,
-      }
+      { headers }
     );
-    console.log(response.data);
+
     if (response.data) {
       res.json({
-        message: "khalti success",
+        message: "Khalti initiation successful",
         payment_method: "khalti",
         data: response.data,
       });
     } else {
-      res.json({
-        message: "khalti unsuccess",
+      res.status(400).json({
+        message: "Khalti initiation failed",
         payment_method: "khalti",
-        data: "",
       });
     }
   } catch (err) {
-    console.log(err);
-    res.send(err);
+    console.error("Khalti API error:", err);
+    res.status(500).json({ message: "Server Error", error: err.message });
   }
 });
-app.get("/payment-status", async (req, res) => {
-  const { payment_status, purchase_order_id } = req.query;
 
-  // Validate the payment status from Khalti
-  if (payment_status === "Successful") {
-    res.send("<h1>Payment Successful!</h1>");
-  } else {
-    res.send("<h1>Payment Failed!</h1>");
+// Start the Server
+const server = app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.log(`Port ${port} is already in use. Trying another port...`);
+    app.listen(port + 1, () => {
+      console.log(`Server running on http://localhost:${port + 1}`);
+    });
   }
 });

@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: linear-gradient(120deg, #ff9a9e, #fad0c4);
+    color: rgb(135, 8, 135);
+    font-family: 'Roboto', sans-serif, 'Poppins', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 300px;
+}
+
+.college-form-container {
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: linear-gradient(120deg, #ff9a9e, #fad0c4, #fbc2eb);
+}
+
+.sidebar {
+    flex: 0 0 250px;
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 20px;
+    text-align: center;
+    border-right: 1px solid #34495e;
+}
+
+.sidebar h2 {
+    font-size: 1.8rem;
+    color: #ecf0f1;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+}
+
+.sidebar p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.college-form {
+    flex: 1;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    margin: 40px auto;
+    max-width: 900px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #6c5ce7;
+    text-align: center;
+    margin-bottom: 25px;
+    position: relative;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.dashboard-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.location-button {
+    background: linear-gradient(135deg, #fd79a8, #e84393);
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.location-button:hover {
+    background: linear-gradient(135deg, #e84393, #fd79a8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.location-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 121, 168, 0.3);
+}
+
+p {
+    font-size: 1.2rem;
+    color: #636e72;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.college-list {
+    margin-top: 30px;
+    padding: 0;
+    list-style: none;
+}
+
+.college-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #dfe6e9;
+    padding: 18px 20px;
+    margin: 10px 0;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.college-list-item:hover {
+    background: #ffeaa7;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.college-list-item span {
+    font-weight: 600;
+    color: #fd79a8;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
