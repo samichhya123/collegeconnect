@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./services/PrivateRoute";
-import CollegeConnect from "./components1/collegeConnect";
+import CollegeConnect from "./components1/CollegeConnect";
 import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
 import Blog from "./components1/blogData";
@@ -65,7 +65,7 @@ import PaymentPage from "./template/payment/PaymentPage";
 import EntranceResults from "./template/entranceresult/EntranceResult";
 import EntranceRegister from "./template/entranceRegister/EntranceRegister";
 import BcaCourse from "./components1/coursesinfo/BcaCourse";
-import CollegeSearch from "./template/collegeSearch";
+
 import AdminDashboard from "./components3/admin/AdminDash";
 import AdminCourseForm from "./components3/admin/adminCourses";
 import NearbyCollegesForm from "./template/algorithm/nearbyCollegesForm";
@@ -155,7 +155,6 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/registration" element={<EntranceRegister />} />
           <Route path="/result" element={<EntranceResults />} />
-          <Route path="/college-search" element={<CollegeSearch />} />
           <Route path="/nearby-colleges" element={<NearbyCollegesForm />} />
         </Routes>
       </Router>

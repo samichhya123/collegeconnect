@@ -34,7 +34,7 @@ const Login = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        onClose: () => navigate("/nearby-colleges"), // Navigate to dashboard after toast closes
+        onClose: () => navigate("/nearby-colleges"), 
       });
     } catch (err) {
       const errorMsg = err.response

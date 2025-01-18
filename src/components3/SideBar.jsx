@@ -28,12 +28,12 @@ const SideBar = () => {
       icon: "fa-credit-card",
       path: "/payment",
     },
-    {
-      name: "result",
-      label: "Entrance Result",
-      icon: "fa-file-alt",
-      path: "/result",
-    },
+    // {
+    //   name: "result",
+    //   label: "Entrance Result",
+    //   icon: "fa-file-alt",
+    //   path: "/result",
+    // },
   ];
 
   // Update active menu based on the current route

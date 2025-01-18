@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-
-
-// import './admit.css';
+import axios from 'axios'; // Make sure axios is imported
 
 const EntranceExamForm = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +7,7 @@ const EntranceExamForm = () => {
     fullName: '',
     email: '',
     contact: '',
-    college: 'kathford',
+    college: 'Kathford',
     program: 'bbs',
     examDate: '',
     timeSlot: 'slot1',
@@ -18,6 +16,7 @@ const EntranceExamForm = () => {
 
   const [photoPreview, setPhotoPreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false); // New state for payment success
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -33,7 +32,27 @@ const EntranceExamForm = () => {
     }
   };
 
- 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Send payment request to backend
+    try {
+      const response = await axios.post("/api/khalti", {
+        fullName: formData.fullName,
+        amount: 1000, // Example amount, you can set this dynamically
+      });
+
+      if (response.data.success) {
+        setPaymentSuccess(true); // Set payment success to true
+        setSubmitted(true); // Show admit card section
+      } else {
+        alert('Payment failed! Please try again.');
+      }
+    } catch (error) {
+      console.log('Payment Error:', error);
+      alert('Something went wrong. Please try again.');
+    }
+  };
 
   const resetForm = () => {
     setFormData({
@@ -49,27 +68,15 @@ const EntranceExamForm = () => {
     });
     setPhotoPreview(null);
     setSubmitted(false);
+    setPaymentSuccess(false); // Reset payment success on form reset
   };
-  const sendEmail = (base64Image) => {
-    const templateParams = {
-      from_name: 'Admin',
-      to_name: formData.fullName, // Replace with recipient's name
-      message: 'Please find the attached admit card.',
-      reply_to: formData.email,
-      image: base64Image,
-    };
-
-   
-  };
-
-  
 
   return (
     <div className="Admission-section">
-      {!submitted ? (
+      {!paymentSuccess && !submitted ? (
         <div className="left-right">
           <div className="left">
-            <form className="form-container" >
+            <form className="form-container" onSubmit={handleSubmit}>
               <h2>Entrance Exam Form</h2>
 
               {/* Upload Your Picture Section */}
@@ -139,16 +146,7 @@ const EntranceExamForm = () => {
                   <option value="Kathford College">Kathford College</option>
                   <option value="Kist College">Kist College</option>
                   <option value="Prime College">Prime College</option>
-                  <option value="Orchid College">Orchid College</option>
-                  <option value="Deerwalk Institute Of Technology">Deerwalk Institute Of Technology</option>
-                  <option value="Herald College">Herald College</option>
-                  <option value="bsc-it">NCIT College</option>
-                  <option value="bcsit">ISMT College</option>
-                  <option value="bsc-hons-computing">St. Xavier's College</option>
-                  <option value="bit">GoldenGate International College</option>
-                  <option value="bim">Quest International College</option>
-                  <option value="be-computer">Patan Multiple Campus</option>
-                  <option value="be-arch">Nagarjun College Of Information Technology</option>
+                  {/* Add more colleges here */}
                 </select>
               </div>
 
@@ -164,17 +162,7 @@ const EntranceExamForm = () => {
                   <option value="BBS">BBS</option>
                   <option value="BBM">BBM</option>
                   <option value="BBA">BBA</option>
-                  <option value="BHM">BHM</option>
-                  <option value="B.Sc.CSIT">B.Sc.CSIT</option>
-                  <option value="BCA">BCA</option>
-                  <option value="BSc.IT">BSc.IT</option>
-                  <option value="BCSIT">BCSIT</option>
-                  <option value="BSc (Hons) Computing">BSc (Hons) Computing</option>
-                  <option value="BIT">BIT</option>
-                  <option value="BIM">BIM</option>
-                  <option value="BE Compute">BE Computer</option>
-                  <option value="BE Architecture">BE Architecture</option>
-                  <option value="BE Civil">BE Civil</option>
+                  {/* Add more programs here */}
                 </select>
               </div>
 
@@ -202,7 +190,6 @@ const EntranceExamForm = () => {
                   <option value="9:00 - 10:00 AM">9:00 - 10:00 AM</option>
                   <option value="10:00 - 11:00 AM">10:00 - 11:00 AM</option>
                   <option value="11:00 - 12:00 PM">11:00 - 12:00 PM</option>
-    
                 </select>
               </div>
 
@@ -221,8 +208,6 @@ const EntranceExamForm = () => {
               <button type="submit" className="btn">Submit</button>
             </form>
           </div>
-
-          
         </div>
       ) : (
         <div className="admit-card" id='admitCard'>

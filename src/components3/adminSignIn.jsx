@@ -78,7 +78,6 @@ const Login = () => {
   };
 
   return (
-<<<<<<< HEAD
     <>
       <div className="w-full min-h-screen bg-[#E8F8F5] flex items-center justify-center p-4">
         <div className="w-full max-w-4xl bg-[#a7e8dc] flex flex-col md:flex-row items-center mx-auto rounded-lg overflow-hidden">
@@ -93,13 +92,15 @@ const Login = () => {
             <h2 className="text-3xl font-bold text-[#2C3E50] text-center">
               Admin Login Portal
             </h2>
-            <form className="space-y-6 mt-8 flex flex-col">
+            <form className="space-y-6 mt-8 flex flex-col" onSubmit={handleLogin}>
               <div>
                 <label className="block text-[#2C3E50] font-medium mb-2">
                   Username*
                 </label>
                 <input
                   type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-[400px] p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"
                   placeholder="Enter your username"
                 />
@@ -110,6 +111,8 @@ const Login = () => {
                 </label>
                 <input
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-[400px] p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"
                   placeholder="Enter your password"
                 />
@@ -138,44 +141,18 @@ const Login = () => {
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-[#2C3E50] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"onClick={() => navigate("/admin")}
+                  className="w-full bg-[#2C3E50] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C3E50]"
                 >
                   Login to my account
                 </button>
               </div>
             </form>
-=======
-    <div className="wrapper">
-      <ToastContainer />
-      <div className="form-wrapper-container">
-        <h2>ADMIN LOGIN</h2>
-        <form onSubmit={handleLogin} className="login-form">
-          <div className="input-group">
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            {error && <p style={{ color: "red" }}>{error}</p>}
           </div>
-          <div className="input-group">
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
->>>>>>> 2618431dd9ec4322b9827b176a4af62159fe0f72
-          </div>
-          <button type="submit" className="login-btn1">
-            Login
-          </button>
-        </form>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
       </div>
-    </div>
+      <ToastContainer />
+    </>
   );
 };
 
