@@ -14,19 +14,27 @@ const CollegeSearch = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
+          setLocation({ 
+            latitude: latitude.toFixed(5), 
+            longitude: longitude.toFixed(5) 
+          });
         },
         (error) => {
           console.error("Error getting location:", error);
           alert("Unable to retrieve your location. Please enter it manually.");
-          setLoading(false); 
+          setLoading(false);
         }
       );
     } else {
       alert("Geolocation is not supported by this browser.");
-      setLoading(false); 
+      setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    getUserLocation();
+  }, []);
+  
 
   // Fetch nearby colleges based on user's location
   const fetchNearbyColleges = async () => {
@@ -45,10 +53,6 @@ const CollegeSearch = () => {
   };
 
   useEffect(() => {
-    getUserLocation();
-  }, []);
-
-  useEffect(() => {
     if (location.latitude && location.longitude) {
       fetchNearbyColleges();
     }
@@ -59,7 +63,7 @@ const CollegeSearch = () => {
   }
 
   return (
-    <div className="college-form-container">
+    <div className={["college-search-page"]}>
       <SideBar />
       <div className="college-form">
         <div className="dashboard-title">User Dashboard</div>
@@ -76,18 +80,18 @@ const CollegeSearch = () => {
             </div>
           ) : (
             <div>
-              <p>
+              <p className="location-info">
                 Your Location: {location.latitude}, {location.longitude}
               </p>
             </div>
           )}
         </form>
-  
+
         <h3>Nearby Colleges:</h3>
         <ul className="college-list">
-          {colleges.map((college, index) => (
+          {colleges.slice(0, 3).map((college, index) => (
             <li key={index} className="college-list-item">
-              {college.collegeInfo.name} - {college.distance} m away
+              {college.collegeInfo.name} - {college.distance} km away
             </li>
           ))}
         </ul>

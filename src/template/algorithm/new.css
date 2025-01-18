@@ -6,16 +6,18 @@
     scroll-behavior: smooth;
 }
 
-body {
-    background: linear-gradient(120deg, #ff9a9e, #fad0c4);
+.college-search-page {
     color: rgb(135, 8, 135);
     font-family: 'Roboto', sans-serif, 'Poppins', sans-serif;
     font-size: 16px;
     line-height: 1.6;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    font-weight: 300px;
-}
+    font-weight: 300;
+    display: flex;
+    width: 100%;
+    /* background-color: pink */
+  }
 
 .college-form-container {
     display: flex;
@@ -49,11 +51,11 @@ body {
 .college-form {
     flex: 1;
     padding: 40px;
-    background: #ffffff;
+    /* background: gold; */
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    margin: 40px auto;
-    max-width: 900px;
+    margin-left:15%;
+    width: 60%;
     animation: fadeIn 0.8s ease-in-out;
 }
 
@@ -119,7 +121,7 @@ p {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
+    background: #ffeaa7;
     border: 1px solid #dfe6e9;
     padding: 18px 20px;
     margin: 10px 0;
@@ -130,10 +132,12 @@ p {
 }
 
 .college-list-item:hover {
-    background: #ffeaa7;
+    background: #dd92da;
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    color: rgb(11, 7, 239); 
 }
+
 
 .college-list-item span {
     font-weight: 600;
@@ -150,3 +154,58 @@ p {
         transform: translateY(0);
     }
 }
+
+.location-info {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #2d3436; 
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #dfe6e9; 
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .location-info:hover {
+    background-color: #b2bec3;  
+    transform: translateY(-5px); 
+  }
+  
+  
+  .location-info::before {
+    content: "📍"; 
+    margin-right: 8px;
+    font-size: 1.5rem; 
+  }
+  
+ 
+  .location-button {
+    background: linear-gradient(135deg, #fd79a8, #e84393);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .location-button:hover {
+    background: linear-gradient(135deg, #e84393, #fd79a8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .location-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 121, 168, 0.3);
+  }
+  

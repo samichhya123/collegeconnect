@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CollegeConnect from "./components1/CollegeConnect";
 import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
-import Blog from "./components1/Blogdata";
+import Blog from "./components1/Blog";
 import Login from "./components3/Login";
 import Dashboard from "./components3/admin/Dashboard";
 import Register from "./components3/register";

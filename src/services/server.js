@@ -61,8 +61,9 @@ function haversine(lat1, lon1, lat2, lon2) {
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c; // Distance in kilometers
-  return distance * 1000;
+  return parseFloat(distance.toFixed(2)); // Round off to 2 decimal places
 }
+
 app.post("/api/collegedistance", async (req, res) => {
   const { userLatitude, userLongitude } = req.body;
   console.log(req.body);
@@ -92,6 +93,7 @@ app.post("/api/collegedistance", async (req, res) => {
     return res.status(500).send({ error: "Database query failed" });
   }
 });
+
 // Routes
 app.get("/", (req, res) => {
   res.json({ msg: "Welcome to the College Connect API" });

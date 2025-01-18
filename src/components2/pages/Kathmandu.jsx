@@ -14,6 +14,7 @@ const CollegesPage = () => {
     { id: 7, link: "/-/khwopa" },
     { id: 8, link: "/-/Ritz" },
     { id: 9, link: "/-/Padmakanya" },
+    { id: 10, link: "/-/Acme" },
   ];
 
   useEffect(() => {
