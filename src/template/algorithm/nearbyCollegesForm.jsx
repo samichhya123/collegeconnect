@@ -87,7 +87,7 @@ const CollegeSearch = () => {
 
         <h3>Nearby Colleges:</h3>
         <ul className="college-list">
-       {colleges.slice(0, 3).map((college, index) => (
+       {colleges.slice(0, 5).map((college, index) => (
     <li key={index} className="college-list-item">
       {college.collegeInfo.name} - {college.distance} km away
     </li>
