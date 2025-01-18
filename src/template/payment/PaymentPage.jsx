@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./PaymentPage.css";
 import SideBar from "../../components3/SideBar";
-
 import khalti from "../../images/khalti.webp";
 import axios from "axios";
 
@@ -56,13 +55,6 @@ const PaymentPage = () => {
       );
       const paymentUrl = await response.data.data.payment_url;
       window.location.href = paymentUrl;
-
-      // if (response.data.success) {
-      //   // If payment creation is successful, redirect to eSewa or Khalti payment gateway
-      //   window.location.href = response.data.redirectUrl; // Redirect to the payment page
-      // } else {
-      //   setError("Payment creation failed. Please try again.");
-      // }
     } catch (error) {
       console.error("Error during payment processing:", error);
       setError(

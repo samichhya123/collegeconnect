@@ -54,75 +54,28 @@ const CollegeSearch = () => {
     }
   }, [location]);
 
-  const containerStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    fontFamily: "Arial, sans-serif",
-    backgroundColor: "#eee",
-    height: "100vh",
-  };
-
-  const mainContentStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    textAlign: "center",
-    backgroundColor: "#eee",
-  };
-
-  const formStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    width: "100%",
-    maxWidth: "400px",
-    backgroundColor: "#fff",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-  };
-
-  const buttonStyle = {
-    padding: "10px 20px",
-    backgroundColor: "#007BFF",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  };
-
-  const listStyle = {
-    listStyleType: "none",
-    padding: "0",
-    marginTop: "20px",
-  };
-
-  const listItemStyle = {
-    padding: "10px",
-    margin: "5px 0",
-    backgroundColor: "#f9f9f9",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-  };
-
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div style={containerStyle}>
+    <div className="college-form-container">
       <SideBar />
-      <div style={mainContentStyle}>
-        <div
-          style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}
-        >
-          User Dashboard
-        </div>
-        <form style={formStyle}>
-          {/* Show user's current location automatically */}
-          {location.latitude && location.longitude ? (
+      <div className="college-form">
+        <div className="dashboard-title">User Dashboard</div>
+        <form className="form">
+          {/* Show a confirmation button to get user's location */}
+          {!location.latitude && !location.longitude ? (
+            <div>
+              <button
+                type="button"
+                onClick={getUserLocation}
+                className="location-button"
+              >
+                Confirm to Share Location
+              </button>
+            </div>
+          ) : (
             <div>
               <p>
                 Your Location: {location.latitude}, {location.longitude}
@@ -130,22 +83,18 @@ const CollegeSearch = () => {
               <button
                 type="button"
                 onClick={fetchNearbyColleges}
-                style={buttonStyle}
+                className="location-button"
               >
                 Search Nearby Colleges
               </button>
             </div>
-          ) : (
-            <div>
-              <p>Loading your location...</p>
-            </div>
           )}
         </form>
-
+  
         <h3>Nearby Colleges:</h3>
-        <ul style={listStyle}>
+        <ul className="college-list">
           {colleges.map((college, index) => (
-            <li key={index} style={listItemStyle}>
+            <li key={index} className="college-list-item">
               {college.collegeInfo.name} - {college.distance} m away
             </li>
           ))}
@@ -153,6 +102,7 @@ const CollegeSearch = () => {
       </div>
     </div>
   );
+  
 };
 
 export default CollegeSearch;

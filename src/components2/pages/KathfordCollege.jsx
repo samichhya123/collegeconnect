@@ -1,7 +1,7 @@
 import React from "react";
 import "./college.css";
-// import kathford from "../lalitpur/images/6f6b2eb8ea71eb29f591ce3fd704b326-490.jpg";
-import kathford1 from "../lalitpur/college image/kathford.jpg";
+import kathford from "../lalitpur/college image/kathford.jpg";
+import kathford1 from "../lalitpur/college image/kathford1.jpg";
 import logo from "../lalitpur/images/logo kath.jpg";
 import kathford2 from "../lalitpur/principal images/kathford.png";
 import SignInLoginPopup from "../../template/signInPopup"; // Make sure the path is correct
@@ -36,7 +36,7 @@ const KathfordCollege = () => {
 
       <header>
         <div className="img-area">
-          {/* <img src={kathford} alt="Background Image" /> */}
+          <img src={kathford} alt="Background Image" />
           <img src={kathford1} className="img-front" alt="Front Image" />
         </div>
       </header>

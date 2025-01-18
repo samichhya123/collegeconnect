@@ -2,6 +2,52 @@ import React, { useState } from "react";
 import "./admit.css";
 import SideBar from "../../components3/SideBar";
 
+const collegePrograms = {
+  "Kathford College": [
+    "B.Sc.CSIT",
+    "BCA",
+    "BBA",
+    "BBM",
+    "BE Computer/Civil/Electronics, Communication & Information",
+  ],
+  "Kist College": ["BIM", "BBA", "BBM"],
+  "Prime College": ["BCA", "BIT", "B.Sc.CSIT"],
+  "Orchid College": ["B.Sc.CSIT", "BE Computer"],
+  "Deerwalk Institute Of Technology": ["BSc.IT", "BIT"],
+  "Herald College": ["BSc (Hons) Computing", "BIT"],
+  "NCIT College": ["BE Computer", "BE Civil", "BCA", "BBM"],
+  "ISMT College": ["BIM", "BSc.IT"],
+  "St. Xavier's College": ["B.Sc.CSIT", "BBA"],
+  "GoldenGate International College": ["B.Sc.CSIT", "BBM"],
+  "Quest International College": ["BHM", "BIM"],
+  "Patan Multiple Campus": ["BIM", "BE Architecture"],
+  "Nagarjun College Of Information Technology": ["BIT", "BSc.IT"],
+  "The British College": [
+    "BSc (Hons) Cyber Security and Digital Forensics",
+    "BHM",
+    "BBA",
+    "BSc (Hons) Computer Systems Engineering",
+    "BSc (Hons) Computer System",
+  ],
+  "Herald College": [
+    "BSc (Hons) International Business Management",
+    "BSc (Hons) Computer System",
+  ],
+  "Khwopa Engineering College": [
+    "Bachelor of Architecture (B.Arch)",
+    "Bachelor of Civil Engineering (BE Civil)",
+    "Bachelor of Computer Engineering (BE Computer)",
+    "Bachelor in Electronics, Communication and Automation Engineering",
+  ],
+  "RItz College": ["BHM", "BCA", "Bachelor of Civil Engineering", "BBA"],
+  "Sambridhi College": [
+    "Bachelor of Business Studies (BBS)",
+    "B.Sc CSIT",
+    "BCA",
+    "Bachelor of Social Work (BSW)",
+  ],
+};
+
 const EntranceRegister = () => {
   const [formData, setFormData] = useState({
     photo: null,
@@ -15,7 +61,6 @@ const EntranceRegister = () => {
   });
 
   const [photoPreview, setPhotoPreview] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -31,10 +76,18 @@ const EntranceRegister = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission
+  const handleCollegeChange = (e) => {
+    const selectedCollege = e.target.value;
+    setFormData({
+      ...formData,
+      college: selectedCollege,
+      program: "", // Reset program when college changes
+    });
+  };
 
-    // Validate form fields
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     const isValid =
       formData.photo &&
       formData.fullName &&
@@ -46,53 +99,11 @@ const EntranceRegister = () => {
       formData.documents;
 
     if (isValid) {
-      // Check if the user has already applied more than three times using the same email, name, and contact number
-      const storedApplications =
-        JSON.parse(localStorage.getItem("applications")) || [];
-
-      const userApplicationCount = storedApplications.filter(
-        (application) =>
-          application.email === formData.email &&
-          application.fullName === formData.fullName &&
-          application.contact === formData.contact
-      ).length;
-
-      if (userApplicationCount >= 3) {
-        // If user has applied more than three times
-        alert("You cannot apply more than three times.");
-      } else {
-        // Proceed with form submission
-        setSubmitted(true); // Set submitted state to true if all fields are filled
-
-        // Store the new application data
-        storedApplications.push(formData);
-        localStorage.setItem(
-          "applications",
-          JSON.stringify(storedApplications)
-        );
-
-        // Show the popup message and redirect to the payment page
-        window.alert("Please pay for the exam registration.");
-        window.location.href = "/payment";
-      }
+      alert("Form submitted successfully!");
+      // Add your form submission logic here
     } else {
-      alert("Please fill in all required fields."); // Show an alert if validation fails
+      alert("Please fill in all required fields.");
     }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      photo: null,
-      fullName: "",
-      email: "",
-      contact: "",
-      college: "",
-      program: "",
-      registerDate: "",
-      documents: null,
-    });
-    setPhotoPreview(null);
-    setSubmitted(false); // Reset to show the form again
   };
 
   return (
@@ -113,7 +124,7 @@ const EntranceRegister = () => {
                   accept="image/*"
                   required
                   onChange={handleChange}
-                  style={{ display: "none" }} // Hide the input field
+                  style={{ display: "none" }}
                 />
                 <label htmlFor="photoUpload" className="custom-file-upload">
                   {photoPreview ? (
@@ -129,6 +140,7 @@ const EntranceRegister = () => {
                 <div className="tooltip">Use only passport size photo</div>
               </div>
 
+              {/* Full Name */}
               <div className="form-floating important-label">
                 <label htmlFor="fullName">Full Name</label>
                 <input
@@ -142,6 +154,7 @@ const EntranceRegister = () => {
                 />
               </div>
 
+              {/* Email */}
               <div className="form-floating important-label">
                 <label htmlFor="email">Email Address</label>
                 <input
@@ -155,6 +168,7 @@ const EntranceRegister = () => {
                 />
               </div>
 
+              {/* Contact */}
               <div className="form-floating important-label">
                 <label htmlFor="contact">Contact Number</label>
                 <input
@@ -168,40 +182,28 @@ const EntranceRegister = () => {
                 />
               </div>
 
+              {/* College */}
               <div className="form-floating">
                 <label htmlFor="college">College</label>
                 <select
                   id="college"
                   name="college"
                   value={formData.college}
-                  onChange={handleChange}
+                  onChange={handleCollegeChange}
                   required
                 >
                   <option value="" disabled selected>
                     Select College
                   </option>
-                  <option value="Kathford College">Kathford College</option>
-                  <option value="Kist College">Kist College</option>
-                  <option value="Prime College">Prime College</option>
-                  <option value="Orchid College">Orchid College</option>
-                  <option value="Deerwalk Institute Of Technology">
-                    Deerwalk Institute Of Technology
-                  </option>
-                  <option value="Herald College">Herald College</option>
-                  <option value="bsc-it">NCIT College</option>
-                  <option value="bcsit">ISMT College</option>
-                  <option value="bsc-hons-computing">
-                    St. Xavier's College
-                  </option>
-                  <option value="bit">GoldenGate International College</option>
-                  <option value="bim">Quest International College</option>
-                  <option value="be-computer">Patan Multiple Campus</option>
-                  <option value="be-arch">
-                    Nagarjun College Of Information Technology
-                  </option>
+                  {Object.keys(collegePrograms).map((college) => (
+                    <option key={college} value={college}>
+                      {college}
+                    </option>
+                  ))}
                 </select>
               </div>
 
+              {/* Program */}
               <div className="form-floating">
                 <label htmlFor="program">Program</label>
                 <select
@@ -210,29 +212,21 @@ const EntranceRegister = () => {
                   value={formData.program}
                   onChange={handleChange}
                   required
+                  disabled={!formData.college} // Disable until a college is selected
                 >
                   <option value="" disabled selected>
                     Select Course
                   </option>
-                  <option value="BBS">BBS</option>
-                  <option value="BBM">BBM</option>
-                  <option value="BBA">BBA</option>
-                  <option value="BHM">BHM</option>
-                  <option value="B.Sc.CSIT">B.Sc.CSIT</option>
-                  <option value="BCA">BCA</option>
-                  <option value="BSc.IT">BSc.IT</option>
-                  <option value="BCSIT">BCSIT</option>
-                  <option value="BSc (Hons) Computing">
-                    BSc (Hons) Computing
-                  </option>
-                  <option value="BIT">BIT</option>
-                  <option value="BIM">BIM</option>
-                  <option value="BE Compute">BE Computer</option>
-                  <option value="BE Architecture">BE Architecture</option>
-                  <option value="BE Civil">BE Civil</option>
+                  {formData.college &&
+                    collegePrograms[formData.college].map((program) => (
+                      <option key={program} value={program}>
+                        {program}
+                      </option>
+                    ))}
                 </select>
               </div>
 
+              {/* Register Date */}
               <div className="form-floating">
                 <label htmlFor="registerDate">Register Date</label>
                 <input
@@ -245,6 +239,7 @@ const EntranceRegister = () => {
                 />
               </div>
 
+              {/* Documents */}
               <div className="form-floating">
                 <label htmlFor="documents">Upload Documents</label>
                 <input
