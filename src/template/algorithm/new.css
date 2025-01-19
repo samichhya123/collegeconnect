@@ -14,6 +14,8 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     font-weight: 300;
+    display: flex;
+    width: 100%;
     /* background-color: pink */
   }
 
@@ -52,8 +54,8 @@
     /* background: gold; */
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    margin: 40px auto;
-    max-width: 900px;
+    margin-left:15%;
+    width: 60%;
     animation: fadeIn 0.8s ease-in-out;
 }
 
