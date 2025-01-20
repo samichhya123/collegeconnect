@@ -14,9 +14,9 @@ const CollegeSearch = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ 
-            latitude: latitude.toFixed(5), 
-            longitude: longitude.toFixed(5) 
+          setLocation({
+            latitude: latitude.toFixed(5),
+            longitude: longitude.toFixed(5),
           });
         },
         (error) => {
@@ -30,11 +30,10 @@ const CollegeSearch = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     getUserLocation();
   }, []);
-  
 
   // Fetch nearby colleges based on user's location
   const fetchNearbyColleges = async () => {
@@ -58,12 +57,13 @@ const CollegeSearch = () => {
     }
   }, [location]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className={["college-search-page"]}>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <SideBar />
       <div className="college-form">
         <div className="dashboard-title">User Dashboard</div>
@@ -89,7 +89,7 @@ const CollegeSearch = () => {
 
         <h3>Nearby Colleges:</h3>
         <ul className="college-list">
-          {colleges.slice(0, 3).map((college, index) => (
+          {colleges.slice(0, 4).map((college, index) => (
             <li key={index} className="college-list-item">
               {college.collegeInfo.name} - {college.distance} km away
             </li>

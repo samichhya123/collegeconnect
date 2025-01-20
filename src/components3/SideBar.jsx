@@ -6,7 +6,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const SideBar = () => {
   const location = useLocation();
-  const [activeMenu, setActiveMenu] = useState("dashboard"); 
+  const [activeMenu, setActiveMenu] = useState("dashboard");
 
   // Menu items for users
   const menuItems = [
@@ -14,7 +14,7 @@ const SideBar = () => {
       name: "dashboard",
       label: "Dashboard",
       icon: "fa-dashboard",
-      path: "/nearby-colleges", 
+      path: "/nearby-colleges",
     },
     {
       name: "registration",
@@ -22,12 +22,19 @@ const SideBar = () => {
       icon: "fa-clipboard-check",
       path: "/registration",
     },
+    // {
+    //   name: "payment",
+    //   label: "Entrance Payment",
+    //   icon: "fa-credit-card",
+    //   path: "/payment",
+    // },
     {
-      name: "payment",
-      label: "Entrance Payment",
-      icon: "fa-credit-card",
-      path: "/payment",
+      name: "bookCounseling",
+      label: "Counseling Session",
+      icon: "fa-calendar-check",
+      path: "/book-counseling",
     },
+    // Uncomment below to add the "result" section in the future
     // {
     //   name: "result",
     //   label: "Entrance Result",
@@ -39,7 +46,7 @@ const SideBar = () => {
   // Update active menu based on the current route
   useEffect(() => {
     const currentPath = location.pathname;
-    const activeItem = menuItems.find(item => currentPath.includes(item.path));
+    const activeItem = menuItems.find((item) => currentPath.includes(item.path));
 
     if (activeItem) {
       setActiveMenu(activeItem.name);
@@ -67,7 +74,9 @@ const SideBar = () => {
         {menuItems.map((item) => (
           <li
             key={item.name}
-            className={`sidebar-item text ${activeMenu === item.name ? "active" : ""}`}
+            className={`sidebar-item text ${
+              activeMenu === item.name ? "active" : ""
+            }`}
           >
             <Link to={item.path}>
               <i className={`fas ${item.icon} menu-icon`}></i> {item.label}
