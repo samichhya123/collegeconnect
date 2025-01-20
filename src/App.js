@@ -69,6 +69,8 @@ import AdminDashboard from "./components3/admin/AdminDash";
 import AdminCourses from "./components3/admin/courseCRUD";
 import NearbyCollegesForm from "./template/algorithm/nearbyCollegesForm";
 import EntranceExamList from "./components3/admin/adminEntrance";
+import PracticeQuestion from "./template/PracticeQuestion";
+import  Counselling  from "./components3/Counselling";
 
 function App() {
   return (
@@ -147,8 +149,10 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment-confirmation" component={PaymentConfirmation} />
+          <Route path="/quiz" element={<PracticeQuestion />} />
           <Route path="/registration" element={<EntranceRegister />} />
           <Route path="/result" element={<EntranceResults />} />
+          <Route path="/bookcounseling" element={<Counselling />} />
           <Route path="/nearby-colleges" element={<NearbyCollegesForm />} />
         </Routes>
       </Router>

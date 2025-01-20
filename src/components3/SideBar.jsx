@@ -32,7 +32,7 @@ const SideBar = () => {
       name: "bookCounseling",
       label: "Counseling Session",
       icon: "fa-calendar-check",
-      path: "/book-counseling",
+      path: "/bookcounseling",
     },
     // Uncomment below to add the "result" section in the future
     // {
@@ -41,6 +41,12 @@ const SideBar = () => {
     //   icon: "fa-file-alt",
     //   path: "/result",
     // },
+    {
+      name: "quiz",
+      label: "Practice Quiz",
+      icon: "fa-question-circle",
+      path: "/quiz",
+    }
   ];
 
   // Update active menu based on the current route

@@ -1,77 +1,75 @@
-
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #6e7dff, #4a90e2);
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 20px;
-    margin: 0;
-  }
-  
-  
-  .container {
-    width: 100%;
-    max-width: 1500px; 
-    margin: 0 auto;    
-    padding: 20px;
-  }
-  
+  font-family: "Arial", sans-serif;
+  /* background: linear-gradient(135deg, #6e7dff, #4a90e2); */
+  color: #333;
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
 
-  .counselling-container {
-    background-color: white;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    margin: 0 auto;
-  }
-  
- 
-  .counselling-heading {
-    text-align: center;
-    color: #333;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
+.container {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-  .form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .form-input, .form-textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-  }
-  
-  .form-textarea {
-    resize: vertical;
-    height: 120px;
-  }
-  
-  .form-button {
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    width: 100%;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .form-button:hover {
-    background-color: #357ab7;
-  }
-  
+.counselling-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin: 0 auto;
+}
+form.counselling-form{
+  display: flex;
+  flex-direction: column;
+
+}
+.counselling-heading {
+  text-align: center;
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-textarea {
+  resize: vertical;
+  height: 120px;
+}
+
+.form-button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.form-button:hover {
+  background-color: #357ab7;
+}
