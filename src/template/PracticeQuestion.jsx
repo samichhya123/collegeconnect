@@ -32,6 +32,7 @@ const PracticeQuestion = () => {
   };
 
   const handleSubmit = () => {
+    console.log (answers);
     axios
       .post("http://localhost:5000/evaluate", { answers })
       .then((response) => {
@@ -48,7 +49,7 @@ const PracticeQuestion = () => {
   const handleGoHome = () => {
     // Replace with actual home page navigation logic
     console.log("Navigating to home...");
-    navigate("/");
+    navigate("/nearby-colleges");
   };
 
   if (questions.length === 0) return <p>Loading questions...</p>;

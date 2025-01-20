@@ -492,11 +492,14 @@ app.get("/questions", (req, res) => {
 
 app.post("/evaluate", (req, res) => {
   const { answers } = req.body;
+  console.log (answers);
   let score = 0;
 
-  questions.forEach((q, index) => {
-    if (answers[index] === q.correct) score++;
-  });
+  questions.forEach((q) => {
+    if (parseInt(answers[q.id], 10) === q.correct) {
+      score++;
+    }
+  })
 
   res.json({ score, total: questions.length });
 });
