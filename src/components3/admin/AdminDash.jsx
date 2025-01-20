@@ -32,6 +32,12 @@ const AdminDashboard = () => {
       icon: "fa-book-open",
       path: "/adminentrance",
     },
+    {
+      name:"Counseling session",
+      label:"Counseling session",
+      icon:"fa-calendar-check",
+      path:"/bookcounseling"
+    }
   ];
 
   useEffect(() => {

@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Logger Middleware
+// // Logger Middleware
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
@@ -471,6 +471,34 @@ app.post("/api/khalti", async (req, res) => {
     console.error("Khalti API error:", err);
     res.status(500).json({ message: "Server Error", error: err.message });
   }
+});
+
+const questions = [
+  { id: 1, question: "What is the full form of CPU?", options: ["Central Process Unit", "Central Processing Unit", "Control Processing Unit"], correct: 2 },
+  { id: 2, question: "Which data structure uses LIFO?", options: ["Queue", "Stack", "Array"], correct: 2 },
+  { id: 3, question: "What does RAM stand for?", options: ["Random Access Memory", "Read-Only Memory", "Run Access Memory"], correct: 1 },
+  { id: 4, question: "Which of the following is a NoSQL database?", options: ["MySQL", "MongoDB", "PostgreSQL"], correct: 2 },
+  { id: 5, question: "What does HTTP stand for?", options: ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "Hyperlink Transfer Protocol"], correct: 1 },
+  { id: 6, question: "Which of these is a frontend framework?", options: ["Node.js", "React.js", "Django"], correct: 2 },
+  { id: 7, question: "Which protocol is used for secure data transfer?", options: ["HTTP", "FTP", "HTTPS"], correct: 3 },
+  { id: 8, question: "What does AI stand for?", options: ["Artificial Intelligence", "Automatic Interface", "Automated Interaction"], correct: 1 },
+  { id: 9, question: "What is the full form of URL?", options: ["Uniform Resource Locator", "Universal Resource Locator", "Uniform Resource Link"], correct: 1 },
+  { id: 10, question: "What does 'npm' stand for?", options: ["Node Package Manager", "Network Package Manager", "Node Programming Manager"], correct: 1 },
+];
+
+app.get("/questions", (req, res) => {
+  res.json(questions);
+});
+
+app.post("/evaluate", (req, res) => {
+  const { answers } = req.body;
+  let score = 0;
+
+  questions.forEach((q, index) => {
+    if (answers[index] === q.correct) score++;
+  });
+
+  res.json({ score, total: questions.length });
 });
 
 // Start the Server
