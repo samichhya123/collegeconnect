@@ -55,40 +55,34 @@ const EntranceRegister = () => {
     photo: null,
     fullName: "",
     email: "",
+    address: "",
     contact: "",
     college: "",
     program: "",
-    documents: {
-      SLC: null,
-      Character: null,
-    },
   });
 
-  const [photoPreview, setPhotoPreview] = useState(null);
   const [errors, setErrors] = useState({});
-
+  const [photoPreview, setPhotoPreview] = useState(null);
   // Validate form fields
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.photo) {
-      newErrors.photo = "Please upload a valid photo.";
-    }
     if (!formData.fullName || !/^[a-zA-Z ]+$/.test(formData.fullName)) {
       newErrors.fullName = "Please enter a valid full name (letters only).";
     }
     if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address.";
     }
+    if (!formData.address.trim()) {
+      newErrors.address = "Please enter your address.";
+    }
     if (!formData.contact || !/^(98|97|96)\d{8}$/.test(formData.contact)) {
       newErrors.contact = "Please enter a valid 10-digit mobile number.";
     }
-    const requiredDocuments = ["SLC", "Character"];
-    const uploadedDocuments = requiredDocuments.filter(
-      (doc) => formData.documents[doc]
-    );
-    if (uploadedDocuments.length < 2) {
-      newErrors.documents =
-        "Please upload both required documents (SLC Mark-Sheet and Transcript).";
+    if (!formData.college) {
+      newErrors.college = "Please select a college.";
+    }
+    if (!formData.program) {
+      newErrors.program = "Please select a program.";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -101,34 +95,42 @@ const EntranceRegister = () => {
     if (validateForm()) {
       toast.info("Redirecting to payment page...", { autoClose: 3000 });
 
-      const formDataToSend = new FormData();
-      formDataToSend.append("photo", formData.photo);
-      formDataToSend.append("fullName", formData.fullName);
-      formDataToSend.append("email", formData.email);
-      formDataToSend.append("contact", formData.contact);
-      formDataToSend.append("college", formData.college);
-      formDataToSend.append("program", formData.program);
+      // Prepare FormData to handle text and file data
+      const formDataToSubmit = new FormData();
 
-      // Append documents to the formData object
-      for (const [key, value] of Object.entries(formData.documents)) {
-        if (value) {
-          formDataToSend.append(key, value);
+      // Add text fields
+      Object.keys(formData).forEach((key) => {
+        if (key !== "documents" && key !== "photo") {
+          formDataToSubmit.append(key, formData[key]);
         }
+      });
+
+      // Add photo file
+      if (formData.photo) {
+        formDataToSubmit.append("photo", formData.photo);
+      }
+
+      // Add document files
+      if (formData.documents) {
+        Object.entries(formData.documents).forEach(([category, file]) => {
+          formDataToSubmit.append(`document_${category}`, file);
+        });
       }
 
       try {
         const response = await axios.post(
           "http://localhost:5000/api/add-entrance-exam",
-          formDataToSend,
+          formDataToSubmit,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
+
         if (response.status === 200) {
           setTimeout(() => {
             window.location.href = "/payment";
           }, 3000);
         }
       } catch (error) {
-        console.error("Form submission error:", error.response || error); // Log error details
+        console.error("Form submission error:", error.response || error);
         toast.error("Error submitting form. Please try again.");
       }
     } else {
@@ -136,44 +138,62 @@ const EntranceRegister = () => {
     }
   };
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (files) {
+      const file = files[0];
+
       if (name === "photo") {
-        const file = files[0];
+        // Validate and handle photo upload
         if (file && file.type.startsWith("image/")) {
           if (file.size > 5000000) {
-            // 5MB limit
-            setErrors({ ...errors, photo: "File size exceeds the 5MB limit." });
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              photo: "File size exceeds the 5MB limit.",
+            }));
           } else {
-            setFormData({ ...formData, [name]: file });
+            setFormData((prevData) => ({
+              ...prevData,
+              photo: file,
+            }));
             setPhotoPreview(URL.createObjectURL(file));
+            setErrors((prevErrors) => ({ ...prevErrors, photo: "" })); // Clear error
           }
         } else {
-          setErrors({
-            ...errors,
+          setErrors((prevErrors) => ({
+            ...prevErrors,
             photo: "Invalid file type. Please upload an image.",
-          });
+          }));
         }
-      } else {
-        const category = name.split("_")[1]; // Extract document type (SLC, Character)
-        const file = files[0];
-        if (file && file.size > 5000000) {
-          // 5MB limit for documents
-          setErrors({
-            ...errors,
-            documents: "File size exceeds the 5MB limit.",
-          });
+      } else if (name.startsWith("document_")) {
+        // Validate and handle document uploads
+        const category = name.split("_")[1]; // Extract document type (e.g., SLC)
+        if (file.size > 5000000) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            documents: `File size for ${category} exceeds the 5MB limit.`,
+          }));
         } else {
-          setFormData({
-            ...formData,
-            documents: { ...formData.documents, [category]: file },
-          });
+          setFormData((prevData) => ({
+            ...prevData,
+            documents: {
+              ...prevData.documents,
+              [category]: file,
+            },
+          }));
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            documents: "",
+          })); // Clear error
         }
       }
     } else {
-      setFormData({ ...formData, [name]: value });
+      // Handle text input
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
     }
   };
 
@@ -182,7 +202,6 @@ const EntranceRegister = () => {
     const selectedCollege = e.target.value;
     setFormData({ ...formData, college: selectedCollege, program: "" });
   };
-
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <SideBar />
@@ -194,14 +213,6 @@ const EntranceRegister = () => {
 
               {/* Photo Upload Section */}
               <div className="form-floating user-image-profile">
-                <input
-                  type="file"
-                  id="photoUpload"
-                  name="photo"
-                  accept="image/*"
-                  onChange={handleChange}
-                  style={{ display: "none" }}
-                />
                 <label htmlFor="photoUpload" className="custom-file-upload">
                   {photoPreview ? (
                     <img
@@ -213,6 +224,15 @@ const EntranceRegister = () => {
                     <span className="upload-icon">⬆ Upload Your Picture</span>
                   )}
                 </label>
+
+                <input
+                  type="file"
+                  id="photoUpload"
+                  name="photo"
+                  accept="image/*"
+                  onChange={handleChange}
+                  style={{ display: "none" }}
+                />
                 {errors.photo && (
                   <div className="error-message">{errors.photo}</div>
                 )}
@@ -221,7 +241,9 @@ const EntranceRegister = () => {
 
               {/* Full Name */}
               <div className="form-floating important-label">
-                <label htmlFor="fullName">Full Name</label>
+                <label htmlFor="fullName">
+                  Full Name <span className="required">*</span>
+                </label>
                 <input
                   type="text"
                   id="fullName"
@@ -237,7 +259,9 @@ const EntranceRegister = () => {
 
               {/* Email Address */}
               <div className="form-floating important-label">
-                <label htmlFor="email">Email Address</label>
+                <label htmlFor="email">
+                  Email Address <span className="required">*</span>
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -250,10 +274,28 @@ const EntranceRegister = () => {
                   <div className="error-message">{errors.email}</div>
                 )}
               </div>
+              <div className="form-floating important-label">
+                <label htmlFor="address">
+                  Address <span className="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  placeholder="Enter Your Address"
+                  value={formData.address}
+                  onChange={handleChange}
+                />
+                {errors.address && (
+                  <div className="error-message">{errors.address}</div>
+                )}
+              </div>
 
               {/* Contact Number */}
               <div className="form-floating important-label">
-                <label htmlFor="contact">Contact Number</label>
+                <label htmlFor="contact">
+                  Contact Number <span className="required">*</span>
+                </label>
                 <input
                   type="tel"
                   id="contact"
@@ -269,7 +311,9 @@ const EntranceRegister = () => {
 
               {/* College */}
               <div className="form-floating">
-                <label htmlFor="college">College</label>
+                <label htmlFor="college">
+                  College <span className="required">*</span>
+                </label>
                 <select
                   id="college"
                   name="college"
@@ -290,7 +334,9 @@ const EntranceRegister = () => {
 
               {/* Program */}
               <div className="form-floating">
-                <label htmlFor="program">Program</label>
+                <label htmlFor="program">
+                  Program <span className="required">*</span>
+                </label>
                 <select
                   id="program"
                   name="program"

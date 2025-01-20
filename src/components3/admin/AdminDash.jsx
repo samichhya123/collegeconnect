@@ -17,13 +17,13 @@ const AdminDashboard = () => {
       name: "colleges",
       label: "Colleges",
       icon: "fa-university",
-      path: "/admincolleges",
+      path: "/managecolleges",
     },
     {
       name: "courses",
       label: "Courses",
       icon: "fa-graduation-cap",
-      path: "/admincourses",
+      path: "/managecourses",
     },
 
     {

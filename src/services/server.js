@@ -25,7 +25,23 @@ app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
-
+const admins = [
+  {
+    email: "shresthasamichhya14@gmail.com",
+    first_name: "Samichhya",
+    last_name: "Shrestha",
+  },
+  {
+    email: "pratigyabhattarai20@gmail.com",
+    first_name: "Pratigya",
+    last_name: "Bhattarai",
+  },
+  {
+    email: "sejarhang12@gmail.com",
+    first_name: "Sejar",
+    last_name: "Hang",
+  },
+];
 // MySQL connection setup
 const db = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
@@ -227,27 +243,202 @@ app.get("/api/colleges", async (req, res) => {
     res.status(500).send("Error fetching colleges");
   }
 });
+app.get("/api/admincolleges", async (req, res) => {
+  try {
+    const [colleges] = await db.query(
+      "SELECT id,name, address, valley, latitude, longitude, image_url FROM admin_colleges"
+    );
+    res.json(colleges);
+  } catch (error) {
+    console.error("Database error:", error.message);
+    res.status(500).send("Error fetching colleges");
+  }
+});
+// Update College API
+app.put(
+  "/api/admincolleges/:id",
+  uploadSingle.single("image"),
+  async (req, res) => {
+    try {
+      const { id } = req.params; // College ID to update
+      const { name, address, valley, latitude, longitude } = req.body;
+      const image_url = req.file ? `public/${req.file.filename}` : null;
 
+      // Check if the college exists
+      const [
+        existingCollege,
+      ] = await db.query("SELECT * FROM admin_colleges WHERE id = ?", [id]);
+
+      if (!existingCollege || existingCollege.length === 0) {
+        return res.status(404).json({ message: "College not found" });
+      }
+
+      // Update the college details
+      await db.query(
+        "UPDATE admin_colleges SET name = ?, address = ?, valley = ?, latitude = ?, longitude = ?, image_url = COALESCE(?, image_url) WHERE id = ?",
+        [
+          name,
+          address,
+          valley,
+          latitude || null,
+          longitude || null,
+          image_url,
+          id,
+        ]
+      );
+
+      res.status(200).json({ message: "College updated successfully!" });
+    } catch (error) {
+      console.error("Error updating college:", error.message);
+      res
+        .status(500)
+        .json({ message: "Error updating college", error: error.message });
+    }
+  }
+);
+
+// Delete College API
+app.delete("/api/admincolleges/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await db.query("DELETE FROM admin_colleges WHERE id = ?", [
+      id,
+    ]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "College not found" });
+    }
+    res.status(200).json({ message: "College deleted successfully!" });
+  } catch (error) {
+    console.error("Error deleting college:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error deleting college", error: error.message });
+  }
+});
 // Add Course API
-app.post("/api/add-course", async (req, res) => {
+app.post("/api/courses", async (req, res) => {
   try {
     const { course_name, university, duration_years } = req.body;
 
+    // Validate input
     if (!course_name || !university || !duration_years) {
       return res.status(400).json({
         message: "Course name, university, and duration are required",
       });
     }
 
+    if (course_name.length > 100) {
+      return res.status(400).json({
+        message: "Course name cannot exceed 100 characters",
+      });
+    }
+
+    if (university.length > 100) {
+      return res.status(400).json({
+        message: "University name cannot exceed 100 characters",
+      });
+    }
+
+    if (duration_years <= 0 || duration_years > 10) {
+      return res.status(400).json({
+        message: "Duration must be between 1 and 10 years",
+      });
+    }
+
+    // Execute query
     await db.query(
-      "INSERT INTO admin_courses (course_name, university, duration_years) VALUES (?, ?, ?)",
+      "INSERT INTO courses (course_name, university, duration_years) VALUES (?, ?, ?)",
       [course_name, university, duration_years]
     );
 
     res.status(200).json({ message: "Course added successfully!" });
   } catch (error) {
     console.error("Error adding course:", error.message);
-    res.status(500).json({ message: "Error adding course" });
+    res
+      .status(500)
+      .json({ message: "Error adding course", error: error.message });
+  }
+});
+
+// Get Courses API
+app.get("/api/courses", async (req, res) => {
+  try {
+    // Fetch courses from the database
+    const [courses] = await db.query(
+      "SELECT id, course_name, university, duration_years FROM courses"
+    );
+
+    if (courses && courses.length > 0) {
+      res.json({ message: "Courses fetched successfully", data: courses });
+    } else {
+      res.status(404).send({ message: "No courses found" });
+    }
+  } catch (error) {
+    console.error("Database error:", error.message);
+    res
+      .status(500)
+      .send({ message: "Error fetching courses", error: error.message });
+  }
+});
+
+// Update Course API
+app.put("/api/courses/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { course_name, university, duration_years } = req.body;
+
+    // Validate required fields
+    if (!course_name || !university || typeof duration_years !== "number") {
+      return res
+        .status(400)
+        .json({
+          message:
+            "All fields (course_name, university, duration_years) are required.",
+        });
+    }
+
+    // Check if the course exists
+    const [
+      existingCourses,
+    ] = await db.query("SELECT * FROM courses WHERE id = ?", [id]);
+
+    if (!existingCourses || existingCourses.length === 0) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Update the course in the database
+    const updateQuery = `
+      UPDATE courses 
+      SET course_name = ?, university = ?, duration_years = ? 
+      WHERE id = ?`;
+    await db.query(updateQuery, [course_name, university, duration_years, id]);
+
+    res.status(200).json({ message: "Course updated successfully!" });
+  } catch (error) {
+    console.error("Error updating course:", error.message);
+    res.status(500).json({
+      message: "Error updating course.",
+      error: error.message,
+    });
+  }
+});
+
+// Delete Course API
+app.delete("/api/courses/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await db.query("DELETE FROM courses WHERE id = ?", [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    res.status(200).json({ message: "Course deleted successfully!" });
+  } catch (error) {
+    console.error("Error deleting course:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error deleting course", error: error.message });
   }
 });
 
@@ -276,9 +467,7 @@ app.get("/api/colleges/count", async (req, res) => {
 
 app.get("/api/courses/count", async (req, res) => {
   try {
-    const [rows] = await db.query(
-      "SELECT COUNT(*) AS count FROM admin_courses"
-    );
+    const [rows] = await db.query("SELECT COUNT(*) AS count FROM courses");
     res.json({ count: rows[0].count });
   } catch (err) {
     console.error("Error fetching course count:", err.message);
@@ -298,6 +487,21 @@ app.get("/api/valley-frequency", async (req, res) => {
   }
 });
 
+app.get("/api/admin/get-admin", (req, res) => {
+  const { email } = req.query;
+
+  const admin = admins.find((admin) => admin.email === email);
+
+  if (admin) {
+    res.status(200).json({
+      first_name: admin.first_name,
+      last_name: admin.last_name,
+    });
+  } else {
+    res.status(404).json({ message: "Admin not found" });
+  }
+});
+
 // Entrance Exam API
 app.post(
   "/api/add-entrance-exam",
@@ -308,74 +512,95 @@ app.post(
   ]),
   async (req, res) => {
     try {
-      const {
-        fullName,
-        email,
-        contact,
-        college,
-        program,
-        documentsUploaded,
-        paymentStatus,
-        admitCardStatus,
-        paymentDate,
-        applicationDate,
-      } = req.body;
+      const { fullName, email, contact, address, college, program } = req.body;
 
+      // File handling
       const photo = req.files["photo"]
         ? `uploads/${req.files["photo"][0].filename}`
         : null;
-      const documents_SLC = req.files["documents_SLC"]
-        ? `uploads/${req.files["documents_SLC"][0].filename}`
-        : null;
-      const documents_Character = req.files["documents_Character"]
-        ? `uploads/${req.files["documents_Character"][0].filename}`
-        : null;
 
-      if (!fullName || !email || !contact || !college || !program) {
+      // Input validation
+      if (!fullName || !email || !contact || !address || !college || !program) {
         return res.status(400).json({
           message:
-            "Full name, email, contact, college, and program are required",
+            "Full name, email, contact, address, college, and program are required",
         });
       }
 
+      // Email validation (simple regex)
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
         return res.status(400).json({ message: "Invalid email format" });
       }
 
+      // Contact number validation (10-digit number)
       if (!/^\d{10}$/.test(contact)) {
-        return res.status(400).json({ message: "Invalid contact number" });
+        return res.status(400).json({
+          message: "Invalid contact number. It should be a 10-digit number.",
+        });
       }
 
       // Insert form data into the database
-      await db.query(
-        "INSERT INTO entrance_exam_form (profile_image_path, full_name, email, contact_number, college_name, program_name, documents_uploaded, payment_status, admit_card_status, payment_date, application_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-          photo,
-          fullName,
-          email,
-          contact,
-          college,
-          program,
-          documents_SLC ? `${documents_SLC}, ${documents_Character}` : null,
-          documentsUploaded || null,
-          paymentStatus || "Pending",
-          admitCardStatus || "Not Issued",
-          paymentDate || null,
-          applicationDate || new Date().toISOString(),
-        ]
-      );
+      const query =
+        "INSERT INTO entrance_exam_form (profile_image_path, full_name, email, address, contact_number, college_name, program_name) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      const values = [
+        photo,
+        fullName,
+        email,
+        address,
+        contact,
+        college,
+        program,
+      ];
 
+      await db.query(query, values);
+
+      // Success response
       res
         .status(200)
         .json({ message: "Entrance exam form submitted successfully" });
     } catch (err) {
       console.error("Error adding entrance exam form:", err);
-      res
-        .status(500)
-        .json({ message: "Error submitting form", error: err.message });
+      res.status(500).json({
+        message: "Error submitting form",
+        error: err.message,
+      });
     }
   }
 );
+// Entrance Exam API - Get
+app.get("/api/get-entrance-exam", async (req, res) => {
+  try {
+    // by ID, e.g., /api/get-entrance-exam?id=1
+    const formId = req.query.id; 
+
+    // Validate formId if present
+    if (formId && isNaN(formId)) {
+      return res.status(400).json({ message: "Invalid form ID" });
+    }
+
+    let query = "SELECT id, full_name, email,address, contact_number, college_name, program_name, payment_status, admit_card_status FROM entrance_exam_form";
+    let values = [];
+
+    if (formId) {
+      query += " WHERE id = ?";
+      values.push(formId);
+    }
+
+    const [rows] = await db.query(query, values);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "No form data found" });
+    }
+
+    res.status(200).json({ data: rows });
+  } catch (err) {
+    console.error("Error fetching entrance exam form:", err);
+    res.status(500).json({
+      message: "Error fetching form data",
+      error: err.message,
+    });
+  }
+});
 
 // Update Payment Status
 app.post("/api/update-payment-status", (req, res) => {
@@ -430,17 +655,20 @@ app.post("/api/khalti", async (req, res) => {
       Authorization: `Key ${KHALTI_SECRET_KEY}`,
       "Content-Type": "application/json",
     };
+
     const { fullName, amount } = req.body;
 
+    // Basic validation
     if (!fullName || !amount) {
       return res
         .status(400)
         .json({ message: "Full name and amount are required" });
     }
 
+    // Prepare data for Khalti API request
     const formData = {
-      return_url: "http://localhost:5001/payment-status",
-      website_url: "http://localhost:5001",
+      return_url: "https://test-pay.khalti.com/wallet", // Update return URL
+      website_url: "http://localhost:5000", // Website URL
       amount: amount,
       purchase_order_id: 11,
       purchase_order_name: fullName,
@@ -456,6 +684,7 @@ app.post("/api/khalti", async (req, res) => {
     );
 
     if (response.data) {
+      // Send payment initiation data back to the frontend
       res.json({
         message: "Khalti initiation successful",
         payment_method: "khalti",

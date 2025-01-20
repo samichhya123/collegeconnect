@@ -289,17 +289,12 @@ app.use((req, res) => {
 // Start the Server
 
 app.post("/create-payment", (req, res) => {
-  // Extract data from the request body
   const { fullName, email, contact, paymentMethod } = req.body;
-
-  // Simulate a payment process based on the payment method
   if (!fullName || !email || !contact || !paymentMethod) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  // You can later integrate eSewa or Khalti API here
   if (paymentMethod === "esewa" || paymentMethod === "khalti") {
-    // Simulate a successful payment response
     return res.status(200).json({
       message: "Payment successful",
       paymentDetails: {
@@ -307,12 +302,10 @@ app.post("/create-payment", (req, res) => {
         email,
         contact,
         paymentMethod,
-        amount: "Nrs: 100", // Simulating the payment amount
+        amount: "Nrs: 100",
       },
     });
   }
-
-  // If the payment method is not recognized
   return res.status(400).json({ message: "Invalid payment method" });
 });
 
@@ -326,7 +319,7 @@ app.post("/api/khalti", async (req, res) => {
     };
     const { fullName, amount } = req.body;
     const formData = {
-      return_url: "http://localhost:5000/Colleges",
+      return_url: "http://localhost:5001/admitcard",
       website_url: "http://localhost:5000",
       amount: amount,
       purchase_order_id: 1,

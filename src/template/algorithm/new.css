@@ -47,7 +47,15 @@
     font-size: 1rem;
     line-height: 1.6;
 }
-
+.username-display {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
 .college-form {
     flex: 1;
     padding: 40px;

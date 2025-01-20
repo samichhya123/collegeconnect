@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CollegeConnect from "./components1/CollegeConnect";
 import Courses from "./components1/courses";
 import AboutUs from "./components1/aboutus";
-import Blog from "./components1/Blog";
+import Blog from "./components1/Blogdata";
 import Login from "./components3/Login";
 import Dashboard from "./components3/admin/Dashboard";
 import Register from "./components3/register";
@@ -12,7 +12,7 @@ import Colleges from "./components2/Colleges";
 import CollegeContainer from "./components2/react/bhaktapurwith3conatiner";
 
 import Kathmandu from "./components2/pages/Kathmandu";
-import AdminColleges from "./components3/admin/adminCollege";
+import AdminColleges from "./components3/admin/collegeCRUD";
 import AdminSignIn from "./components3/adminSignIn";
 import {
   KistCollege,
@@ -64,9 +64,9 @@ import PaymentPage from "./template/payment/PaymentPage";
 import EntranceResults from "./template/entranceresult/EntranceResult";
 import EntranceRegister from "./template/entranceRegister/EntranceRegister";
 import BcaCourse from "./components1/coursesinfo/BcaCourse";
-
+import PaymentConfirmation from "./template/payment/createPaymentFormFields";
 import AdminDashboard from "./components3/admin/AdminDash";
-import AdminCourseForm from "./components3/admin/adminCourses";
+import AdminCourses from "./components3/admin/courseCRUD";
 import NearbyCollegesForm from "./template/algorithm/nearbyCollegesForm";
 import EntranceExamList from "./components3/admin/adminEntrance";
 
@@ -140,12 +140,13 @@ function App() {
           <Route path="/kathmandu" element={<Kathmandu />} />
 
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admincolleges" element={<AdminColleges />} />
-          <Route path="/admincourses" element={<AdminCourseForm />} />
+          <Route path="/managecolleges" element={<AdminColleges />} />
+          <Route path="/managecourses" element={<AdminCourses />} />
           <Route path="/adminentrance" element={<EntranceExamList />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment-confirmation" component={PaymentConfirmation} />
           <Route path="/registration" element={<EntranceRegister />} />
           <Route path="/result" element={<EntranceResults />} />
           <Route path="/nearby-colleges" element={<NearbyCollegesForm />} />

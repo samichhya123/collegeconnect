@@ -1,32 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AdminDash from "./AdminDash";
-import { ToastContainer, toast } from "react-toastify"; // Import toast functions
-import "react-toastify/dist/ReactToastify.css"; // Import styles for the toast
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./adminCollege.css";
 
-const AdminCollegeForm = () => {
+const AdminCollegeForm = ({ college, fetchColleges, onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
+    valley: "",
     latitude: "",
     longitude: "",
     image_url: "",
   });
 
-  // Handle form data changes
+  // Pre-filling the form for editing if college data is provided
+  useEffect(() => {
+    if (college) {
+      setFormData({
+        name: college.name || "",
+        address: college.address || "",
+        valley: college.valley || "",
+        latitude: college.latitude || "",
+        longitude: college.longitude || "",
+        image_url: college.image_url || "",
+      });
+    } else {
+      setFormData({
+        name: "",
+        address: "",
+        valley: "",
+        latitude: "",
+        longitude: "",
+        image_url: "",
+      });
+    }
+  }, [college]);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Reset error messages on every new submission
     toast.dismiss();
 
-    // Validate latitude and longitude
+    // Validate required fields
+    if (!formData.name || !formData.address || !formData.valley) {
+      toast.error("Please fill out all required fields.");
+      return;
+    }
+
+    // Validate latitude and longitude ranges
     const isValidLatitude =
       !isNaN(formData.latitude) &&
       formData.latitude >= -90 &&
@@ -41,44 +67,40 @@ const AdminCollegeForm = () => {
       return;
     }
 
+    // Prepare data for submission
+    const updatedFormData = {
+      ...formData,
+      latitude: parseFloat(formData.latitude),
+      longitude: parseFloat(formData.longitude),
+    };
+
     try {
-      // Convert latitude and longitude to numbers if they are valid
-      const updatedFormData = {
-        ...formData,
-        latitude: parseFloat(formData.latitude),
-        longitude: parseFloat(formData.longitude),
-      };
+      if (college) {
+        await axios.put(`/api/admincolleges/${college.id}`, updatedFormData);
+        toast.success("College updated successfully.");
+      } else {
+        await axios.post("/api/colleges", updatedFormData);
+        toast.success("College added successfully.");
+      }
 
-      // Send the request to add college (Corrected URL to 5001)
-      const response = await axios.post(
-        "http://localhost:5000/api/add-college", // Make sure the port is correct here
-        updatedFormData
-      );
-
-      toast.success(response.data.message); // Show success toast
-      // Clear form data after successful submission
-      setFormData({
-        name: "",
-        address: "",
-        latitude: "",
-        longitude: "",
-        image_url: "",
-      });
+      // Refresh the college list and close the form
+      fetchColleges();
+      if (onClose && typeof onClose === "function") {
+        onClose(); // Ensure that onClose is passed and is a function
+      }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
-        "Failed to add college. Please try again.";
-      toast.error(errorMessage); // Show error toast
-      console.error(error);
+        "Failed to save the college. Please try again.";
+      toast.error(errorMessage);
+      console.error("Error saving college:", error);
     }
   };
 
   return (
     <div className="admin-college-container">
-      <AdminDash />
+      <h2>{college ? "Edit College" : "Add College"}</h2>
       <form onSubmit={handleSubmit} className="admin-college-form">
-        <h2>College Form</h2>
-
         <div className="form-group">
           <label>Name</label>
           <input
@@ -100,6 +122,7 @@ const AdminCollegeForm = () => {
             required
           />
         </div>
+
         <div className="form-group">
           <label>Valley</label>
           <select
@@ -148,13 +171,14 @@ const AdminCollegeForm = () => {
           />
         </div>
 
-        <button type="submit">Add College</button>
+        <button type="submit" className="submit-button">
+          {college ? "Update College" : "Add College"}
+        </button>
       </form>
-
-      {/* Toast container to display the messages */}
       <ToastContainer />
     </div>
   );
 };
 
 export default AdminCollegeForm;
+ 

@@ -70,7 +70,9 @@
   flex-direction: column;
   width: 100%;;
 }
-
+.required{
+  color: rgba(255, 0, 0, 0.73);
+}
 .custom-file-upload {
   display: flex;
   justify-content: center;

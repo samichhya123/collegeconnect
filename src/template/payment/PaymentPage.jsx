@@ -14,8 +14,6 @@ const PaymentPage = () => {
     program: "",
     registerDate: "",
   });
-  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
-  const [photoPreview, setPhotoPreview] = useState(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [error, setError] = useState(null); // Track error messages
 
@@ -29,52 +27,55 @@ const PaymentPage = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setPaymentLoading(true);
-    setError(null); // Reset error message
-
+    setError(null);
+  
     // Basic validation: Ensure payment method is selected
     if (!formData.paymentMethod) {
       setError("Please select a payment method.");
       setPaymentLoading(false);
       return;
     }
-
-    // Prepare payment details
+  
     const paymentDetails = {
       fullName: formData.fullName,
       email: formData.email,
       contact: formData.contact,
-      amount: "10000", // Assuming Nrs:100 for the example
+      amount: "10000", // Example amount
       paymentMethod: formData.paymentMethod,
     };
-
+  
     try {
-      // Send payment details to the backend to initiate payment
+      // Send payment initiation request to your backend
       const response = await axios.post(
-        "http://localhost:5000/api/khalti", // Ensure backend API is running on this port
+        "http://localhost:5000/api/khalti", // Your backend API
         paymentDetails
       );
-      const paymentUrl = await response.data.data.payment_url;
-      window.location.href = paymentUrl;
+  
+      // If Khalti payment URL is available, redirect to Khalti payment page
+      if (response.data && response.data.data && response.data.data.payment_url) {
+        window.location.href = response.data.data.payment_url; // Redirect to Khalti URL
+      } else {
+        setError("Payment initiation failed. Please try again.");
+      }
     } catch (error) {
       console.error("Error during payment processing:", error);
-      setError(
-        "An error occurred while processing the payment. Please try again."
-      );
+      setError("An error occurred while processing the payment. Please try again.");
     } finally {
       setPaymentLoading(false);
     }
   };
+  
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setPhotoPreview(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   return (
     <div>
@@ -123,7 +124,6 @@ const PaymentPage = () => {
           <div className="form-group payment-options">
             <label>Payment Method</label>
             <div className="payment-methods">
-           
               <label>
                 <input
                   type="radio"
@@ -145,41 +145,6 @@ const PaymentPage = () => {
             {paymentLoading ? "Processing..." : "Make Payment"}
           </button>
         </form>
-
-        {/* Display Admit Card if payment is successful */}
-        {paymentSuccessful && (
-          <div className="admit-card" id="admitCard">
-            <div className="title-details">
-              <div>
-                <h3>{formData.college}</h3>
-                <h2>{formData.program} Entrance Examination</h2>
-                <h2>ADMIT CARD</h2>
-              </div>
-              <img
-                src={photoPreview || "default-profile-image.png"}
-                alt="Profile"
-              />
-            </div>
-            <p>
-              <strong>Name:</strong> {formData.fullName}
-            </p>
-            <p>
-              <strong>Email:</strong> {formData.email}
-            </p>
-            <p>
-              <strong>Contact:</strong> {formData.contact}
-            </p>
-            <p>
-              <strong>College:</strong> {formData.college}
-            </p>
-            <p>
-              <strong>Program:</strong> {formData.program}
-            </p>
-            <p>
-              <strong>Register Date:</strong> {formData.registerDate}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

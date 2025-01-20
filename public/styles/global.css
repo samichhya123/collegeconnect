@@ -1,5 +1,19 @@
-*{
-  margin:0;
-  padding:0;
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+@font-face {
+  font-family: "Quicksand";
+  src: url("./assets/fonts/Quicksand-Regular.ttf") format("truetype"),
+    url("./assets/fonts/Quicksand-Bold.ttf") format("truetype"),
+    url("./assets/fonts/Quicksand-SemiBold.ttf") format("truetype"),
+    url("./assets/fonts/Quicksand-Light.ttf") format("truetype"),
+    url("./assets/fonts/Quicksand-Medium.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Quicksand", sans-serif;
 }

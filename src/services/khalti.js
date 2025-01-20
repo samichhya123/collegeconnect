@@ -6,7 +6,6 @@ const khalti = async (req, res) => {
       Authorization: `Key ${KHALTI_SECRET_KEY}`,
       "Content-Type": "application/json",
     };
-
     const formData = {
       return_url: "http://localhost:5000/Colleges",
       website_url: "http://localhost:5000",

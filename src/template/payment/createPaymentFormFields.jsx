@@ -1,29 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
 
-const PaymentStatus = () => {
-  const [status, setStatus] = useState("Loading...");
-  const location = useLocation();
-
+const PaymentConfirmation = () => {
   useEffect(() => {
-
-    const query = new URLSearchParams(location.search);
-    const paymentStatus = query.get("status"); 
-
-    if (paymentStatus === "Completed") {
-      setStatus("Payment Completed!");
-    } else if (paymentStatus === "Failed") {
-      setStatus("Payment Failed!");
-    } else {
-      setStatus("Unknown Payment Status");
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log(urlParams.toString()); // This will log all the parameters to the console.
+    const status = urlParams.get("status");
+    const purchaseOrderId = urlParams.get("purchase_order_id");
+    const purchaseOrderName = urlParams.get("purchase_order_name");
+  
+    if (status === "Completed") {
+      alert(`Generating Admit Card for ${purchaseOrderName} (Order ID: ${purchaseOrderId})`);
     }
-  }, [location.search]); 
+  }, []);
 
   return (
     <div>
-      <h1>{status}</h1>
+      <h2>Processing Payment...</h2>
+      {/* Optionally render any loading or success message */}
     </div>
   );
 };
 
-export default PaymentStatus;
+export default PaymentConfirmation;

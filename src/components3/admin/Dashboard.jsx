@@ -4,7 +4,7 @@ import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import ValleyFrequencyChart from "./valleyCount";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import the default styles
+import "react-toastify/dist/ReactToastify.css";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,7 +16,6 @@ import {
 } from "chart.js";
 import Dashboard from "./AdminDash";
 
-// Registering Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,68 +26,71 @@ ChartJS.register(
 );
 
 const AdminDashboard = ({ adminEmail }) => {
-  // assuming adminEmail is passed as prop
   const [userCount, setUserCount] = useState(0);
   const [collegeCount, setCollegeCount] = useState(0);
   const [courseCount, setCourseCount] = useState(0);
-
-  const loginData = {
-    labels: ["Kathmandu", "Lalitpur", "Bhaktapur"],
-    datasets: [
-      {
-        label: "Preferred College",
-        data: [80, 40, 40], // Replace with actual data from backend
-        backgroundColor: ["#3498db", "#2ecc71", "#e74c3c"],
-        borderColor: ["#2980b9", "#27ae60", "#c0392b"],
-        borderWidth: 1,
-      },
-    ],
-  };
+  const [adminFetched, setAdminFetched] = useState(false);
+  const email = adminEmail || localStorage.getItem("adminEmail");
 
   useEffect(() => {
-    // Fetch the college count when the component is mounted
-    const fetchCollegeCount = async () => {
+    if (!email) {
+      toast.error("Admin email not found. Please log in again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Fetch data dynamically with reusable fetch function
+    const fetchData = async (url, setState, errorMessage) => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/colleges/count"
-        );
-        setCollegeCount(response.data.count);
+        const response = await axios.get(url);
+        setState(response.data.count || 0);
       } catch (err) {
-        console.error("Error fetching college count", err);
+        console.error(errorMessage, err);
+        toast.error(errorMessage, { position: "top-right", autoClose: 3000 });
       }
     };
 
-    // Fetch the user count when the component is mounted
-    const fetchUserCount = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/users/count"
-        );
-        setUserCount(response.data.count);
-      } catch (err) {
-        console.error("Error fetching user count", err);
-      }
-    };
-
+    // Fetch admin details for greeting
     const fetchAdminName = async () => {
+      if (adminFetched) return;
+
       try {
         const response = await axios.get(
           "http://localhost:5000/api/admin/get-admin",
           {
-            params: { email: adminEmail },
+            params: { email },
           }
         );
         const firstName = response.data.first_name;
-        toast.success(`Logged in as: ${firstName}`);
+        toast.success(`Logged in as: ${firstName}`, { position: "top-right" });
+        setAdminFetched(true);
       } catch (err) {
         console.error("Error fetching admin name", err);
+        toast.error("Error retrieving admin details.", {
+          position: "top-right",
+        });
       }
     };
 
-    fetchCollegeCount();
-    fetchUserCount();
     fetchAdminName();
-  }, [adminEmail]);
+    fetchData(
+      "http://localhost:5000/api/colleges/count",
+      setCollegeCount,
+      "Error fetching college count"
+    );
+    fetchData(
+      "http://localhost:5000/api/users/count",
+      setUserCount,
+      "Error fetching user count"
+    );
+    fetchData(
+      "http://localhost:5000/api/courses/count",
+      setCourseCount,
+      "Error fetching course count"
+    );
+  }, [email, adminFetched]);
 
   return (
     <div className="dashboard-container">
@@ -118,8 +120,9 @@ const AdminDashboard = ({ adminEmail }) => {
             </div>
           </div>
         </div>
+
+        {/* Frequency Chart Section */}
         <ValleyFrequencyChart />
-      
       </div>
 
       {/* Toast Container */}

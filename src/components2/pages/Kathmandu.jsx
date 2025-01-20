@@ -3,7 +3,7 @@ import "./kathmandu.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
-
+import axios from "axios";
 const CollegesPage = () => {
   const [colleges, setColleges] = useState([]);
   const collegesLink = [
@@ -16,21 +16,16 @@ const CollegesPage = () => {
     { id: 9, link: "/-/Padmakanya" },
     { id: 10, link: "/-/Acme" },
   ];
-
   useEffect(() => {
-    fetch("http://localhost:5000/api/colleges")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setColleges(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching colleges:", error);
-      });
+    const fetchColleges = async () => {
+      try {
+        const response = await axios.get("/api/colleges");
+        setColleges(response.data);
+      } catch (error) {
+        console.error("Error fetching colleges:", error.message);
+      }
+    };
+    fetchColleges();
   }, []);
 
   return (
