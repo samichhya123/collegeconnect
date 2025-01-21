@@ -2,12 +2,27 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SideBar from "../../components3/SideBar";
 import "./new.css";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser
+} from "@fortawesome/free-solid-svg-icons";
 const CollegeSearch = () => {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [colleges, setColleges] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState("");
 
+  // Function to fetch logged-in user's details
+const fetchUsername = async () => {
+  try {
+    const response = await axios.get("/api/users/me", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    setUsername(response.data.username);
+  } catch (error) {
+    console.error("Error fetching username:", error);
+  }
+};
   // Function to get user's location
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -32,6 +47,7 @@ const CollegeSearch = () => {
   };
 
   useEffect(() => {
+    fetchUsername();
     getUserLocation();
   }, []);
 
@@ -42,7 +58,6 @@ const CollegeSearch = () => {
         userLatitude: location.latitude,
         userLongitude: location.longitude,
       });
-      console.log(response.data);
       setColleges(response.data);
       setLoading(false);
     } catch (error) {
@@ -66,8 +81,22 @@ const CollegeSearch = () => {
       )}
       <SideBar />
       <div className="college-form">
-        <div className="dashboard-title">User Dashboard</div>
-        <form className="form">
+        <div
+          className="dashboard-title"
+          style={{ fontFamily: "quicksand-bold", fontSize: "30px" }}
+        >
+          User Dashboard
+        </div>
+        <div
+          style={{
+            margin: "10px 0",
+            fontSize: "18px",
+            fontFamily: "quicksand-regular",
+          }}
+        >
+         <FontAwesomeIcon icon={faUser} /> : <span style={{ fontWeight: "bold" }}>{username}</span>
+        </div>
+        <form className="form" style={{borderBottom:"0px", marginBotton:"20px"}}>
           {!location.latitude && !location.longitude ? (
             <div>
               <button
@@ -86,15 +115,24 @@ const CollegeSearch = () => {
             </div>
           )}
         </form>
-
-        <h3>Nearby Colleges:</h3>
-        <ul className="college-list">
-          {colleges.slice(0, 4).map((college, index) => (
-            <li key={index} className="college-list-item">
-              {college.collegeInfo.name} - {college.distance} km away
-            </li>
-          ))}
-        </ul>
+        <div
+          style={{
+            background: "#26425ee6",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <h3 style={{ color: "#fff", fontFamily: "quicksand-bold" }}>
+            Nearby Colleges:
+          </h3>
+          <ul className="college-list">
+            {colleges.slice(0, 4).map((college, index) => (
+              <li key={index} className="college-list-item">
+                {college.collegeInfo.name} - {college.distance} km away
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

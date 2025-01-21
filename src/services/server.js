@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 require("dotenv").config();
 const KHALTI_SECRET_KEY = process.env.KHALTI_SECRET_KEY;
-
+const crypto = require("crypto");
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -144,32 +144,40 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// Login endpoint
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  // Validate input
   if (!email || !password) {
     return res.status(400).json({ msg: "Email and password are required." });
   }
 
   try {
+    // Fetch user by email
     const [results] = await db.execute("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
 
+    // Check if user exists
     if (results.length === 0) {
       return res.status(401).json({ msg: "Unauthorized: User not found." });
     }
-    const user = results[0];
-    const passwordMatch = await bcrypt.compare(password, user.password);
 
+    const user = results[0];
+
+    // Compare passwords
+    const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ msg: "Unauthorized: Incorrect password." });
     }
 
-    const token = jwt.sign({ userId: user.id }, "your_jwt_secret", {
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
+    // Return token and user info
     res.status(200).json({
       token,
       user: {
@@ -178,10 +186,54 @@ app.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Error handling request:", err);
+    console.error("Error handling login request:", err);
     res.status(500).json({ msg: "Internal server error." });
   }
 });
+
+// Middleware to verify token and set req.user
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ msg: "Unauthorized: No token provided." });
+  }
+
+  // Verify token
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      console.error("Token verification failed:", err);
+      return res.status(403).json({ msg: "Forbidden: Invalid token." });
+    }
+
+    req.user = user; // Contains userId from the token
+    next();
+  });
+}
+
+// Get logged-in user's details
+app.get("/api/users/me", authenticateToken, async (req, res) => {
+  try {
+    // Fetch username based on userId from the token
+    const [rows] = await db.execute("SELECT username FROM users WHERE id = ?", [
+      req.user.userId,
+    ]);
+
+    // Check if user exists
+    if (rows.length === 0) {
+      return res.status(404).json({ msg: "User not found." });
+    }
+
+    // Return username
+    res.json({ username: rows[0].username });
+  } catch (err) {
+    console.error("Error fetching user details:", err);
+    res.status(500).json({ msg: "Internal server error." });
+  }
+});
+
+
 // Storage for multiple files
 const storageMultiple = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -205,6 +257,7 @@ const storageSingle = multer.diskStorage({
   },
 });
 const uploadSingle = multer({ storage: storageSingle });
+
 // Add College API
 app.post("/api/add-college", uploadSingle.single("image"), async (req, res) => {
   try {
@@ -572,8 +625,6 @@ app.get("/api/get-entrance-exam", async (req, res) => {
   try {
     // by ID, e.g., /api/get-entrance-exam?id=1
     const formId = req.query.id; 
-
-    // Validate formId if present
     if (formId && isNaN(formId)) {
       return res.status(400).json({ message: "Invalid form ID" });
     }
@@ -721,11 +772,14 @@ app.get("/questions", (req, res) => {
 
 app.post("/evaluate", (req, res) => {
   const { answers } = req.body;
+  console.log (answers);
   let score = 0;
 
-  questions.forEach((q, index) => {
-    if (answers[index] === q.correct) score++;
-  });
+  questions.forEach((q) => {
+    if (parseInt(answers[q.id], 10) === q.correct) {
+      score++;
+    }
+  })
 
   res.json({ score, total: questions.length });
 });

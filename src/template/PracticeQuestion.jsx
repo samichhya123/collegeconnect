@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import SideBar from "../components3/SideBar";
 
 const PracticeQuestion = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const PracticeQuestion = () => {
   };
 
   const handleSubmit = () => {
+    console.log (answers);
     axios
       .post("http://localhost:5000/evaluate", { answers })
       .then((response) => {
@@ -48,7 +50,7 @@ const PracticeQuestion = () => {
   const handleGoHome = () => {
     // Replace with actual home page navigation logic
     console.log("Navigating to home...");
-    navigate("/");
+    navigate("/nearby-colleges");
   };
 
   if (questions.length === 0) return <p>Loading questions...</p>;
@@ -56,6 +58,8 @@ const PracticeQuestion = () => {
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
+    <div>
+      <SideBar/>
     <div style={styles.container}>
       <h1 style={styles.title}>Computer Science Quiz</h1>
 
@@ -112,6 +116,7 @@ const PracticeQuestion = () => {
           </button>
         </div>
       )}
+    </div>
     </div>
   );
 };

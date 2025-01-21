@@ -16,7 +16,6 @@ const collegePrograms = {
   "Prime College": ["BCA", "BIT", "B.Sc.CSIT"],
   "Orchid College": ["B.Sc.CSIT", "BE Computer"],
   "Deerwalk Institute Of Technology": ["BSc.IT", "BIT"],
-  "Herald College": ["BSc (Hons) Computing", "BIT"],
   "NCIT College": ["BE Computer", "BE Civil", "BCA", "BBM"],
   "ISMT College": ["BIM", "BSc.IT"],
   "St. Xavier's College": ["B.Sc.CSIT", "BBA"],

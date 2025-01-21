@@ -43,7 +43,7 @@ const SideBar = () => {
     // },
     {
       name: "quiz",
-      label: "Practice Quiz",
+      label: "Practice Question",
       icon: "fa-question-circle",
       path: "/quiz",
     }
