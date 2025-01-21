@@ -65,14 +65,14 @@
     margin-left:15%;
     width: 60%;
     animation: fadeIn 0.8s ease-in-out;
+    height: 100vh;
 }
 
 .dashboard-title {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #6c5ce7;
+    color: #000003;
     text-align: center;
-    margin-bottom: 25px;
     position: relative;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -169,6 +169,7 @@ p {
     color: #2d3436; 
     text-align: center;
     margin-top: 20px;
+    font-family: "quicksand-medium";
     padding: 10px;
     background-color: #dfe6e9; 
     border-radius: 8px;
@@ -190,7 +191,7 @@ p {
   
  
   .location-button {
-    background: linear-gradient(135deg, #fd79a8, #e84393);
+    background: linear-gradient(135deg, #f4a3bf, #e775ac);
     color: #fff;
     font-size: 1.1rem;
     font-weight: 600;
@@ -203,6 +204,7 @@ p {
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     display: block;
     width: 100%;
+    font-family: "quicksand-semibold";
     box-sizing: border-box;
   }
   
@@ -217,3 +219,6 @@ p {
     box-shadow: 0 0 0 4px rgba(255, 121, 168, 0.3);
   }
   
+.form-colleges{
+    margin-bottom: 20px !important;
+} 

@@ -3,9 +3,7 @@ import axios from "axios";
 import SideBar from "../../components3/SideBar";
 import "./new.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 const CollegeSearch = () => {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [colleges, setColleges] = useState([]);
@@ -13,16 +11,16 @@ const CollegeSearch = () => {
   const [username, setUsername] = useState("");
 
   // Function to fetch logged-in user's details
-const fetchUsername = async () => {
-  try {
-    const response = await axios.get("/api/users/me", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    setUsername(response.data.username);
-  } catch (error) {
-    console.error("Error fetching username:", error);
-  }
-};
+  const fetchUsername = async () => {
+    try {
+      const response = await axios.get("/api/users/me", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setUsername(response.data.username);
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
+  };
   // Function to get user's location
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -81,6 +79,7 @@ const fetchUsername = async () => {
       )}
       <SideBar />
       <div className="college-form">
+        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
         <div
           className="dashboard-title"
           style={{ fontFamily: "quicksand-bold", fontSize: "30px" }}
@@ -91,12 +90,19 @@ const fetchUsername = async () => {
           style={{
             margin: "10px 0",
             fontSize: "18px",
+            padding:"10px",
+            borderRadius:"5px",
             fontFamily: "quicksand-regular",
+          backgroundColor:"#72abba"
           }}
         >
-         <FontAwesomeIcon icon={faUser} /> : <span style={{ fontWeight: "bold" }}>{username}</span>
-        </div>
-        <form className="form" style={{borderBottom:"0px", marginBotton:"20px"}}>
+          <FontAwesomeIcon icon={faUser} /> :{" "}
+          <span style={{ color: "#eee" }}>{username}</span>
+        </div></div>
+        <form
+          className="form-colleges"
+          style={{ borderBottom: "0px", marginBotton: "20px !important" }}
+        >
           {!location.latitude && !location.longitude ? (
             <div>
               <button
