@@ -115,7 +115,12 @@ const PaymentPage = () => {
             </div>
             <div className="form-group">
               <label>Payment Amount</label>
-              <input type="text" placeholder="Amount" value="Nrs:100" readOnly />
+              <input
+                type="text"
+                placeholder="Amount"
+                value="Nrs:100"
+                readOnly
+              />
             </div>
             <div className="form-group payment-options">
               <label>Payment Method</label>
@@ -138,17 +143,17 @@ const PaymentPage = () => {
             </div>
 
             <button
-              type="button"
+              type="submit"
               className="payment-button"
               disabled={paymentLoading}
-              onClick={() => {
-                if (!paymentLoading) {
-                  window.open(
-                    "https://test-pay.khalti.com/?pidx=h7UFM6pTYp2HtxQi3Qj59Z",
-                    "_blank"
-                  );
-                }
-              }}
+              // onClick={() => {
+              //   if (!paymentLoading) {
+              //     window.open(
+              //       "https://test-pay.khalti.com/?pidx=h7UFM6pTYp2HtxQi3Qj59Z",
+              //       "_blank"
+              //     );
+              //   }
+              // }}
             >
               {paymentLoading ? "Processing..." : "Make Payment"}
             </button>

@@ -36,7 +36,7 @@ const AdminDashboard = () => {
       name:"Counseling session",
       label:"Counseling session",
       icon:"fa-calendar-check",
-      path:"/bookcounseling"
+      path:"/admincounseling"
     }
   ];
 

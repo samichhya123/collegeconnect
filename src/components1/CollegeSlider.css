@@ -15,7 +15,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   justify-items: space-between;
-  margin:15px;
+  margin: 15px;
 }
 
 .college-card {
@@ -29,7 +29,6 @@
   padding: 20px;
   border-radius: 10px;
   background-color: #f2efef;
- 
   justify-content: center;
 }
 
@@ -52,15 +51,15 @@
 .view-more {
   position: relative;
   bottom: 5px;
-  padding:20px;
-  left:20px;
+  padding: 20px;
+  left: 20px;
   transform: translateX(-20%);
 }
 
 .view-more button {
   padding: 8px 10px;
   color: beige;
-  background: linear-gradient(to right, #727c85, #696f75); 
+  background: linear-gradient(to right, #727c85, #696f75);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -75,7 +74,7 @@
 
 @media (max-width: 768px) {
   .college-slider {
-    width:80%;
+    width: 80%;
   }
 
   .college-card {
@@ -83,7 +82,7 @@
     padding: 15px;
     justify-content: center;
   }
-  .view-more{
+  .view-more {
     padding: 20px;
     justify-content: center;
   }

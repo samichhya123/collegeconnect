@@ -120,12 +120,10 @@ app.post("/register", async (req, res) => {
   if (!username || !email || !password) {
     return res.status(400).json({ msg: "All fields are required." });
   }
-
   try {
     const [
       existingUser,
     ] = await db.execute(`SELECT * FROM users WHERE email = ?`, [email]);
-
     if (existingUser.length > 0) {
       return res.status(400).json({ msg: "Email already exists." });
     }
@@ -136,7 +134,6 @@ app.post("/register", async (req, res) => {
       `INSERT INTO users (email, username, password, role) VALUES (?, ?, ?, ?)`,
       [email, username, hashedPassword, role]
     );
-
     res.status(201).json({ msg: "User registered successfully!" });
   } catch (err) {
     console.error("Error handling request:", err);
@@ -147,37 +144,24 @@ app.post("/register", async (req, res) => {
 // Login endpoint
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
-  // Validate input
   if (!email || !password) {
     return res.status(400).json({ msg: "Email and password are required." });
   }
-
   try {
-    // Fetch user by email
     const [results] = await db.execute("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
-
-    // Check if user exists
     if (results.length === 0) {
       return res.status(401).json({ msg: "Unauthorized: User not found." });
     }
-
     const user = results[0];
-
-    // Compare passwords
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ msg: "Unauthorized: Incorrect password." });
     }
-
-    // Generate JWT token
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-
-    // Return token and user info
     res.status(200).json({
       token,
       user: {
@@ -199,40 +183,29 @@ function authenticateToken(req, res, next) {
   if (!token) {
     return res.status(401).json({ msg: "Unauthorized: No token provided." });
   }
-
-  // Verify token
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       console.error("Token verification failed:", err);
       return res.status(403).json({ msg: "Forbidden: Invalid token." });
     }
-
-    req.user = user; // Contains userId from the token
+    req.user = user;
     next();
   });
 }
-
-// Get logged-in user's details
 app.get("/api/users/me", authenticateToken, async (req, res) => {
   try {
-    // Fetch username based on userId from the token
     const [rows] = await db.execute("SELECT username FROM users WHERE id = ?", [
       req.user.userId,
     ]);
-
-    // Check if user exists
     if (rows.length === 0) {
       return res.status(404).json({ msg: "User not found." });
     }
-
-    // Return username
     res.json({ username: rows[0].username });
   } catch (err) {
     console.error("Error fetching user details:", err);
     res.status(500).json({ msg: "Internal server error." });
   }
 });
-
 
 // Storage for multiple files
 const storageMultiple = multer.diskStorage({
@@ -247,7 +220,6 @@ const uploadMultiple = multer({ storage: storageMultiple });
 
 // Static file serving for uploaded files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 const storageSingle = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/");
@@ -263,18 +235,15 @@ app.post("/api/add-college", uploadSingle.single("image"), async (req, res) => {
   try {
     const { name, address, valley, latitude, longitude } = req.body;
     const image_url = req.file ? `public/${req.file.filename}` : null;
-
     if (!name || !address || !valley) {
       return res
         .status(400)
         .json({ message: "Name, address, and valley are required" });
     }
-
     await db.query(
       "INSERT INTO admin_colleges (name, address, valley, latitude, longitude, image_url) VALUES (?, ?, ?, ?, ?, ?)",
       [name, address, valley, latitude || null, longitude || null, image_url]
     );
-
     res.status(200).json({ message: "College added successfully!" });
   } catch (error) {
     console.error("Error adding college:", error.message);
@@ -296,6 +265,7 @@ app.get("/api/colleges", async (req, res) => {
     res.status(500).send("Error fetching colleges");
   }
 });
+
 app.get("/api/admincolleges", async (req, res) => {
   try {
     const [colleges] = await db.query(
@@ -307,26 +277,22 @@ app.get("/api/admincolleges", async (req, res) => {
     res.status(500).send("Error fetching colleges");
   }
 });
+
 // Update College API
 app.put(
   "/api/admincolleges/:id",
   uploadSingle.single("image"),
   async (req, res) => {
     try {
-      const { id } = req.params; // College ID to update
+      const { id } = req.params;
       const { name, address, valley, latitude, longitude } = req.body;
       const image_url = req.file ? `public/${req.file.filename}` : null;
-
-      // Check if the college exists
       const [
         existingCollege,
       ] = await db.query("SELECT * FROM admin_colleges WHERE id = ?", [id]);
-
       if (!existingCollege || existingCollege.length === 0) {
         return res.status(404).json({ message: "College not found" });
       }
-
-      // Update the college details
       await db.query(
         "UPDATE admin_colleges SET name = ?, address = ?, valley = ?, latitude = ?, longitude = ?, image_url = COALESCE(?, image_url) WHERE id = ?",
         [
@@ -339,7 +305,6 @@ app.put(
           id,
         ]
       );
-
       res.status(200).json({ message: "College updated successfully!" });
     } catch (error) {
       console.error("Error updating college:", error.message);
@@ -368,30 +333,26 @@ app.delete("/api/admincolleges/:id", async (req, res) => {
       .json({ message: "Error deleting college", error: error.message });
   }
 });
+
 // Add Course API
 app.post("/api/courses", async (req, res) => {
   try {
     const { course_name, university, duration_years } = req.body;
-
-    // Validate input
     if (!course_name || !university || !duration_years) {
       return res.status(400).json({
         message: "Course name, university, and duration are required",
       });
     }
-
     if (course_name.length > 100) {
       return res.status(400).json({
         message: "Course name cannot exceed 100 characters",
       });
     }
-
     if (university.length > 100) {
       return res.status(400).json({
         message: "University name cannot exceed 100 characters",
       });
     }
-
     if (duration_years <= 0 || duration_years > 10) {
       return res.status(400).json({
         message: "Duration must be between 1 and 10 years",
@@ -442,12 +403,10 @@ app.put("/api/courses/:id", async (req, res) => {
 
     // Validate required fields
     if (!course_name || !university || typeof duration_years !== "number") {
-      return res
-        .status(400)
-        .json({
-          message:
-            "All fields (course_name, university, duration_years) are required.",
-        });
+      return res.status(400).json({
+        message:
+          "All fields (course_name, university, duration_years) are required.",
+      });
     }
 
     // Check if the course exists
@@ -623,13 +582,13 @@ app.post(
 // Entrance Exam API - Get
 app.get("/api/get-entrance-exam", async (req, res) => {
   try {
-    // by ID, e.g., /api/get-entrance-exam?id=1
-    const formId = req.query.id; 
+    const formId = req.query.id;
     if (formId && isNaN(formId)) {
       return res.status(400).json({ message: "Invalid form ID" });
     }
 
-    let query = "SELECT id, full_name, email,address, contact_number, college_name, program_name, payment_status, admit_card_status FROM entrance_exam_form";
+    let query =
+      "SELECT id, full_name, email,address, contact_number, college_name, program_name, payment_status, admit_card_status FROM entrance_exam_form";
     let values = [];
 
     if (formId) {
@@ -718,8 +677,8 @@ app.post("/api/khalti", async (req, res) => {
 
     // Prepare data for Khalti API request
     const formData = {
-      return_url: "https://test-pay.khalti.com/wallet", // Update return URL
-      website_url: "http://localhost:5000", // Website URL
+      return_url: "http://localhost:5001//test-pay.khalti.com/?pidx=h7UFM6pTYp2HtxQi3Qj59Z_blank",
+      website_url: "http://localhost:5000",
       amount: amount,
       purchase_order_id: 11,
       purchase_order_name: fullName,
@@ -735,7 +694,6 @@ app.post("/api/khalti", async (req, res) => {
     );
 
     if (response.data) {
-      // Send payment initiation data back to the frontend
       res.json({
         message: "Khalti initiation successful",
         payment_method: "khalti",
@@ -754,16 +712,86 @@ app.post("/api/khalti", async (req, res) => {
 });
 
 const questions = [
-  { id: 1, question: "What is the full form of CPU?", options: ["Central Process Unit", "Central Processing Unit", "Control Processing Unit"], correct: 2 },
-  { id: 2, question: "Which data structure uses LIFO?", options: ["Queue", "Stack", "Array"], correct: 2 },
-  { id: 3, question: "What does RAM stand for?", options: ["Random Access Memory", "Read-Only Memory", "Run Access Memory"], correct: 1 },
-  { id: 4, question: "Which of the following is a NoSQL database?", options: ["MySQL", "MongoDB", "PostgreSQL"], correct: 2 },
-  { id: 5, question: "What does HTTP stand for?", options: ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "Hyperlink Transfer Protocol"], correct: 1 },
-  { id: 6, question: "Which of these is a frontend framework?", options: ["Node.js", "React.js", "Django"], correct: 2 },
-  { id: 7, question: "Which protocol is used for secure data transfer?", options: ["HTTP", "FTP", "HTTPS"], correct: 3 },
-  { id: 8, question: "What does AI stand for?", options: ["Artificial Intelligence", "Automatic Interface", "Automated Interaction"], correct: 1 },
-  { id: 9, question: "What is the full form of URL?", options: ["Uniform Resource Locator", "Universal Resource Locator", "Uniform Resource Link"], correct: 1 },
-  { id: 10, question: "What does 'npm' stand for?", options: ["Node Package Manager", "Network Package Manager", "Node Programming Manager"], correct: 1 },
+  {
+    id: 1,
+    question: "What is the full form of CPU?",
+    options: [
+      "Central Process Unit",
+      "Central Processing Unit",
+      "Control Processing Unit",
+    ],
+    correct: 2,
+  },
+  {
+    id: 2,
+    question: "Which data structure uses LIFO?",
+    options: ["Queue", "Stack", "Array"],
+    correct: 2,
+  },
+  {
+    id: 3,
+    question: "What does RAM stand for?",
+    options: ["Random Access Memory", "Read-Only Memory", "Run Access Memory"],
+    correct: 1,
+  },
+  {
+    id: 4,
+    question: "Which of the following is a NoSQL database?",
+    options: ["MySQL", "MongoDB", "PostgreSQL"],
+    correct: 2,
+  },
+  {
+    id: 5,
+    question: "What does HTTP stand for?",
+    options: [
+      "HyperText Transfer Protocol",
+      "HyperText Transmission Protocol",
+      "Hyperlink Transfer Protocol",
+    ],
+    correct: 1,
+  },
+  {
+    id: 6,
+    question: "Which of these is a frontend framework?",
+    options: ["Node.js", "React.js", "Django"],
+    correct: 2,
+  },
+  {
+    id: 7,
+    question: "Which protocol is used for secure data transfer?",
+    options: ["HTTP", "FTP", "HTTPS"],
+    correct: 3,
+  },
+  {
+    id: 8,
+    question: "What does AI stand for?",
+    options: [
+      "Artificial Intelligence",
+      "Automatic Interface",
+      "Automated Interaction",
+    ],
+    correct: 1,
+  },
+  {
+    id: 9,
+    question: "What is the full form of URL?",
+    options: [
+      "Uniform Resource Locator",
+      "Universal Resource Locator",
+      "Uniform Resource Link",
+    ],
+    correct: 1,
+  },
+  {
+    id: 10,
+    question: "What does 'npm' stand for?",
+    options: [
+      "Node Package Manager",
+      "Network Package Manager",
+      "Node Programming Manager",
+    ],
+    correct: 1,
+  },
 ];
 
 app.get("/questions", (req, res) => {
@@ -772,14 +800,14 @@ app.get("/questions", (req, res) => {
 
 app.post("/evaluate", (req, res) => {
   const { answers } = req.body;
-  console.log (answers);
+  console.log(answers);
   let score = 0;
 
   questions.forEach((q) => {
     if (parseInt(answers[q.id], 10) === q.correct) {
       score++;
     }
-  })
+  });
 
   res.json({ score, total: questions.length });
 });
