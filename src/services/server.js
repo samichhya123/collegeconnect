@@ -222,6 +222,7 @@ app.get("/api/colleges", async (req, res) => {
       "SELECT id, name, address, image_url FROM admin_colleges"
     );
     res.json(colleges);
+    
   } catch (error) {
     console.error("Database error:", error.message);
     res.status(500).send("Error fetching colleges");

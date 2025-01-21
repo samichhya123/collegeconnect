@@ -97,10 +97,10 @@ const EntranceRegister = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (validateForm()) {
       toast.info("Redirecting to payment page...", { autoClose: 3000 });
-
+  
       const formDataToSend = new FormData();
       formDataToSend.append("photo", formData.photo);
       formDataToSend.append("fullName", formData.fullName);
@@ -108,14 +108,15 @@ const EntranceRegister = () => {
       formDataToSend.append("contact", formData.contact);
       formDataToSend.append("college", formData.college);
       formDataToSend.append("program", formData.program);
-
-      // Append documents to the formData object
-      for (const [key, value] of Object.entries(formData.documents)) {
-        if (value) {
-          formDataToSend.append(key, value);
-        }
+  
+      // Append SEE Mark-Sheet and Transcript explicitly
+      if (formData.documents.SEE) {
+        formDataToSend.append("SEE", formData.documents.SEE);
       }
-
+      if (formData.documents.Transcript) {
+        formDataToSend.append("Transcript", formData.documents.Transcript);
+      }
+  
       try {
         const response = await axios.post(
           "http://localhost:5000/api/add-entrance-exam",
@@ -135,6 +136,7 @@ const EntranceRegister = () => {
       toast.error("Please fill all fields correctly.");
     }
   };
+  
 
   // Handle input changes
   const handleChange = (e) => {
