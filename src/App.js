@@ -142,6 +142,7 @@ function App() {
           <Route path="/kathmandu" element={<Kathmandu />} />
 
           <Route path="/admin" element={<AdminDashboard />} />
+          {/* <Route path="/admitcard" element={<AdmitCard />} /> */}
           <Route path="/managecolleges" element={<AdminColleges />} />
           <Route path="/managecourses" element={<AdminCourses />} />
           <Route path="/adminentrance" element={<EntranceExamList />} />

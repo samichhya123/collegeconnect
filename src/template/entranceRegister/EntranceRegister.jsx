@@ -4,6 +4,7 @@ import axios from "axios";
 import SideBar from "../../components3/SideBar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 const collegePrograms = {
   "Kathford College": [
     "B.Sc.CSIT",
@@ -58,11 +59,14 @@ const EntranceRegister = () => {
     contact: "",
     college: "",
     program: "",
+    documents: {},
+    exam_date: "",
+    time_slot: "",
   });
 
   const [errors, setErrors] = useState({});
   const [photoPreview, setPhotoPreview] = useState(null);
-  // Validate form fields
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.fullName || !/^[a-zA-Z ]+$/.test(formData.fullName)) {
@@ -87,33 +91,34 @@ const EntranceRegister = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validateForm()) {
       toast.info("Redirecting to payment page...", { autoClose: 3000 });
 
-      // Prepare FormData to handle text and file data
       const formDataToSubmit = new FormData();
 
-      // Add text fields
+      // Append text fields
       Object.keys(formData).forEach((key) => {
         if (key !== "documents" && key !== "photo") {
           formDataToSubmit.append(key, formData[key]);
         }
       });
 
-      // Add photo file
+      // Append photo
       if (formData.photo) {
         formDataToSubmit.append("photo", formData.photo);
       }
 
-      // Add document files
-      if (formData.documents) {
-        Object.entries(formData.documents).forEach(([category, file]) => {
-          formDataToSubmit.append(`document_${category}`, file);
-        });
+      // Append documents dynamically
+      Object.entries(formData.documents).forEach(([category, file]) => {
+        formDataToSubmit.append(`documents_${category}`, file);
+      });
+
+      // Debug FormData content
+      for (const [key, value] of formDataToSubmit.entries()) {
+        console.log(`${key}:`, value);
       }
 
       try {
@@ -124,6 +129,7 @@ const EntranceRegister = () => {
         );
 
         if (response.status === 200) {
+          toast.success("Form submitted successfully!");
           setTimeout(() => {
             window.location.href = "/payment";
           }, 3000);
@@ -144,7 +150,6 @@ const EntranceRegister = () => {
       const file = files[0];
 
       if (name === "photo") {
-        // Validate and handle photo upload
         if (file && file.type.startsWith("image/")) {
           if (file.size > 5000000) {
             setErrors((prevErrors) => ({
@@ -157,7 +162,7 @@ const EntranceRegister = () => {
               photo: file,
             }));
             setPhotoPreview(URL.createObjectURL(file));
-            setErrors((prevErrors) => ({ ...prevErrors, photo: "" })); // Clear error
+            setErrors((prevErrors) => ({ ...prevErrors, photo: "" }));
           }
         } else {
           setErrors((prevErrors) => ({
@@ -165,9 +170,8 @@ const EntranceRegister = () => {
             photo: "Invalid file type. Please upload an image.",
           }));
         }
-      } else if (name.startsWith("document_")) {
-        // Validate and handle document uploads
-        const category = name.split("_")[1]; // Extract document type (e.g., SLC)
+      } else if (name.startsWith("documents_")) {
+        const category = name.split("_")[1];
         if (file.size > 5000000) {
           setErrors((prevErrors) => ({
             ...prevErrors,
@@ -184,11 +188,10 @@ const EntranceRegister = () => {
           setErrors((prevErrors) => ({
             ...prevErrors,
             documents: "",
-          })); // Clear error
+          }));
         }
       }
     } else {
-      // Handle text input
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -196,11 +199,11 @@ const EntranceRegister = () => {
     }
   };
 
-  // Handle college selection
   const handleCollegeChange = (e) => {
     const selectedCollege = e.target.value;
     setFormData({ ...formData, college: selectedCollege, program: "" });
   };
+
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <SideBar />
@@ -355,6 +358,46 @@ const EntranceRegister = () => {
                     ))}
                 </select>
               </div>
+
+              {/* Exam Date */}
+              <div className="form-floating important-label">
+                <label htmlFor="exam_date">
+                  Exam Date <span className="required">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="exam_date"
+                  name="exam_date"
+                  value={formData.exam_date}
+                  onChange={handleChange}
+                />
+                {errors.exam_date && (
+                  <div className="error-message">{errors.exam_date}</div>
+                )}
+              </div>
+
+              {/* Time Slot */}
+              <div className="form-floating important-label">
+                <label htmlFor="time_slot">
+                  Time Slot <span className="required">*</span>
+                </label>
+                <select
+                  id="time_slot"
+                  name="time_slot"
+                  value={formData.time_slot}
+                  onChange={handleChange}
+                >
+                  <option value="" disabled>
+                    Select Time Slot
+                  </option>
+                  <option value="9:00 AM - 11:00 AM">9:00 AM - 11:00 AM</option>
+                  <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
+                  <option value="3:00 PM - 5:00 PM">3:00 PM - 5:00 PM</option>
+                </select>
+                {errors.time_slot && (
+                  <div className="error-message">{errors.time_slot}</div>
+                )}
+                </div>
 
               {/* Documents */}
               <div className="form-floating">
