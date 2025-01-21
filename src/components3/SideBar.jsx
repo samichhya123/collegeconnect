@@ -32,7 +32,7 @@ const SideBar = () => {
       name: "bookCounseling",
       label: "Counseling Session",
       icon: "fa-calendar-check",
-      path: "/bookcounseling",
+      // path: "/bookcounseling",
     },
     // Uncomment below to add the "result" section in the future
     // {

@@ -70,8 +70,8 @@ import AdminCourses from "./components3/admin/courseCRUD";
 import NearbyCollegesForm from "./template/algorithm/nearbyCollegesForm";
 import EntranceExamList from "./components3/admin/adminEntrance";
 import PracticeQuestion from "./template/PracticeQuestion";
-import  Counselling  from "./components3/Counselling";
-
+import Counselling from "./components3/admin/Counselling";
+import AdminCounseling from "./components3/admin/Counselling";
 function App() {
   return (
     <div className="app">
@@ -146,6 +146,7 @@ function App() {
           <Route path="/managecolleges" element={<AdminColleges />} />
           <Route path="/managecourses" element={<AdminCourses />} />
           <Route path="/adminentrance" element={<EntranceExamList />} />
+          <Route path="/admincounseling" element={<AdminCounseling/>}/>
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/payment" element={<PaymentPage />} />

@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import emailjs from "@emailjs/browser";
 import "./Counselling.css";
-import AdminDashboard from "../components3/admin/AdminDash";
+import AdminDashboard from "./AdminDash";
 
-export const Counselling = () => {
+const AdminCounseling = () => {
   const form = useRef();
 
   const sendEmail = (e) => {
@@ -46,7 +46,7 @@ export const Counselling = () => {
   };
 
   return (
-    <div className="container">
+    <div style={{display:"flex"}}>
       <AdminDashboard />
       <div className="counselling-container">
         <h2 className="counselling-heading">Counselling Details</h2>
@@ -85,7 +85,6 @@ export const Counselling = () => {
             required
             placeholder="Enter your message"
           />
-
           <button type="submit" className="form-button">
             Send
           </button>
@@ -94,3 +93,4 @@ export const Counselling = () => {
     </div>
   );
 };
+export default AdminCounseling;
